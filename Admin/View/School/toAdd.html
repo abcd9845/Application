@@ -1,0 +1,175 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+<form id="form" action="add" method="post" class="definewidth m20">
+    <table class="table table-bordered table-hover definewidth m10">
+        <tr>
+            <td width="20%" class="tableleft">地址</td>
+            <td>
+                <select id="type" name="type">
+                    <option value="0">{:C('LS')}</option>
+                    <option value="1">{:C('JT')}</option>
+                </select>
+                <label class="red">*</label>
+            </td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="20%" class="tableleft">名称</td>
+            <td><input type="text" name="name" datatype="*2-32" errormsg="名称至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="20%" class="tableleft">送货上门费用</td>
+            <td><input type="text" id="expense" name="expense" datatype="float" errormsg="请填写正确的送货上门费用！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="20%" class="tableleft">状态</td>
+            <td>
+                <select id="state" name="state">
+                    <option value="0">停用</option>
+                    <option value="1" selected>启用</option>
+                </select>
+                <label class="red">*</label>
+            </td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <!--<tr>-->
+            <!--<td width="20%" class="tableleft">开启现买现提</td>-->
+            <!--<td>-->
+                <!--<select id="isnow" name="isnow">-->
+                    <!--<option value="0">停用</option>-->
+                    <!--<option value="1" selected>启用</option>-->
+                <!--</select>-->
+                <!--<label class="red">*</label>-->
+            <!--</td>-->
+            <!--<td><div class="Validform_checktip"></div></td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+            <!--<td width="20%" class="tableleft">开启幸运时光</td>-->
+            <!--<td>-->
+                <!--<select id="happy" name="happy">-->
+                    <!--<option value="0">停用</option>-->
+                    <!--<option value="1" selected>启用</option>-->
+                <!--</select>-->
+                <!--<label class="red">*</label>-->
+            <!--</td>-->
+            <!--<td><div class="Validform_checktip"></div></td>-->
+        <!--</tr>-->
+        <tr>
+            <td width="20%" class="tableleft">送货方式</td>
+            <td>
+                <select id="is_delivery" name="is_delivery">
+                    <option value="0">自提</option>
+                    <option value="1">自提/配送</option>
+                    <option value="2">配送</option>
+                </select>
+                <label class="red">*</label>
+            </td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="20%" class="tableleft">送货上门menu</td>
+            <td>
+                <select id="deli_menu" name="deli_menu">
+                    <option value="0">停用</option>
+                    <option value="1" selected>启用</option>
+                </select>
+                <label class="red">*</label>
+            </td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <!--<tr>-->
+            <!--<td width="20%" class="tableleft">展示数量</td>-->
+            <!--<td>-->
+                <!--<input type="text" id="show_count" name="show_count" />-->
+                <!--<label class="red">*</label>-->
+            <!--</td>-->
+            <!--<td><div class="Validform_checktip"></div></td>-->
+        <!--</tr>-->
+        <tr>
+            <td width="20%" class="tableleft">满额</td>
+            <td>
+                <input type="text" id="pick_day" name="pick_day" value="0.1"/>
+                <label class="red">（元）*</label>
+            </td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="20%" class="tableleft">减额</td>
+            <td>
+                <input type="text" id="pick_time" name="pick_time" value="1"/>
+                <label class="red">（元）*</label>
+            </td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <!--<tr>-->
+            <!--<td width="20%" class="tableleft">信息费比例</td>-->
+            <!--<td>-->
+                <!--<input type="text" id="lirun" name="lirun" datatype="float" errormsg="请填写正确的信息费比例！"/>-->
+                <!--<label class="red">（元）*</label>-->
+            <!--</td>-->
+            <!--<td><div class="Validform_checktip"></div></td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+            <!--<td width="20%" class="tableleft">促销策略</td>-->
+            <!--<td>-->
+                <!--<select id="tactics" name="tactics">-->
+                    <!--<option value="0" selected>无</option>-->
+                    <!--<option value="1">满减策略</option>&lt;!&ndash;水果满10-5 &ndash;&gt;-->
+                    <!--&lt;!&ndash;<option value="2">打折策略</option>&lt;!&ndash;预定水果8折 &ndash;&gt;&ndash;&gt;-->
+                <!--</select>-->
+                <!--<label class="red">*</label>-->
+            <!--</td>-->
+            <!--<td><div class="Validform_checktip"></div></td>-->
+        <!--</tr>-->
+        <tr>
+            <td class="tableleft"></td>
+            <td colspan="2">
+                <button type="submit" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</block>
+<block name="myscript">
+<script>
+    $(function () {
+        $('#backid').click(function(){
+            $('form')[0].action="__CONTROLLER__";
+            $('form')[0].submit();
+        });
+
+        $('#happy').change(function(){
+            if($(this).val() == 0){
+                $('#show_count').attr('disabled','disabled').removeClass('Validform_error');
+                $('#show_count').closest('td').next().find('.Validform_wrong').hide();
+            }else{
+                $('#show_count').removeAttr('disabled');
+            }
+        });
+
+        $("#form").Validform({
+            btnSubmit:'#save',
+            tiptype: 2,
+            showAllError: true,
+            beforeCheck:function(){
+                //$('#title_pic').val($('#title_pic_td').find('.croppedImg').attr('src'));
+                if($('#happy').val() == 1){
+                    $('#show_count').attr({datatype:"n1-2",errormsg:"展示数量<=99！"});
+                }else{
+                    $('#show_count').removeAttr('datatype').removeAttr('errormsg');
+                }
+
+            },
+            datatype:{
+                "float":function(gets,obj,curform,regxp){
+                    if(curform.find("#expense").val() == '')
+                        return false;
+                    return (/^[1-9]+(\.\d+)?$|^(\.\d+)?$|^[1-9]+[0-9]*(\.\d+)?$/.test(curform.find("#expense").val()));
+                }
+            }
+        });
+    });
+</script>
+</block>

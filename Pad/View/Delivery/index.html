@@ -1,0 +1,126 @@
+
+<block name="page-content">
+    <section id="show_content" class="container">
+        <div class="row" style="padding: 0;margin:0 5px;">
+            <div class="col-xs-12">
+                <div class="panel panel-default" style="margin-top:20px;width:99%;" id="searchPanel">
+                    <div class="panel-heading" id="title" style="cursor:pointer">
+                        查询
+                        <p style="float: right"><span id="removeBtn" style="cursor:pointer;" class="glyphicon glyphicon-remove"></span></p>
+                    </div>
+                    <form class="panel-body" id="body" method="post" action="{:U('index')}">
+                        <p>日期:&nbsp;&nbsp;
+                            <select name="querydate">
+                                <option value="today" <eq name='querydate' value='today'>selected</eq>>今天</option>
+                                <option value="1 week" <eq name='querydate' value='1 week'>selected</eq>>近一周</option>
+                                <option value="1 month" <eq name='querydate' value='1 month'>selected</eq>>近一月</option>
+                                <option value="3 month" <eq name='querydate' value='3 month'>selected</eq>>近三月</option>
+                                <option value="3 month ago" <eq name='querydate' value='3 month ago'>selected</eq>>三个月前</option>
+                            </select>&nbsp;&nbsp;&nbsp;&nbsp;
+                            状态:&nbsp;&nbsp;
+                            <select name='querystate'>
+                                <volist name="states" id="vo">
+                                    <option value="{$vo['id']}" <eq name="querystate" value="$vo['id']">selected</eq> >{$vo['state']}</option>
+                                </volist>
+                            </select>
+                        </p>
+                        <p style="float: right"><button type="submit" class="btn btn-primary">查询</button></p>
+                    </form>
+                </div>
+                <div style="text-align: right;width:99%;margin-top:10px;">
+                    共 {$orders|count}个订单
+                </div>
+                <volist name="orders" id="vo">
+                    <div style="border:1px solid #999;border-radius: 5px;width:200px;width:99%;padding:5px 10px;margin-top:20px;">
+                        <p style="float: left"><label>{$vo['state']}</label><label style="color: red;">({$vo['supplier']})</label></p>
+                        <p style="float: right;"><label>订单编号:</label>{$vo['order_no']}</p>
+                        <div style="clear: both">
+                            <h3>商品信息</h3>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th style="width:70%">商品名称</th>
+                                        <th style="width:30%">数量</th>
+                                    </tr>    
+                                </thead>
+                                <tbody>
+                                <volist name="vo['goods']['list']" id='go'>
+                                    <tr>
+                                        <td style="width:70%">{$go['name']}</td>
+                                        <td style="width:30%">{$go['num']}</td>
+                                    </tr>       
+                                </volist>
+                                </tbody>
+                            </table>
+                        </div>
+                        <ul>
+
+                            <li style="float:left;color:darkorange"><span class="glyphicon glyphicon-user" ></span><label style="margin-left:5px;">{$vo['recipient']}</label></li>
+                            <li style="color:darkorange"><span class="glyphicon glyphicon-earphone"></span><label style="margin-left:5px;">{$vo['phone']}</label></li>
+                            <li style="color:dodgerblue"><span class="glyphicon glyphicon-envelope"></span><label style="margin-left:5px;">{$vo['province']} {$vo['city']} {$vo['area']} {$vo['address']}</label></li>
+                        </ul>
+                        <div style="margin-top: 20px;">
+                            <p><span style="font-weight: bold;">快递单号：</span>{$vo['express_no']}</p>
+                            <iframe width="560" height="200" style="overflow:auto;" frameborder="0" src="{$orderURL}"></iframe>
+                        </div>
+                        <eq name="vo[state_id]" value='3'>
+                            <button class="btn btn-success signoff"  data-id="{$vo['id']}" data-no="{$vo['order_no']}">确认签收</button>
+                        </eq>
+                    </div>
+                </volist>
+            </div>
+        </div>
+    </section>
+    <div style="position: fixed;width: 30px;height:30px;border-radius: 30px;bottom:50px;left:2.999%;background: #ccc;opacity: 0.8;">
+        <span id="showBtn" style="margin-left:8px;margin-top:7px;cursor:pointer;" class="glyphicon glyphicon-search"></span>
+    </div>
+
+</block>
+<block name="css-content">  
+    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap-theme-farm.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/farm.core.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/product.css">
+    <style>
+        ul{
+            list-style: none;
+            padding:0;
+            margin:0;
+        }
+
+        li{
+            margin-right:30px;
+        }
+    </style>
+</block>
+<block name="js-content">
+
+    <script>
+        $(function() {
+            $('#searchPanel').hide();
+
+            $('#removeBtn').click(function() {
+                $('#searchPanel').hide();
+            })
+
+            $('#showBtn').click(function() {
+                if ($('#searchPanel')[0].style.display != 'none') {
+                    $('#searchPanel').hide();
+                } else {
+                    $('#searchPanel').show();
+                }
+
+            })
+            $('.signoff').click(function() {                
+                var oid = $(this).data('id');
+                var no = $(this).data('no');
+                $.post("{:U('Order/signOff')}", {
+                    oid: oid,
+                    no: no
+                }, function(result) {
+                    window.location.reload();
+                }, 'json');
+            });
+        })
+    </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

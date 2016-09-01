@@ -1,0 +1,59 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+<form class="form-inline definewidth m20" action="__CONTROLLER__" method="post">
+    <div>
+    订单号：
+    <input type="text" name="order_no" id="order_no"class="abc input-default" placeholder="" value="{$filter.order_no}">&nbsp;&nbsp;
+    在途状态：
+    <select id="state" name="state">
+        <option value="">请选择</option>
+        <volist name="stateArray" id="vo">
+            <option value="{$vo.id}">{$vo.state}</option>
+        </volist>
+    </select>
+    联系电话：
+    <input type="text" name="phone" id="phone"class="abc input-default" placeholder="" value="{$filter.phone}">&nbsp;&nbsp;
+    <button type="button" id="search" class="btn btn-primary">查询</button>&nbsp;&nbsp;
+    </div>
+    <table class="table table-bordered table-hover m10">
+        <thead>
+        <tr>
+            <th>订单号</th>
+            <th>取货地址</th>
+            <th>电话</th>
+            <th>在途状态</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <volist name="array" id="vo">
+            <tr>
+                <td>{$vo.order_no}</td>
+                <td>{$vo.address}</td>
+                <td>{$vo.mobile}</td>
+                <td>{$vo.state}</td>
+                <td>
+                    <a href="__CONTROLLER__/toView/id/{$vo.id}/order_no/{$vo.order_no}">详细信息</a>
+                </td>
+            </tr>
+        </volist>
+    </table>
+    <div class="result page">{$show}</div>
+</form>
+</block>
+<block name="myscript">
+<script>
+    $(function () {
+        $('#addnew').click(function(){
+            window.location.href="__CONTROLLER__/toAdd";
+        });
+
+        $('#search').click(function(){
+            $('form')[0].action = "__CONTROLLER__";
+            $('form')[0].submit();
+        });
+
+        $('#state').val('{$filter.state}');
+
+    });
+</script>
+</block>

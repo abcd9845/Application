@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<postage>
+    <Item>
+        <province>11000</province>
+        <first>12</first>
+        <other>1.5</other>
+    </Item>
+    <Item>
+        <province>12000</province>
+        <first>10</first>
+        <other>1</other>
+    </Item>
+    <Item>
+        <province>13000</province>
+        <first>11</first>
+        <other>1</other>
+    </Item>
+    <Item>
+        <province>other</province>
+        <first>20</first>
+        <other>6</other>
+    </Item>
+</postage>

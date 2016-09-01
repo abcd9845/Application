@@ -1,0 +1,139 @@
+<extend name="Common@Shared/Idea/layoutBase" />
+<block name="title-content">
+  沽尚农庄 - 猜水果
+</block>
+<block name="page-content">
+  <div>
+    <div class="sidebar col-xs-2">
+      <ul class="nav nav-stacked">
+        <li class="active"><a href="{:U('index')}"><i class="fa fa-home"></i></a></li>
+        <li><a href="{:U('result', array('id'=>$item['id']))}"><i class="fa fa-list"></i></a></li>
+      </ul>
+    </div>
+    <div class="col-xs-10">
+      <div class="row">
+        <div class="col-xs-12" style="text-align:center;">
+          <h4>猜中就拿走</h4>
+          <p><img src="__ROOT__{$item['img']}" style="margin:0 auto;width:320px;height:160px;"></p>
+          <empty name="item">
+            <p>目前没有活动</p>
+            <else />
+            <p>本期水果：{$item['title']}</p>
+            <p style="color:#aaa;font-size:12px;margin-top: 3px;">{$item['description']}</p>
+            <p>市场价: {$item['market_price']}{$item['unit']}</p>  
+          </empty>
+        </div>
+      </div>
+      <notempty name="item">
+        <div class="row">
+          <div class="col-sm-6">
+            <if condition="$item['submit_time'] lt date('Y-m-d H:i:s')">
+              <h4>竞猜时间已过，请等待下次活动</h4>
+              <else />
+              <form id="theForm" action="javascript:;" style="margin: 0px; padding: 15px; background:#fed875">
+                <lt name="user['sumbit_count']" value="$user['chance_count']">
+                <label>请填写你要猜的价格：</label>
+                <div class="input-group">
+                  <input id="priceInput" class="form-control" type="number" name="submit_price" > 
+                  <span class="input-group-addon">元</span>
+                </div>
+                <span class="pull-right help-block">您还有 <span id="times">{$user['chance_count'] - $user['sumbit_count']}</span> 次机会</span>
+                <input type="hidden" name="guess_id" value="{$item['id']}">
+                <button id="submitBtn" type="button" class="btn btn-primary btn-block" style="min-width:40px;">提交</button>
+                <else/>
+                <a class="pull-right" href="{:U('index', array('invitor'=>$user['id']))}">分享到朋友圈，增加更多机会</a>       
+                <label>您最后猜的价格是：</label>
+                <span class="form-control-static">{$user['price']}元</span> 
+                </lt>
+              </form> 
+            </if>
+          </div>
+          <div class="col-sm-6">
+            <div style=" padding: 15px; background:#ff9450">
+              <p>已经有{$item['count']}人参与猜价</p>
+              <p>最高价格：{$item['max_price']}</p>
+              <p>最低价格：{$item['min_price']}</p>
+            </div>
+          </div>
+        </div>
+      </notempty>
+      <div class="row">
+        <div class="col-sm-6">
+          <notempty name="prevItem">
+            <p>上期价格：{$prevItem['price']}</p>
+          </notempty>
+          <notempty name="nextItem">
+            <p>下期水果为<br/>
+              <img src="__PUBLIC__/Uploads/{$nextItem['img']}" />
+            </p>
+            <p>开始时间：{$nextItem['start_time']|substr=0,10}</p>
+          </notempty>
+        </div>
+        <div class="col-sm-6">
+          <a class="btn btn-block" style="background:#5ab6df; height:8em;vertical-align: middle;color:#fff" href="{:U('result', array('id'=>$item['id']))}">揭开谜底<br/>去看结果</a>
+          <a class="btn btn-block" style="background:#fb8675; height:8em">
+            <div style="width:16em; text-align: left; margin: 0 auto">
+              <i class="fa fa-4x fa-clock-o" style="float:left; margin-right: 0.5em"></i>
+              <h5 style="color:#fff">特价商品</h5>
+              <p style="color:#e45b2d" class="small">天天特价 天天分享<br/>
+                热门 人气的限时特价商品</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="infoModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"></h4>
+        </div>
+        <div class="modal-body">
+          <p>
+            <a class="btn btn-default btn-block" href="{:U('index', array('invitor'=>$user['id']))}">分享到朋友圈</a>            
+          </p>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</block>
+<block name="css-content">
+  <style type="text/css">
+    .nav li a {color:#fff}
+    .nav li.active a{background: #e45b2d}
+    .row {margin-left: -5px; margin-right: -5px;}
+    .modal-open .page-wrapper {filter:none;	-webkit-filter:none;
+                               -moz-filter:none;
+                               -o-filter:none;
+                               -ms-filter:none;}
+    .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {padding-left:5px; padding-right:5px;}
+    .sidebar{width:48px; background-color:#ee7b5c;padding:0px;}
+  </style>
+</block>
+<block name="js-content">
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('.sidebar').height($(document).height());
+      $('#submitBtn').click(function () {
+        if ($("#priceInput").val() == "") {
+          alert('请输入价格');
+          return;
+        }
+        if ($('#times').text() > 0) {
+          $.post("{:U('submitPrice')}", $('#theForm').serialize(), function (result) {
+            var modal = $('#infoModal');
+            $('.modal-title', modal).text(result.info);
+            modal.modal('show');
+            $('#times').text($('#times').text() - 1);
+          });
+        } else {
+          var modal = $('#infoModal');
+          $('.modal-title', modal).text('您已经没有猜水果的机会啦，您可以分享此页面增加您的机会~~');
+          modal.modal('show');
+        }
+      })
+    });
+  </script>
+</block>

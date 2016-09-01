@@ -1,0 +1,70 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+    <form id="form" action="__CONTROLLER__/edit" method="post" class="definewidth m20">
+    <input type="hidden" id="id" name="id" value="{$obj['id']}" >
+    <table class="table table-bordered table-hover definewidth m10">
+        <tr>
+            <td class="tableleft">所属仓库</td>
+            <td colspan="2">
+                <select id="school_type" name="school_type" datatype="*" nullmsg="请选择商品类型！" errormsg="请选择商品类型！">
+                    <option value="">请选择</option>
+                    <option value="0">学校</option>
+                    <option value="1">写字楼</option>
+                </select>
+                <select id="school" name="school" datatype="*" nullmsg="请选择商品类型！" errormsg="请选择商品类型！">
+                    <option value="">请选择</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">基础商品类型</td>
+            <td width="20%" ><input type="text" name="type_name"  value="{$obj['type_name']}" datatype="*2-32" errormsg="基础商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td class="tableleft"></td>
+            <td colspan="2">
+                <button type="submit" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;
+                <button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</block>
+<block name="myscript">
+<script>
+    $(function () {
+        var state = 0;
+
+        $('#backid').click(function(){
+            $('form')[0].action="__CONTROLLER__";
+            $('form')[0].submit();
+        });
+
+        $("#form").Validform({
+            tiptype: 2,
+            showAllError: true
+        });
+
+        $('#school_type').change(function(){
+            if($(this).val() != ''){
+                $('#school').find('option').remove();
+                $('#school').append('<option value="">请选择</option>');
+                $.get("__CONTROLLER__/changeSchool", {school_id: $(this).val() },function(data){
+                    for(var i=0;i<data.length;i++){
+                        $('#school').append($('<option value="'+data[i].id+'">'+data[i].name+'</option>'));
+                    }
+                    if(state == 0){
+                        $('#school').val("{$obj['school_id']}");
+                    }
+
+                    state++;
+                })
+            }
+        })
+
+
+        $('#school_type').val("{$obj['type']}").change();
+    });
+</script>
+</block>

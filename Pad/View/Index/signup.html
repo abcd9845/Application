@@ -1,0 +1,189 @@
+<block name="page-content">
+  <section style="background:#FFF;box-shadow: inset 0 2px 5px rgba(115, 115, 115, .25);padding:20px 15px 0 15px;" id="show_content" class="container-fluid">
+    <div class="col-xs-1"></div>
+    <div class="col-xs-10">
+        <form id="form" action="addUser" method="post" class="definewidth m20">
+          <h1 style="margin-top:0;">用户注册</h1>
+          <table class="table table-hover definewidth m10" style="margin-top:25px;">
+            <tr>
+              <td width="10%" class="tableleft">用户名</td>
+              <td width="90%" ><input type="text" id="username" name="username" datatype="s2-10,userHas" nullmsg="请填写用户名！"  /><label class="red">*</label><span class="Validform_checktip"></span></td>
+            </tr>
+            <tr>
+              <td width="10%" class="tableleft">密码</td>
+              <td><input type="password" id="password" name="password" datatype="*6-16" nullmsg="请设置密码！" errormsg="密码范围在6~16位之间！"/><label class="red">*</label><span class="Validform_checktip"></span></td>
+            </tr>
+            <tr>
+              <td width="10%" class="tableleft">确认密码</td>
+              <td><input type="password" name="re_password" datatype="*" recheck="password" nullmsg="请再输入一次密码！" errormsg="您两次输入的账号密码不一致！"/><label class="red">*</label><span class="Validform_checktip"></span></td>
+            </tr>
+            <tr>
+              <td width="10%" class="tableleft">邮箱</td>
+              <td><input type="text" id="mail" name="mail" datatype="e" /><label class="red">*</label><span class="Validform_checktip"></span></td>
+            </tr>
+            <tr>
+              <td width="10%" class="tableleft">手机号</td>
+              <td><input type="text" name="mobile" id="mobile" datatype="m,phoneHas" nullmsg="请输入您的手机号码！"/><label class="red">*</label><span class="Validform_checktip"></span></td>
+            </tr>
+            <tr>
+              <td width="10%" class="tableleft">验证码</td>
+              <td>
+                  <input type="text" id="validateNum" name="validateNum" datatype="n6-6" errormsg="请输入6位数字！" nullmsg="请输入验证码"/><label class="red">*</label>
+                  <button id="smssend" class="btn btn-success" type="button"  style="margin-left: 10px;">获取验证码</button>
+                  <div class="Validform_checktip"></div>
+              </td>
+            </tr>
+            <tr>
+              <td class="tableleft"></td>
+              <td>
+                <button type="submit" class="btn btn-primary" type="button">保存</button>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    <div class="col-xs-1"></div>
+  </section>
+</block>
+<block name="css-content">    
+</block>
+<block name="js-content">
+  <link rel="stylesheet" href="__PUBLIC__/js/Validform/Validform.css">
+  <link rel="stylesheet" type="text/css" href="__PUBLIC__/js/sweetalert-master/lib/sweet-alert.css">
+  <style>
+    .red{
+      color:red;
+    }
+
+  </style>
+  <script src="__PUBLIC__/js/Validform/Validform_v5.3.2_min.js"></script>
+  <script src="__PUBLIC__/js/sweetalert-master/lib/sweet-alert.min.js"></script>
+  <script>
+    function intervalSend(){
+      if(!/^13[0-9]{9}$|14[0-9]{9}|15[0-9]{9}$|18[0-9]{9}$/.test($('#mobile').val()) || $('#mobile').val() == ''){
+        swal("Error", "请输入正确的手机号", "error");
+        return false;
+      }
+      var time = 60;
+      $('#smssend').addClass('disabled').html(time+'秒后重发');
+      $.ajax({
+        url:"{:U('sendSMS')} "
+        ,data:{
+          num:$('#validateNum').val()
+        }
+        ,type:'post'
+        ,async:false
+        ,success:function(data){
+          var interval = window.setInterval(function(){
+            if(time-- == 0){
+              $.ajax({
+                url:"{:U('delSMS')} "
+                ,type:'post'
+                ,async:false
+                ,success:function(){
+                  window.clearInterval(interval);
+                  $('#smssend').removeClass('disabled').html('获取验证码').click(intervalSend);
+                }
+              })
+
+            }else{
+              $('#smssend').addClass('disabled').html(time+'秒后重发');
+            }
+          },1000);
+          $('#smssend').unbind('click');
+        }
+      });
+    }
+
+    $(document).ready(function () {
+        $('#smssend').click(intervalSend);
+        var validate = $("#form").Validform({
+          tiptype:2,
+          showAllError:true,
+          tiptype:function(msg,o,cssctl){
+            //msg：提示信息;
+            if(!o.obj.is("form")){
+              var objtip=o.obj.siblings(".Validform_checktip");
+              cssctl(objtip,o.type);
+              objtip.text(msg);
+            }
+          },
+          beforeSubmit:function(curform){
+            if(curform.find('#validateNum').val() == ''){
+              swal("提交失败", "请输入验证码", "error");
+              return false;
+            }else{
+              $.ajax({
+                url:"{:U('validateSMS')}"
+                ,data:{
+                  sms:$('#validateNum').val()
+                }
+                ,type:'post'
+                ,async:false
+                ,success:function(data){
+                  if(data == true){
+                    flag = true;
+                  }else{
+                    swal("提交失败", "请输入正确的验证码", "error");
+                    flag = false;
+                  }
+                },error:function(data){
+                  swal("提交失败", "系统错误", "error");
+                  flag = false;
+                }
+              });
+              return flag;
+            }
+        },
+        datatype:{
+          "userHas":function(gets,obj,curform,regxp){
+            var flag = false;
+            $.ajax({
+              url:"__ROOT__/index.php/Admin/User/getUserCount"
+              ,data:{
+                field:'username'
+                ,val:curform.find('#username').val()
+              }
+              ,type:'post'
+              ,async:false
+              ,success:function(data){
+                if(data == 0){
+                  flag = true;
+                }
+              }
+            });
+            return flag;
+          },
+          "phoneHas":function(gets,obj,curform,regxp){
+            var flag = false;
+            $.ajax({
+              url:"{:U('getPhoneHas')}"
+              ,data:{
+                mobile:curform.find('#mobile').val()
+              }
+              ,type:'post'
+              ,async:false
+              ,success:function(data){
+                if(parseInt(data) > 0){
+                  $('#smssend').addClass('disabled').unbind('click');
+                  flag = false;
+                }else{
+                  $('#smssend').removeClass('disabled').click(intervalSend);
+                  flag = true;
+                }
+              }
+            });
+            if(!flag)
+              $('#smssend').addClass('disabled').unbind('click');
+            return flag;
+          }
+        }
+
+      });
+
+      $.Tipmsg.w['userHas'] = "你输入的用户已存在";
+      $.Tipmsg.w['phoneHas'] = "手机号已经绑定";
+    })
+  </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

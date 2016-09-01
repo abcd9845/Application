@@ -1,0 +1,33 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+<form id="form" action="add" method="post" class="definewidth m20">
+    <table class="table table-bordered table-hover definewidth m10">
+        <tr>
+            <td width="10%" class="tableleft">快递</td>
+            <td width="20%"><input type="text" name="express_name" datatype="*2-32" errormsg="快递至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td class="tableleft"></td>
+            <td colspan="2">
+                <button type="submit" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</block>
+<block name="myscript">
+<script>
+    $(function () {
+        $('#backid').click(function(){
+            $('form')[0].action="__CONTROLLER__";
+            $('form')[0].submit();
+        });
+
+        $("#form").Validform({
+            tiptype: 2,
+            showAllError: true
+        });
+    });
+</script>
+</block>

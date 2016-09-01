@@ -1,0 +1,139 @@
+<extend name="Public:BaseUEIndex" />
+<block name="body"> 
+  <form id="form" action="__CONTROLLER__/edit" method="post" class="definewidth m20">
+    <input type="hidden" id="id" name="id" value="{$obj['id']}" >
+    <table class="table table-bordered table-hover definewidth m10">
+      <tr>
+        <td width="10%" class="tableleft">期数</td>
+        <td width="20%" ><input type="text" name="no" value="{$obj['no']}" datatype="*1-32" errormsg="期数至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+        <td><div class="Validform_checktip"></div></td>
+      </tr>  
+      <tr>
+        <td width="10%" class="tableleft">标题</td>
+        <td width="20%" ><input type="text" name="title"  value="{$obj['title']}" datatype="*2-32" errormsg="标题至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+        <td><div class="Validform_checktip"></div></td>
+      </tr>     
+      <tr>
+        <td class="tableleft">标题图片</td>
+        <td id="title_pic_td">
+          <input type="hidden" id="title_pic" name="img" datatype="*" nullmsg="请选择标题图片！" errormsg="请选择标题图片！" value="{$obj['img']}"/>
+          <input type="hidden" id="old_title_pic" name="old_title_pic" value="{$obj['img']}"/>
+          <div id="cropContainerModal" style="width: 482px;height: 242px;position:relative;">
+            <notempty name="obj['img']">
+              <img src="{$obj['img']}" />
+            </notempty>
+          </div>
+        </td>
+        <td><div class="Validform_checktip"></div></td>
+      </tr>
+      
+      <tr>
+        <td width="10%" class="tableleft">描述</td>
+        <td width="20%" ><input type="text" name="description"  value="{$obj['description']}" datatype="*1-500" errormsg="基础商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+        <td><div class="Validform_checktip"></div></td>
+      </tr>
+      <tr>
+        <td width="10%" class="tableleft">奖品数量</td>
+        <td width="20%" ><input type="text" name="item_count" value="{$obj['item_count']}" datatype="*1-500" errormsg="请填写正确的奖品个数！"/><label class="red">*</label></td>
+        <td><div class="Validform_checktip"></div></td>
+      </tr>
+      <tr>
+        <td width="10%" class="tableleft">零售价格</td>
+        <td width="20%" ><input type="text" name="price"  id="price"  value="{$obj['price']}" datatype="float" errormsg="请填写正确的零售价格！"/><label class="red">*</label></td>
+        <td><div class="Validform_checktip"></div></td>
+      </tr>
+      <tr>
+        <td width="10%" class="tableleft">市场价格</td>
+        <td width="20%" ><input type="text" name="market_price"  value="{$obj['market_price']}" datatype="float" errormsg="请填写正确的市场价格！"/><label class="red">*</label></td>
+        <td><div class="Validform_checktip"></div></td>
+      </tr>
+      <tr>
+        <td width="10%" class="tableleft">单位</td>
+        <td width="20%" ><input type="text" name="unit"  value="{$obj['unit']}" datatype="*1-10" errormsg="基础商品类型至少2个字符,最多10个字符！"/><label class="red">*</label></td>
+        <td><div style="float:left;margin-right:30px;">例如：元/个、元/斤</div><div class="Validform_checktip"></div></td>
+      </tr>
+      <tr>
+        <td width="10%" class="tableleft">竞猜开始时间</td>
+        <td width="20%" ><input type="text" name="start_time"  value="{$obj['start_time']}" datatype="*2-32" errormsg="基础商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+        <td><div class="Validform_checktip"></div></td>
+      </tr>
+      <tr>
+        <td width="10%" class="tableleft">竞猜结束时间</td>
+        <td width="20%" ><input type="text" name="result_time"  value="{$obj['result_time']}" datatype="*2-32" errormsg="基础商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+        <td><div class="Validform_checktip"></div></td>
+      </tr>
+      <tr>
+        <td width="10%" class="tableleft">活动结束时间</td>
+        <td width="20%" ><input type="text" name="end_time"  value="{$obj['end_time']}" datatype="*2-32" errormsg="基础商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+        <td><div class="Validform_checktip"></div></td>
+      </tr>
+      <tr>
+        <td width="10%" class="tableleft">关联商品</td>
+        <td width="20%" >
+          <select name="goods_id">
+            <volist name="goods" id="vo">
+              <option value="{$vo['id']}" <eq name="obj['goods_id']" value="$vo['id']">selected</eq>>{$vo['name']}</option>
+            </volist>
+          </select>
+          <label class="red">*</label>
+        </td>
+        <td><div class="Validform_checktip"></div></td>
+      </tr>
+
+      <tr>
+        <td class="tableleft"></td>
+        <td colspan="2">
+          <button type="submit" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+</block>
+<block name="mycss">
+  <style type="text/css">
+    #cropContainerModal{
+      width: 400px;
+      height: 400px;
+      position:relative; /* or fixed or absolute */
+    }
+  </style>
+</block>
+
+<block name="myscript">
+
+  <script>
+    var croppicContainerModalOptions = {
+      uploadUrl: "__CONTROLLER__/ImgSaveToFile",
+      cropUrl: "__CONTROLLER__/ImgCropToFile",
+      modal: true,
+      imgEyecandyOpacity: 0.4,
+      loaderHtml: '<div class="loader bubblingG"><span id="bubblingG_1"></span><span id="bubblingG_2"></span><span id="bubblingG_3"></span></div>'
+    }
+    var cropContainerModal = new Croppic('cropContainerModal', croppicContainerModalOptions);
+    $(function () {
+      $('#backid').click(function () {
+        $('form')[0].action = "__CONTROLLER__";
+        $('form')[0].submit();
+      });
+
+      $("#form").Validform({
+        btnSubmit: '#save',
+        tiptype: 2,
+        showAllError: true,
+        beforeCheck: function (curform) {
+          $('#title_pic').val($('#title_pic_td').find('.croppedImg').attr('src'));
+          if($('#title_pic').val()=='' && $('#old_title_pic').val()!=''){
+            $('#title_pic').val($('#old_title_pic').val());
+          }
+        },
+        datatype: {
+          "float": function (gets, obj, curform, regxp) {
+            if (curform.find("#price").val() == '')
+              return false;
+            return (/^[1-9]+(\.\d+)?$|^(\.\d+)?$|^[1-9]+[0-9]*(\.\d+)?$/.test(curform.find("#price").val()));
+          }
+        }
+      });
+    });
+  </script>
+</block>

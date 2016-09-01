@@ -1,0 +1,28 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+    <form class="form-inline definewidth m20" action="__CONTROLLER__/del" method="post" onsubmit="return false;">
+        <table class="table table-bordered table-hover definewidth m10">
+            <thead>
+            <tr>
+                <th>类型</th>
+                <th>商品</th>
+                <th>数量</th>
+            </tr>
+            </thead>
+            <volist name="array" id="vo">
+                <tr>
+                    <td>{$vo.basic_type}</td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.count}</td>
+                </tr>
+            </volist>
+        </table>
+    </form>
+</block>
+<block name="myscript">
+<script>
+    $(function () {
+
+    });
+</script>
+</block>

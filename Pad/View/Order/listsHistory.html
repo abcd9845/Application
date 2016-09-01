@@ -1,0 +1,67 @@
+<block name="page-content">
+    <section id="show_content" class="container-fluid minHeight">
+        <div style="position:fixed;bottom:top;left:0;right:0;background: #FFF;z-index:9999999;">
+            <div class="row" style="height:40px;padding:0;margin:0;position: relative;">
+                <div onclick="window.location.href='{:U('Order/listsShow')}?scope=today'" id='carShow' class="col-xs-6" style="float:left;height:40px;width:50%;text-align: center;line-height:40px;background-color:#eee;color:#666;font-size:16px;cursor: pointer;">
+                    今日订单
+                </div>
+                <div onclick="window.location.href='{:U('Order/listsShow')}'" id="payBtn" class="col-xs-6" style="float:left;height:40px;width:50%;text-align: center;line-height:40px;background-color:#E84C3D;color:#FFF;font-size:16px;cursor: pointer;">
+                    订单历史
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 50px;">
+            <volist name='array' id='vo' key="k">
+                <div class="col-md-12" style="border:1px solid #999;margin-bottom:5px;font-size:12px;">
+                    <ul style="list-style:none;padding:0;margin:0;">
+                        <li><label>订单号：</label>{$vo['order_no']} <span style="color: green;margin-left:40px;">
+                            <eq name="vo['state_id']" value="0">
+                                <i class="fa fa-check" ></i>已取消
+                            </eq>
+                            <eq name="vo['state_id']" value="2">
+                                <i class="fa fa-check" ></i>已付款
+                            </eq>
+                            <eq name="vo['state_id']" value="3">
+                                <i class="fa fa-check" ></i>已发货
+                            </eq>
+                            <eq name="vo['state_id']" value="4">
+                                <i class="fa fa-check" ></i>已收获
+                            </eq>
+                            <eq name="vo['state_id']" value="5">
+                                <i class="fa fa-check" ></i>已下单（货到付款）
+                            </eq>
+                        </span></li>
+                        <eq name="vo['re_type']" value="0">
+                            <li><label>收货地址：</label>
+                                {$vo['address']}
+                            </li>
+                            <li><label>下单时间：</label>{$vo['create_time']}</li>
+                            <li><label>取货单号：</label>{$vo['id']}</li>
+                            <li style="text-align:right;"><label>合计：</label>{:Wtemplate_substract($vo['total'],$vo['discount'])}元(已优惠{$vo['discount']}元)<a href="{:U('Order/view')}?id={$vo['id']}&scope=today" style="margin:0 5px 0 20px;">订单详情</span></a></li>
+                        </eq>
+
+                        <eq name="vo['re_type']" value="1">
+                            <li><label>收货地址：</label>
+                                {$vo['delivery_address']}
+                            </li>
+                            <li><label>下单时间：</label>{$vo['create_time']}</li>
+                            <li><label>取货方式：</label>送货上门</li>
+                            <li><label>取货单号：</label>{$vo['id']}</li>
+                            <li><label>送货时间：</label>{$vo['delivery_time_txt']}</li>
+                            <li><label>快递费用：</label>{$vo['expense']}元</li>
+                            <li style="text-align:right;"><label>合计：</label>{:Wtemplate_substract($vo['total'],$vo['discount'])}元<label style="color:red;">[{$vo['expense']}元快递费]</label>(已优惠{$vo['discount']}元)<a href="{:U('Order/view')}?id={$vo['id']}&scope=today" style="margin:0 5px 0 20px;">订单详情</span></a></li>
+                        </eq>
+                    </ul>
+                </div>
+            </volist>
+        </div>
+    </section>
+</block>
+<block name="css-content">
+    <link rel="stylesheet" href="__PUBLIC__/css/product.css">
+</block>
+<block name="js-content">
+    <script>
+    </script>
+</block>
+<extend name="Common@Shared/Idea/layoutBase" />

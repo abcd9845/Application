@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{:C('GSTITLE')}</title>
+  
+    <link rel="stylesheet" href="__PUBLIC__/css/farm.core.css">    
+    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap-theme-farm.css">
+    <!--[if lt IE 9]>
+      <link rel="stylesheet" href="__PUBLIC__/css/ie8.css">
+      <script type="text/javascript" src="__PUBLIC__/js/ie/html5.js"></script>
+      <script type="text/javascript" src="__PUBLIC__/js/ie/respond.min.js"></script>
+      <script type="text/javascript" src="assets/plugins/charts-flot/excanvas.min.js"></script>
+    <![endif]-->
+
+  <block name="css-content"></block>
+
+</head>
+<body>
+<include file="Common@Shared/nav" />
+<div id="page-content" style="margin-top: 50px; position: relative">  
+  <div id="wrap"><block name="page-content"></block></div>  
+</div>
+<include file="Common@Shared/bottom" />
+
+
+<script src="__PUBLIC__/js/jquery-1.11.1.js"></script>
+<script src="__PUBLIC__/js/less.min.js"></script>
+<script src="__PUBLIC__/js/bootstrap.min.js"></script>
+<script src="__PUBLIC__/js/custom.js"></script>
+<script type="text/javascript">
+  var PATH_INFO = '__ACTION__';
+  $(function(){
+    $('#show_content').css('min-height',$(window).height()-$('#page_bottom').height()-$('nav').height()-130);
+    $('#bottom_section').show();
+  });
+</script>
+<block name="js-content">
+
+</block>
+</body>
+</html>

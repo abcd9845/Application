@@ -1,0 +1,118 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+    <form class="form-inline definewidth m20" action="__CONTROLLER__/del" method="post" onsubmit="return false;">
+        <div>
+            <if condition="$_SESSION['current_user']['role_id'] eq '1'">
+                调拨仓：
+                <select id="from_storage" name="from_storage">
+                    <option value="">请选择</option>
+                    <volist name="from_storage" id="t">
+                        <option value="{$t.id}">{$t.name}</option>
+                    </volist>
+                </select>&nbsp;&nbsp;
+                接收仓：
+                <select id="to_storage" name="to_storage">
+                    <option value="">请选择</option>
+                    <volist name="to_storage" id="t">
+                        <option value="{$t.id}">{$t.name}</option>
+                    </volist>
+                </select>&nbsp;&nbsp;
+            </if>
+            <if condition="$_SESSION['current_user']['role_id'] neq '1'">
+                操作：
+                <select id="storage" name="storage">
+                    <option value="0">我接收的</option>
+                    <option value="1">我调拨的</option>
+                </select>&nbsp;&nbsp;
+            </if>
+            <div class="input-group input-group-sm">
+                调拨时间
+                <input id="create_time_start" name="create_time_start" value="{$filters['create_time_start']}" class="Wdate" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd 00:00:00',maxDate:'#F{ $dp.$D( \\\'create_time_end\\\')|| \\\'2020-10-01\\\'}'})"/>
+                <input id="create_time_end" name="create_time_end" value="{$filters['create_time_end']}" class="Wdate" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd 23:59:59',minDate:'#F{ $dp.$D( \\\'create_time_start\\\')}',maxDate:'2020-10-01'})"/>
+            </div>
+
+            <button type="button" id="search" class="btn btn-primary">查询</button>&nbsp;&nbsp;
+            <button type="button" class="btn btn-success" id="addnew">调拨</button>&nbsp;&nbsp;
+        </div>
+        <input type="hidden" id="id" name="id"  >
+        <table class="table table-bordered table-hover definewidth m10">
+            <thead>
+            <tr>
+                <th></th>
+                <th>调拨仓</th>
+                <th>接收仓</th>
+                <th>操作人</th>
+                <th>调拨时间</th>
+                <!--<th>确认人</th>-->
+                <!--<th>确认时间</th>-->
+                <th>操作</th>
+            </tr>
+            </thead>
+            <volist name="array" id="vo">
+                <tr>
+                    <td><input type="checkbox" id="ck" name="ck" value="{$vo.id}"></td>
+                    <td>{$vo.from_name}</td>
+                    <td>{$vo.to_name}</td>
+                    <td>{$vo.oper_user}</td>
+                    <td>{$vo.oper_time}</td>
+                    <!--<td>{$vo.confirm_user}</td>-->
+                    <!--<td>{$vo.confirm_time}</td>-->
+                    <td>
+                        <button onclick="jump('__CONTROLLER__/view/id/{$vo.id}')">明细</button>
+                    </td>
+                </tr>
+            </volist>
+        </table>
+        <div class="result page">{$show}</div>
+    </form>
+</block>
+<block name="mycss">
+    <link href="__PUBLIC__/js/artDialog4/skins/default.css" rel="stylesheet" type="text/css" />
+</block>
+<block name="myscript">
+<script src="__PUBLIC__/js/artDialog4/artDialog.source.js"></script>
+<script>
+    function jump(url){
+        myDialog = art.dialog({width: 800,padding:'10px',title:'调拨明晰'});// 初始化一个带有loading图标的空对话框
+        jQuery.ajax({
+            url: url,
+            success: function (data) {
+                myDialog.content(data);// 填充对话框内容
+            }
+        });
+    }
+
+    $(function () {
+        $('#addnew').click(function(){
+            window.location.href="__CONTROLLER__/toAdd";
+        });
+
+        $('#search').click(function(){
+            $('form')[0].action = "__CONTROLLER__";
+            $('form')[0].submit();
+        });
+
+        $('#del').click(function(){
+            var obj = $('input[type=checkbox][name=ck]:checked');
+            if(obj.length > 0){
+                var str_val = '';
+                obj.each(function(index){
+                    if(index>0){
+                        str_val+=',';
+                    }
+                    str_val+=$(this).val();
+                })
+
+                $('#id').val(str_val);
+                $('form')[0].submit();
+            }
+        })
+
+        $('#from_storage').val("{$filters['from_storage']}");
+        $('#to_storage').val("{$filters['to_storage']}");
+        $('#create_time_start').val("{$filters['create_time_start']}");
+        $('#create_time_end').val("{$filters['create_time_end']}");
+
+    });
+</script>
+</block>

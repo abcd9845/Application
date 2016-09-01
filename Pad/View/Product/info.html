@@ -1,0 +1,178 @@
+<block name="page-content">
+    <section id="show_content" class="container minHeight" style="padding:0px 10;">
+        <div class="row borderShadow" style="margin:15px 0;padding:10px 0;border:1px solid  #c4c4c4;border-radius: 5px;">
+            <div class="col-xs-4" style="text-align: center">
+                <img src="__ROOT__/{$goods['info_title_pic']}" style="display: block;">
+                <a data-id="{$goods['id']}" class="addFav" href="javascript:;">收藏该产品</a>
+            </div>
+            <div class="col-xs-8">
+                <div style="margin-left:140px;">
+                    <h1 style="font-family: 长城新艺体;color:#464646;font-size: 30px;margin-top:0px;">
+                        {$goods['show_name']}
+                        <input type='hidden' value="{$goods['id']}" id="gid" />
+                    </h1>
+                    <h3 style="font-family: 黑体;color:red;">
+                        <if condition="$_SESSION['current_user'][isVIP]">
+                            <span style="color: #999;text-decoration:line-through;">原价：&yen;{$goods['price']}元</span>
+                            <li style='width: 100%;height: 10px;list-style: none'></li>
+                            折扣价：&yen;{$goods['vip_price']}元
+                            <else />
+                            单  价：&yen;{$goods['price']}元
+                        </if>
+                        <span style="font-family: simsun;color: #888;font-size:12px;font-weight:100;padding:5px;">(库存：{$goods['inventory']}件)</span>
+                        <volist name="goods[specArr]" id="svo" >
+                            <li style="list-style:none;padding-bottom:2px;">
+                                <span style="font-family: simsun;color: #888;font-size:12px;font-weight:100;padding-bottom:5px;">{$svo}</span>
+                            </li>
+                        </volist>
+
+                    </h3>
+                    <h3 style="padding:10px 0">
+                        <span class="glyphicon glyphicon-time lefttime" style=color:#e03310" aria-hidden="true"></span>
+
+                        <if condition="(strtotime($goods['end_date']) - time())/(3600*24) gt 100">
+                            <span style="font-family: 黑体;font-size:20px;color: #999999;margin-left:10px;">
+                                选购开始时间：{$goods['end_date']}
+                            </span>
+                            <elseif condition="(strtotime($goods['end_date']) - time())/(3600*24) gt 0" />倒计时：<div class="clock" style="margin:15px;"></div>
+                            <else/>
+                            <span style="font-family: 黑体;font-size:20px;color: #000000;margin-left:10px;">
+                                欢迎选购
+                            </span>
+                        </if>
+                    </h3>
+                    <h4 style="padding:10px 0">
+                        <span class="glyphicon glyphicon-user" style="color:#333333" aria-hidden="true"></span>
+                        <span style="font-family: 黑体;color:#e77e57;margin-left:10px;">{$goods['buy_number']} 人已购买</span>
+                        &nbsp;&nbsp;
+                        <!--            <span class="glyphicon glyphicon-eye-open" style="color:#333333" aria-hidden="true"></span>
+                                    <span style="font-family: 黑体;color:#e77e57;margin-left:10px;">剩余库存 {$goods['inventory']} 件</span>-->
+
+                        <!--                    <span class="glyphicon glyphicon-user" style="margin-left:25px;color:#333333" aria-hidden="true"></span>-->
+                        <!--                    <span style="font-family: 黑体;color:#e77e57;margin-left:10px;">255人认领</span>inventory-->
+                    </h4>
+                    <p style="padding:5px;">
+                    <if condition="$goods['inventory'] ELT 0">
+                        <div class='btn_box_saleOut_info'><img src="__ROOT__/Public/images/soldOut.png" class="img_126_100"></div>
+                    <else />
+                        <button type="button" id="btnBuy" data-type='buy' class="btn btn-primary diyBtn2 
+                                <if condition="((strtotime($goods['end_date']) - time())/3600 gt 100) or ($goods['inventory'] elt 0)">
+                                disabled
+                                <elseif condition="(strtotime($goods['end_date']) - time())/3600 gt 0" />disabled
+                            <else/>
+                        </if>" style="margin-right: 30px;">立即购买</button>
+                        <!--                    <button type="button" class="btn btn-primary diyBtn2" style="margin-right: 30px;">免费认领</button>-->
+                        <button type="button" id='btnAddCar' data-type='add' class="btn btn-warning diyBtn2
+                                <if condition="((strtotime($goods['end_date']) - time())/3600 gt 100) or ($goods['inventory'] elt 0)">
+                                disabled
+                                <elseif condition="(strtotime($goods['end_date']) - time())/3600 gt 0" />disabled
+                            <else/>
+                            </if>" style="margin-right: 30px;">添加购物车</button>
+                    </if>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin:0">
+            <div class="col-xs-12" style="padding:20px 0;">
+                <ul class="nav nav-tabs" role="tablist" id="myTab">
+                    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">产品介绍</a></li>
+                    <!--<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">营养成分</a></li>
+                    <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">特征特性</a></li>
+                    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">食疗作用</a></li>
+                    <li role="presentation"><a href="#val" aria-controls="val" role="tab" data-toggle="tab">药用价值</a></li>-->
+                </ul>
+
+                <div class="tab-content">
+                    {$goods['content']}         
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="modal fade" id="modalBaseWin" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header YaHei_18">
+                    <span>提示</span>
+                </div>
+                <div class="modal-body YaHei_18">
+                    <span id='message' style="color: green"></span>
+                </div>
+                <div class='modal-footer'>
+                    <button type='button' class='btn btn-default'  data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="css-content">
+    <link rel="stylesheet" href="__PUBLIC__/css/product.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/jqzoom.css">
+    <link rel="stylesheet" href="__PUBLIC__/plugins/flipclock/compiled/flipclock.css">
+</block>
+<block name="js-content">    
+    <script src="__PUBLIC__/plugins/flipclock/compiled/flipclock.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#btnBuy,#btnAddCar').click(function () {
+                var type = $(this).data('type');
+                $.post("{:U('addCar')}", {
+                    gid: $('#gid').val()
+                }, function (result) {
+                    if (result == 'success') {
+                        if (type == 'buy') {
+                            window.location.href = "{:U('Car/carsuccess')}";
+                        } else {
+                            $('#message').html('购物车添加成功');
+                            $('#modalBaseWin').modal();
+                        }
+                    } else {
+                        alert('购买失败');
+                    }
+                }, 'json')
+            });
+
+            $('.addFav').click(function () {
+                var id = $(this).data('id');
+                $.post("{:U('Favourite/add')}", {
+                    gid: id
+                }, function (result) {
+                    if (result == 'success') {
+                        $('#message').html('^_^ 关注成功！请到您的收藏夹中查看');
+                        $('#modalBaseWin').modal();
+                    } else if (result == 'exist') {
+                        $('#message').html('T_T 您已经关注了此产品');
+                        $('#modalBaseWin').modal();
+                    } else {
+                        $('#message').html('无法关注此产品');
+                        $('#modalBaseWin').modal();
+                    }
+                }, 'json')
+            });
+
+            var currentDate = new Date();
+            var dateVar = "{$goods['end_date']|substr=0,19}";//2015-01-20  
+            dateVar = dateVar.replace(/-/g, "/");
+            var date = new Date(dateVar);
+            var d = new Date(dateVar);
+            var diff = d.getTime() / 1000 - currentDate.getTime() / 1000;
+            var clock;
+            clock = $('.clock').FlipClock({
+                clockFace: 'DailyCounter',
+                autoStart: false,
+                callbacks: {
+                    stop: function () {
+                        $('#btnBuy').removeClass('disabled');
+                        $('#btnAddCar').removeClass('disabled');
+                    }
+                }
+            });
+            clock.setTime(parseInt(diff));
+            clock.setCountdown(true);
+            clock.start();
+        });
+
+    </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

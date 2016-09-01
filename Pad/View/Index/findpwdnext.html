@@ -1,0 +1,54 @@
+<block name="page-content">
+  <section style="background:#FFF;box-shadow: inset 0 2px 5px rgba(115, 115, 115, .25);padding:20px 15px 0 15px;" id="show_content" class="container-fluid">
+    <div class="col-xs-1"></div>
+    <div class="col-xs-10">
+        <form id="form" action="editPwd" method="post" class="definewidth m20">
+          <h1 style="margin-top:0;">密码找回</h1>
+          <table class="table table-hover definewidth m10" style="margin-top:25px;">
+            <tr>
+              <td width="10%" class="tableleft">新密码</td>
+              <td><input type="password" id="password" name="password" datatype="*6-16" nullmsg="请设置密码！" errormsg="密码范围在6~16位之间！"/><label class="red">*</label></td>
+              <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+              <td width="10%" class="tableleft">确认密码</td>
+              <td><input type="password" name="re_password" datatype="*" recheck="password" nullmsg="请再输入一次密码！" errormsg="您两次输入的账号密码不一致！"/><label class="red">*</label></td>
+              <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+              <td class="tableleft"></td>
+              <td colspan="2">
+                <button type="submit" class="btn btn-warning" type="button">保存</button>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    <div class="col-xs-1"></div>
+  </section>
+</block>
+<block name="css-content">    
+</block>
+<block name="js-content">
+  <link rel="stylesheet" href="__PUBLIC__/js/Validform/Validform.css">
+  <link rel="stylesheet" type="text/css" href="__PUBLIC__/js/sweetalert-master/lib/sweet-alert.css">
+  <style>
+    .red{
+      color:red;
+    }
+
+  </style>
+  <script src="__PUBLIC__/js/Validform/Validform_v5.3.2_min.js"></script>
+  <script src="__PUBLIC__/js/sweetalert-master/lib/sweet-alert.min.js"></script>
+  <script>
+
+    $(document).ready(function () {
+      var validate = $("#form").Validform({
+        tiptype:2,
+        showAllError:true
+      });
+
+    })
+  </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

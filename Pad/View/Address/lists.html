@@ -1,0 +1,78 @@
+<block name='page-content'>
+  <section id="show_content" class="container minHeight" style="margin-top:5px;">
+    <div class="row">
+      <div class="col-md-12">
+        <form class="form-inline definewidth m20" action="__CONTROLLER__/del" method="post">
+          <input type="hidden" id="id" name="id"  >
+          <h2 style="font-family: '黑体'">我的收货地址</h2>
+          <table class="table table-hover definewidth m10">
+            <thead>
+            <tr>
+              <th></th>
+              <th>收货人</th>
+              <th>联系电话</th>
+              <th>地址</th>
+              <th>默认</th>
+              <th>操作</th>
+            </tr>
+            </thead>
+            <volist name="array" id="vo">
+              <tr>
+                <td><input type="checkbox" id="ck" name="ck" value="{$vo.id}"></td>
+                <td>{$vo.recipient}</td>
+                <td>{$vo.phone}</td>
+                <td>{$vo.province} {$vo.city} {$vo.area} {$vo.address}</td>
+                <td>
+                  <eq name="vo.use_def" value="1">默认</eq>
+                </td>
+                <td>
+                    <a href="__CONTROLLER__/toEdit/id/{$vo.id}" class="btn btn-primary">编辑</a>
+                    <a href="__CONTROLLER__/toDef/id/{$vo.id}" class="btn btn-primary">设置为默认地址</a>
+                </td>
+              </tr>
+            </volist>
+          </table>
+          <div style="text-align: right">
+            <button type="button" class="btn btn-success" id="addnew">添加地址</button>
+            <button type="button" class="btn btn-danger" id="del">删除</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</block>
+<block name='css-content'>
+  <link rel="stylesheet" href="__PUBLIC__/css/product.css">
+  <link rel="stylesheet" href="__PUBLIC__/css/jqzoom.css">
+  <link rel="stylesheet" href="__PUBLIC__/js/Validform/Validform.css">
+</block>
+<block name='js-content'>
+  <script src="__PUBLIC__/js/Validform/Validform_v5.3.2_min.js"></script>
+  <script type='text/javascript'>
+    $(function () {
+      $("#form").Validform({
+        tiptype:2,
+        showAllError:true
+      });
+
+    });
+
+    $('#addnew').click(function(){
+      window.location.href="__CONTROLLER__/toAdd";
+    });
+
+    $('#del').click(function(){
+      var str_val = '';
+      $('input[type=checkbox][name=ck]:checked').each(function(index){
+        if(index>0){
+          str_val+=',';
+        }
+        str_val+=$(this).val();
+      })
+
+      $('#id').val(str_val);
+      $('form')[0].submit();
+    })
+  </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

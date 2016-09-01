@@ -1,0 +1,80 @@
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>我的生活</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="__PUBLIC__/css/group.css">
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
+</head>
+<body>
+<div class="page-group">
+    <!--<header class="bar bar-nav">-->
+        <!--<a class="button button-link button-nav pull-left back" href="javascript:back()">-->
+            <!--<span class="icon icon-left"></span>-->
+            <!--返回-->
+        <!--</a>-->
+        <!--<h1 class="title">底部无限滚动</h1>-->
+    <!--</header>-->
+
+    <div class="content page"  style="background: #FFF;">
+        <img src="__ROOT__/{$item['title_pic']}" style="width: 100%" />
+        <div class="content-padded">
+            <h3 style="margin:2px 0;">{$item['name']}</h3>
+            <h5 style="color:a1a1a1;margin:2px 0;"><del>市场价格:{$item['old_price']}元</del></h5>
+            <p></p>
+            <a href="{:U('GroupIndex/address')}/id/{$item['id']}" class="kt_item" style="display: block;">
+                <div class="kt_price"><b id="tuan_more_price">团购价:{$item['price']}元</b></div>
+                <div class="kt_btn"><b id="tuan_more_number">({$item['person_number']}人团)我要开团</b></div>
+            </a>
+            <div style="clear: both"></div>
+        </div>
+        <div class="content-padded" id="fruitContent">
+            <p class="divnav">
+                图文详情
+            </p>
+            {$item['content']|html_entity_decode}
+        </div>
+        <div class="content-padded">
+            <a href="#" class="kt_item" style="display: block;">
+                <div class="kt_price"><b id="tuan_more_price">团购价:{$item['price']}元</b><i> / </i>个</div>
+                <div class="kt_btn"><b id="tuan_more_number">({$item['person_number']}人团)我要开团</b></div>
+            </a>
+            <div style="clear: both"></div>
+        </div>
+    </div>
+</div>
+
+        <!-- 添加 class infinite-scroll 和 data-distance  向下无限滚动可不加infinite-scroll-bottom类，这里加上是为了和下面的向上无限滚动区分-->
+    <!--</div>-->
+<!--</div>-->
+
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script src="__ROOT__/Public/js/config.js"></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+
+<script>
+
+
+
+
+//$(document).on("pageInit", "#page-infinite-scroll-bottom", function(e, id, page) {
+//
+//});
+
+
+
+$(document).on("pageInit", "#page-infinite-scroll-bottom", function(e, id, page) {});
+    $.init();
+    function back(){
+        $.router.back();
+    }
+</script>
+</body>
+</html>

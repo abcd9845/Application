@@ -1,0 +1,38 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+  <form class="form-inline definewidth m20" action="__CONTROLLER__/toView/id/{$item['id']}" method="get">
+    <div class="form-group">
+      <label><input type="radio" name="filters[scope]" value="1" <eq name="filters['scope']" value="1">checked</eq>> 中奖用户</label>
+      <label><input type="radio" name="filters[scope]"  value="0" <eq name="filters['scope']" value="0">checked</eq>> 全部用户</label>
+    </div>
+    <button type="submit" id="search" class="btn btn-sm btn-primary">查询</button>
+    <button type="button" id="export" class="btn btn-sm btn-info pull-right">导出</button>
+  </form>
+  <table class="table table-bordered table-hover definewidth m10">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>用户姓名</th>
+        <th>竞猜价格</th>
+        <th>提交时间</th>
+      </tr>
+    </thead>
+    <tbody>
+    <volist name='list' id='vo'>
+      <tr>
+        <td>{$i}</td>
+        <td>{$vo['real_name']}</td>
+        <td>{$vo['price']}</td>
+        <td>{$vo['create_time']}</td>
+      </tr>
+    </volist>
+    </tbody>
+  </table>
+  <div class="definewidth m10"><a href="{:U('index')}" class="btn btn-success " name="backid" id="backid">返回列表</a>    </div>
+</block>
+<block name="myscript">
+  <script>
+    $(function () {
+    });
+  </script>
+</block>

@@ -1,0 +1,66 @@
+<block name="css-content">
+    <link rel="stylesheet" href="__PUBLIC__/css/login_pad.css">
+</block>
+<block name="page-content">
+  <section id="show_content" class="container"  style="padding:0;padding-top:30px;">
+      <div class="row">
+        <div class="col-md-2">
+          <div id="about_content">
+            <include file="Common@Shared/left-nav" />
+          </div>
+        </div>
+        <div class="col-md-10" style="padding: 0;">
+          <div>
+            <h1 style="margin-top:0;border-bottom:1px solid #DDD;">关于我们</h1>
+            <div>
+              <p style="text-align:left">
+                <em><span style="font-family: 黑体,SimHei; font-size: 14px;"><strong><span style="font-size: 19px; font-family: 宋体;">公司简介</span></strong></span></em>
+              </p>
+              <p style="text-align:left;text-indent:37px">
+                <span style="font-size: 14px; font-family: 黑体,SimHei;"><em><span style="font-family: 黑体,SimHei; font-size: 14px;"><strong><span style="font-size: 19px; font-family: 宋体;"></span></strong></span></em>沽尚农庄是一家专注于开发和销售各类绿色食用农产品的天津企业。我们，以用户的健康作为企业发展的基石，以用户的需求作为企业发展的动力，以用户的满意作为企业奋斗的目标。</span>
+              </p>
+              <p style="text-align:left;text-indent:37px">
+                <span style="font-size: 14px; font-family: 黑体,SimHei;">沽，俗话称“九河下梢天津卫，三道浮桥两道关”，可见天津是一座依水而生的城市，一座依水而得名的城市。天津自古因漕运而兴起，明永乐二年十一月二十一日（1404年12月23日）正式筑城，是中国古代唯一有确切建城时间记录的城市。经过600年的洗礼，这片土地养育了一方儿女，我们在津沽大地上出生成长，顾我们给自己取了这个沽字。</span>
+              </p>
+              <p style="text-align:left;text-indent:37px">
+                <span style="font-size: 14px; font-family: 黑体,SimHei;">尚，老话讲“民以食为天”，食品安全问题本不该存在的事却出现了，我们要做的不是提升全民的食品安全，因为这是我们企业运营的基本底线，我们要做的是将食用前未加工的原始农产品做出特色，提升用户的消费体验和生活品质，把食用前未加工的原始农产品消费做出时尚和品位，因此我们给自己取了这个尚字。</span>
+              </p>
+              <p style="text-align:left;text-indent:37px">
+                <span style="font-size: 14px; font-family: 黑体,SimHei; color: rgb(84, 141, 212);"><br/></span>
+              </p>
+              <p style="text-align:left;text-indent:37px">
+                <span style="font-size: 14px; font-family: 黑体,SimHei; color: rgb(84, 141, 212);">保证您的健康使我们信心满满！</span>
+              </p>
+              <p style="text-align:left;text-indent:37px">
+                <span style="font-size: 14px; font-family: 黑体,SimHei; color: rgb(84, 141, 212);">满足您的需求促我们厚积薄发！</span>
+              </p>
+              <p style="text-align:left;text-indent:37px">
+                <span style="font-size: 14px; font-family: 黑体,SimHei; color: rgb(84, 141, 212);">得到您的满意让我们永不止步！</span>
+              </p>
+              <br/>
+              <p style="text-align:left">
+                <em><span style="font-family: 黑体,SimHei; font-size: 14px;"><strong><span style="font-size: 19px; font-family: 宋体;">大事记</span></strong></span></em>
+              </p>
+              <p class="MsoListParagraph" style="margin-left:56px;text-align:left">
+                <span style="font-family: 黑体,SimHei; font-size: 14px;"><span style="font: 9px &quot;Times New Roman&quot;;"></span>2015-01-19 公司于2015年1月19日成立</span>
+              </p>
+              <p class="MsoListParagraph" style="margin-left:56px;text-align:left">
+                <span style="font-size: 14px; font-family: 黑体,SimHei;"><span style="font: 9px &quot;Times New Roman&quot;;"></span>2015-02-11 沽尚农庄（www.gsfarm.com.cn）于2015年2月11日正式上线</span>
+              </p>
+              <p class="MsoListParagraph" style="margin-left:56px;text-align:left">
+                <span style="font-size: 14px; font-family: 黑体,SimHei;"><span style="font: 9px &quot;Times New Roman&quot;;"></span>2015-02-28 沽尚农庄完成与支付宝平台（即时到账服务）的签约</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+</block>
+<block name="js-content">
+  <script>
+    $(document).ready(function () {
+      $('#about').addClass('active');
+    })
+  </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

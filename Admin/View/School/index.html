@@ -1,0 +1,69 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+    <form class="form-inline definewidth m20" action="__CONTROLLER__/del" method="post">
+    <button type="button" class="btn btn-success" id="addnew">新增</button>
+    <button type="button" class="btn btn-danger" id="del">删除</button>
+    <input type="hidden" id="id" name="id"  >
+<table class="table table-bordered table-hover definewidth m10">
+    <thead>
+    <tr>
+        <th></th>
+        <th>类型</th>
+        <th>地址</th>
+        <th>送货上门费用</th>
+        <th>状态</th>
+        <th>现买现提</th>
+        <th>幸运时光</th>
+        <th>送货上门</th>
+        <th>送货上门menu</th>
+        <th>展示数量</th>
+        <th>信息费比例</th>
+        <th>促销策略</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <volist name="array" id="vo">
+        <tr>
+            <td><input type="checkbox" id="ck" name="ck" value="{$vo.id}"></td>
+            <td><eq name="vo.type" value="0">{:C('LS')}</eq><eq name="vo.type" value="1">{:C('JT')}</eq></td>
+            <td>{$vo.name}</td>
+            <td>{$vo.expense}</td>
+            <td><eq name="vo.state" value="0">停用</eq><eq name="vo.state" value="1">启用</eq></td>
+            <td><eq name="vo.isnow" value="0">停用</eq><eq name="vo.isnow" value="1">启用</eq></td>
+            <td><eq name="vo.happy" value="0">停用</eq><eq name="vo.happy" value="1">启用</eq></td>
+            <td><eq name="vo.is_delivery" value="0">自提</eq><eq name="vo.is_delivery" value="1">自提/配送</eq><eq name="vo.is_delivery" value="2">配送</eq></td>
+            <td><eq name="vo.deli_menu" value="0">停用</eq><eq name="vo.deli_menu" value="1">启用</eq></td>
+            <td>{$vo.show_count}</td>
+            <td>{$vo.lirun}%</td>
+            <td><eq name="vo.tactics" value="0">无</eq><eq name="vo.tactics" value="1">满减策略</eq><eq name="vo.tactics" value="2">打折策略</eq></td>
+            <td>
+                <a href="__CONTROLLER__/toEdit/id/{$vo.id}">编辑</a>
+            </td>
+        </tr>
+    </volist>
+</table>
+<div class="result page">{$show}</div>
+</form>
+</block>
+<block name="myscript">
+<script>
+    $(function () {
+        $('#addnew').click(function(){
+            window.location.href="__CONTROLLER__/toAdd";
+        });
+
+        $('#del').click(function(){
+            var str_val = '';
+            $('input[type=checkbox][name=ck]:checked').each(function(index){
+                if(index>0){
+                    str_val+=',';
+                }
+                str_val+=$(this).val();
+            })
+
+            $('#id').val(str_val);
+            $('form')[0].submit();
+        })
+    });
+</script>
+</block>

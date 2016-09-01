@@ -1,0 +1,195 @@
+<extend name="Public:BaseUEIndex" />
+<block name="body">
+    <style>
+        #cropContainerModal1{
+            border:1px solid #CCC;
+        }
+
+        .sel{
+            background: #ff0f26;
+            cursor:pointer;
+            color:#FFF;
+        }
+
+
+        .sel a{
+            color:#FFF;
+        }
+        .sel a:link{
+            color:#FFF;
+        }
+        .sel a:visited{
+            color:#FFF;
+        }
+    </style>
+    <form id="form" action="add" method="post" class="definewidth m20" enctype="multipart/form-data">
+        <table class="table table-bordered table-hover definewidth m10">
+            <tr>
+                <td width="10%" class="tableleft">接收仓</td>
+                <td width="40%">
+                    <select id="to_storage" name="to_storage">
+                        <volist name="to_storage" id="t">
+                            <option value="{$t.id}">{$t.name}</option>
+                        </volist>
+                    </select>
+                    <label class="red">*</label>
+                </td>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td class="tableleft">调拨商品</td>
+                <td>
+                    <select id="basic_type" name="basic_type">
+                        <option value="">请选择</option>
+                        <volist name="basic_type" id="t">
+                            <option value="{$t.id}">{$t.basic_type}</option>
+                        </volist>
+                    </select>
+                    <select id="goods_name" name="goods_name" datatype="*" nullmsg="请选择商品！" errormsg="请选择商品！">
+                        <option value="">请选择</option>
+                        <volist name="goods" id="t">
+                            <option value="{$t.basic_id}" type="{$t.basic_type}">{$t.name}</option>
+                        </volist>
+                    </select>
+                </td>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+
+            <tr>
+                <td class="tableleft">调拨数量</td>
+                <td><input type="text" name="count" id="count" datatype="n1-9999999" errormsg="调拨数量最少1个,最多9999999个！"/><label class="red">*</label></td>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td class="tableleft"></td>
+                <td colspan="2">
+                    <button id="save" type="button" class="btn btn-primary" type="button">添加</button> &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+                    &nbsp;&nbsp;
+                    <button id="sub" type="button" class="btn btn-warning" type="button">调拨</button>
+                </td>
+            </tr>
+        </table>
+        <table id="showTable" class="table table-bordered definewidth m10">
+            <tr>
+                <th>类型</th>
+                <th>商品名称</th>
+                <th>商品数量</th>
+                <th>操作</th>
+            </tr>
+        </table>
+    </form>
+</block>
+<block name="mycss">
+</block>
+<block name="myscript">
+    <script>
+        function getTR(type,id,n,c){
+            var html = '<tr>'+
+                    '<td>'+type+'</td>'
+                    +'<td><input type="hidden" name="l_id[]" value="'+id+'">'+n+'</td>'
+                    +'<td><input type="hidden"  name="l_count[]" value="'+c+'">'+c+'</td>'
+                    +'<td><button type="button" style="color:#000;" onclick="del(this)">删除</button></td>'
+               +'</tr>';
+            return html;
+        }
+
+        function del(obj){
+            $(obj).closest('tr').remove();
+        }
+
+        function setTR(id,c){
+            $('#goods_name').val(id);
+            $('#count').val(c);
+        }
+
+        function clearTR(){
+            $('#goods_name').val('');
+            $('#count').val('');
+        }
+
+        $(function () {
+            $('#backid').click(function(){
+                $('form')[0].action="__CONTROLLER__";
+                $('form')[0].submit();
+            });
+
+            $('#basic_type').change(function(){
+                $('#goods_name').find('option').remove();
+                $('#goods_name').append('<option value="">请选择</option>');
+
+                $.get("{:U('Transfers/getGoods')}", {school_id:$('#to_storage').val(),type: $(this).val() },function(data){
+                    for(var i=0;i<data.length;i++){
+                        $('#goods_name').append($('<option type="'+data[i].basic_type+'" value="'+data[i].basic_id+'" count="'+data[i].count+'">'+data[i].name+'</option>'));
+                    }
+                })
+            })
+
+            $('#goods_name').change(function(){
+//                $('#count').val('')
+            })
+
+            $('#save').click(function(){
+                var to_storage = $('#to_storage');
+                var obj = $('#goods_name');
+                var count = $('#count');
+                var flag = true;
+
+                if(to_storage.val() == '' || obj.val() == '' || count.val() == ''){
+                    alert('请填写完整内容');
+                    return;
+                }
+
+
+                $('#showTable tr').each(function(){
+                    if($(this).find('td:eq(1) input').val() == obj.val()){
+                        alert('已经添加此数据');
+                        flag = false;
+                    }
+                })
+
+                if(flag){
+                    var kucun = getSelText(obj).split('(')[1];
+                    kucun = kucun.substring(0,kucun.length-1);
+                    if(parseInt(kucun) < parseInt(count.val())){
+                        alert('调拨数大于库存数');
+                        return;
+                    }
+                    var $html = $(getTR(obj.find('option[value='+obj.val()+']').attr('type'),obj.val(),getSelText(obj).split('(')[0],$('#count').val()))
+//                    $html.click(function(){
+//                        if($(this).hasClass('sel')){
+//                            $(this).removeClass('sel');
+//                            clearTR();
+//                        }else{
+//                            $('#showTable tr').removeClass('sel');
+//                            $(this).addClass('sel');
+//                            setTR($(this).find('td:eq(0) input').val(),$(this).find('td:eq(1) input').val());
+//                        }
+//                    });
+
+                    $('#showTable').append($html);
+                }
+
+            })
+
+
+            $("#form").Validform({
+                btnSubmit:'#sub',
+                tiptype: 2,
+                showAllError: true,
+                beforeCheck:function(curform){
+                    if($('#showTable tr').length == 1){
+                        alert('请添加调拨内容');
+                        return false;
+                    }
+                },
+                datatype:{
+                    "float":function(gets,obj,curform,regxp){
+                        if(obj.val() == '')
+                            return false;
+                        return (/^[0-9]+(\.\d+)?$|^(\.\d+)?$|^[1-9]+[0-9]*(\.\d+)?$/.test(obj.val()));
+                    }
+                }
+            });
+        });
+    </script>
+</block>

@@ -1,0 +1,24 @@
+<block name="title-content">
+    {:C('GSTITLE')}
+</block>
+<block name="page-content">
+  <section id="show_content" class="container"  style="padding:0;padding-top:30px;">
+        <div class="row">
+            <section class="container" >
+                    <div class="col-xs-1"></div>
+                    <div class="col-xs-10 panel panel-default border" style="margin-top: 100px">
+                        <div class="panel-body HeiTi_18">
+                            <li style='list-style: none;text-align: center;font-size: 24px'>
+                                <span class="glyphicon glyphicon-remove" style='color: #ff0000;margin-right: 10px;'></span><b>用户已经注册</b>
+                            </li>
+                            <li style='list-style: none;text-align: center;font-size: 14px'>
+                                <a href="{:U('Index/index')}<eq name="guess" value="true">?guess=true</eq>">返回首页</a>
+                            </li>
+                        </div>
+                    </div>
+                    <div class="col-xs-1"></div>
+            </section>
+        </div>
+  </section>
+</block>
+<extend name="Common@Shared/Idea/layoutBase" />

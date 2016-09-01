@@ -1,0 +1,145 @@
+<extend name="Public:BaseUEIndex" />
+<block name="body">
+    <style>
+        #cropContainerModal1{
+            border:1px solid #CCC;
+        }
+    </style>
+    <form id="form" action="add" method="post" class="definewidth m20" enctype="multipart/form-data">
+        <table class="table table-bordered table-hover definewidth m10">
+            <tr>
+                <td width="10%" class="tableleft">商品</td>
+                <td width="20%">
+                    <select id="goods_name" name="goods_name" datatype="*" nullmsg="请选择商品！" errormsg="请选择商品！">
+                        <option value="">请选择</option>
+                        <volist name="goods_name" id="t">
+                            <option value="{$t.id}">{$t.name}</option>
+                        </volist>
+                    </select>
+                    <label class="red">*</label>
+                </td>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <if condition="$_SESSION['current_user']['gloab_role'] eq true">
+                <tr>
+                    <td class="tableleft">所属仓库</td>
+                    <td colspan="2">
+                        <select id="school_type" name="school_type" datatype="*" nullmsg="请选择商品类型！" errormsg="请选择商品类型！">
+                            <option value="">请选择</option>
+                            <option value="0">学校</option>
+                            <option value="1">写字楼</option>
+                        </select>
+                        <select id="school" name="school" datatype="*" nullmsg="请选择商品类型！" errormsg="请选择商品类型！">
+                            <option value="">请选择</option>
+                            <volist name="goods_type" id="t">
+                                <option value="{$t.id}">{$t.type_name}</option>
+                            </volist>
+                        </select>
+                    </td>
+                </tr>
+            </if>
+            <tr>
+                <td class="tableleft">是否上架</td>
+                <td colspan="2">
+                    <input type="radio" id="up" name="online" value="0" checked/> 上架
+                    <input type="radio" id="down" name="online" value="1"/> 下架
+                </td>
+            </tr>
+            <tr>
+                <td class="tableleft">显示新品图标</td>
+                <td><input type="checkbox" name="show_icon" id="show_icon" value="1"/></td>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td class="tableleft">库存数量</td>
+                <td><input type="text" name="inventory" id="inventory" datatype="n1-9999999" errormsg="库存数量最少1个,最多9999999个！"/><label class="red">*</label></td>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td class="tableleft">零售价格</td>
+                <td><input type="text" name="price" id="price" datatype="float" errormsg="请填写正确的零售价格！"><label class="red">*</label>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td class="tableleft">折扣价格</td>
+                <td><input type="text" name="vip_price" id="vip_price" datatype="float" errormsg="请填写正确的大客户价格！"><label class="red">*</label>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td class="tableleft">刮奖价格区间</td>
+                <td><input type="text" name="start_price" id="start_price" datatype="float" maxlength="5" errormsg="请填写正确的区间价格！">－<input type="text" name="end_price" id="end_price" datatype="float" maxlength="5" errormsg="请填写正确的区间价格！"><label class="red">*</label>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td class="tableleft">单位</td>
+                <td><input type="text" id="unit" name="unit" datatype="s1-10" errormsg="单位至少1个字符,最多10个字符！"/><label class="red">*</label></td>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td class="tableleft">备注</td>
+                <td>
+                    <textarea id="description" name="description" style="width:800px;height:250px;" datatype="*1-100" errormsg="备注至少1个字符,最多100个字符！"></textarea>
+                </td>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td class="tableleft"></td>
+                <td>
+                    <button id="save" type="button" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</block>
+<block name="mycss">
+</block>
+<block name="myscript">
+    <script>
+        $(function () {
+
+            $('#backid').click(function(){
+                $('form')[0].action="__CONTROLLER__";
+                $('form')[0].submit();
+            });
+
+            <if condition="$_SESSION['current_user']['gloab_role'] eq true">
+            $('#school_type').change(function(){
+                $('#school').find('option').remove();
+                $('#school').append('<option value="">请选择</option>');
+
+                if($(this).val() != ''){
+                    $.get("__CONTROLLER__/changeSchool", {school_id: $(this).val() },function(data){
+                        for(var i=0;i<data.length;i++){
+                            $('#school').append($('<option value="'+data[i].id+'">'+data[i].name+'</option>'));
+                        }
+                    })
+                }
+            })
+            </if>
+
+            $("#form").Validform({
+                btnSubmit:'#save',
+                tiptype: 2,
+                showAllError: true,
+                datatype:{
+                    "float":function(gets,obj,curform,regxp){
+                        if(obj.val() == '')
+                            return false;
+                        return (/^[0-9]+(\.\d+)?$|^(\.\d+)?$|^[1-9]+[0-9]*(\.\d+)?$/.test(obj.val()));
+                    }
+
+                }
+            });
+
+            $('#goods_name').change(function(){
+                if($(this).val() == ''){
+                    $('#description').val('')
+                }else{
+                    $.get("__CONTROLLER__/getDesc", {goods_id: $(this).val() },function(data){
+                        $('#description').val(data)
+                    })
+                }
+            })
+        });
+    </script>
+</block>

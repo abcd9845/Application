@@ -1,0 +1,46 @@
+<block name="css-content">
+    <link rel="stylesheet" href="__PUBLIC__/css/login_pad.css">
+</block>
+<block name="page-content">
+  <section id="show_content" class="container"  style="padding:0;padding-top:30px;">
+      <div class="row">
+        <div class="col-md-2">
+          <div id="about_content">
+            <include file="Common@Shared/left-nav" />
+          </div>
+        </div>
+        <div class="col-md-10" style="padding: 0;">
+          <div>
+            <h1 style="margin-top:0;border-bottom:1px solid #DDD;">联系我们</h1>
+            <p style="text-indent: 37px;margin-top:20px;">
+              <span style="font-size: 14px; font-family: 黑体, SimHei;">针对网站使用、购物体验、货物品质等各方面的问题欢迎与我们联系。鉴于公司成立伊始人力资源有限，目前暂提供邮件支持，我们对您的各种来信做以下承诺。</span>
+            </p>
+            <br />
+            <ol class=" list-paddingleft-2" style="list-style-type: decimal;color: rgb(84, 141, 212);" >
+              <li>
+                <p class="MsoListParagraph" dir="ltr">
+                  <span style="font-size: 14px; font-family: 黑体, SimHei;">我们将在24小时内第一时间回复您的邮件。</span>
+                </p>
+              </li>
+              <li>
+                <p class="MsoListParagraph" dir="ltr">
+                  <span style="font-size: 14px; font-family: 黑体, SimHei;">从您的邮件成功发出时间起，72小时内对您的合理诉求予以解决。</span>
+                </p>
+              </li>
+            </ol>
+            <br />
+            <p>
+              <span style="font-size: 14px; font-family: 黑体, SimHei;">邮箱：</span><span style="font-size: 14px; font-family: 黑体, SimHei;">gsfarm@126.com</span>
+            </p>
+        </div>
+      </div>
+  </section>
+</block>
+<block name="js-content">
+  <script>
+    $(document).ready(function () {
+      $('#contact').addClass('active');
+    })
+  </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

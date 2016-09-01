@@ -1,0 +1,348 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+<form class="form-inline definewidth m20" action="__CONTROLLER__" method="post">
+    <div>
+        日期：
+        <div class="input-group input-group-sm">
+            <input id="create_time_start" name="create_time_start" value="{$filters['create_time_start']}" class="Wdate" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd 00:00:00',maxDate:'#F{ $dp.$D( \\\'create_time_end\\\')|| \\\'2020-10-01\\\'}'})"/>
+            <input id="create_time_end" name="create_time_end" value="{$filters['create_time_end']}" class="Wdate" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd 23:59:59',minDate:'#F{ $dp.$D( \\\'create_time_start\\\')}',maxDate:'2020-10-01'})"/>
+        </div>&nbsp;&nbsp;
+        在途状态：
+    <select id="re_type" name="re_type">
+        <option value="">请选择</option>
+        <option value="0">自提</option>
+        <option value="1">送货上门</option>
+    </select>&nbsp;&nbsp;
+        <if condition="$_SESSION['current_user']['role_id'] eq '1'">
+            库房：
+            <select id="school_type" name="school_type">
+                <option value="">请选择</option>
+                <option value="0">{:C('LS')}</option>
+                <option value="1">{:C('JT')}</option>
+            </select>
+            <select id="school" name="school">
+                <option value="">请选择</option>
+            </select>
+            <select id="address" name="address">
+                <option value="">请选择</option>
+            </select>
+            <select id="address_child" name="address_child">
+                <option value="">请选择</option>
+            </select>
+            &nbsp;&nbsp;
+        </if>
+        <if condition="$_SESSION['current_user']['role_id'] neq '1'">
+            库房：
+            <select id="school" name="school">
+                <volist name="school" id="t">
+                    <option value="{$t.id}">{$t.name}</option>
+                </volist>
+            </select>
+            <select id="address" name="address">
+                <option value="">请选择</option>
+            </select>
+            <select id="address_child" name="address_child">
+                <option value="">请选择</option>
+            </select>
+            &nbsp;&nbsp;
+        </if>
+    <button type="button" id="search" class="btn btn-primary">查询</button>&nbsp;&nbsp;
+    </div>
+    <table class="table table-bordered table-hover m10">
+        <thead>
+        <tr>
+            <th>仓库</th>
+            <th>订单总数</th>
+            <th>金额总额</th>
+            <th>运费总额</th>
+            <th>信息费</th>
+            <th>订单平均金额</th>
+        </tr>
+        </thead>
+        <volist name="array" id="vo">
+            <tr>
+                <!--<td><eq name="vo.re_type" value="">--</eq><eq name="vo.re_type" value="0">自提</eq><eq name="vo.re_type" value="1">送货上门</eq></td>-->
+                <td>{$vo.name}</td>
+                <td>{$vo.num}</td>
+                <td>
+                    <eq name="vo.total" value="">
+                        0
+                    </eq>
+                    <neq name="vo.total" value="">
+                        {$vo.total}
+                    </neq>
+                </td>
+                <td>
+                    <eq name="vo.expense" value="">
+                        0
+                    </eq>
+                    <neq name="vo.expense" value="">
+                        {$vo.expense}
+                    </neq>
+                </td>
+                <td>
+                    <eq name="vo.lirun" value="">
+                        0
+                    </eq>
+                    <neq name="vo.lirun" value="">
+                        {$vo.lirun}
+                    </neq>
+                </td>
+                <td>
+                    <eq name="vo.pjz" value="">
+                        0
+                    </eq>
+                    <neq name="vo.pjz" value="">
+                        {$vo.pjz}
+                    </neq>
+                </td>
+            </tr>
+        </volist>
+    </table>
+    <div class="result page">{$show}</div>
+
+
+
+    <table class="table table-bordered table-hover m10">
+        <thead>
+        <tr>
+            <th>日期</th>
+            <th>仓库</th>
+            <!--<th>类型</th>-->
+            <th>订单总数</th>
+            <th>金额总额</th>
+            <th>运费总额</th>
+            <th>信息费</th>
+            <th>订单平均金额</th>
+        </tr>
+        </thead>
+        <volist name="array1" id="vo">
+            <tr>
+                <td>{$vo.create_time}</td>
+                <td>{$vo.name}</td>
+                <!--<td><eq name="vo.re_type" value="">--</eq><eq name="vo.re_type" value="0">自提</eq><eq name="vo.re_type" value="1">送货上门</eq></td>-->
+                <td>{$vo.num}</td>
+                <td>
+                    <eq name="vo.total" value="">
+                        0
+                    </eq>
+                    <neq name="vo.total" value="">
+                        {$vo.total}
+                    </neq>
+                </td>
+                <td>
+                    <eq name="vo.expense" value="">
+                        0
+                    </eq>
+                    <neq name="vo.expense" value="">
+                        {$vo.expense}
+                    </neq>
+                </td>
+                <td>
+                    <eq name="vo.lirun" value="">
+                        0
+                    </eq>
+                    <neq name="vo.lirun" value="">
+                        {$vo.lirun}
+                    </neq>
+                </td>
+                <td>
+                    <eq name="vo.pjz" value="">
+                        0
+                    </eq>
+                    <neq name="vo.pjz" value="">
+                        {$vo.pjz}
+                    </neq>
+                </td>
+            </tr>
+        </volist>
+    </table>
+</form>
+</block>
+<block name="myscript">
+<script>
+    $(function () {
+        var state = 0;
+
+        $('#addnew').click(function(){
+            window.location.href="__CONTROLLER__/toAdd";
+        });
+
+        $('#search').click(function(){
+            if($.trim($('#create_time_start').val()) == '' || $.trim($('#create_time_end').val()) == ''){
+                alert('请选择日期');
+                return;
+            }
+            $('form')[0].action = "__CONTROLLER__";
+            $('form')[0].submit();
+        });
+
+        $('#state').val('{$filter.state}');
+
+        <if condition="$_SESSION['current_user']['role_id'] eq '1'">
+
+        $('#re_type').change(function(){
+            $('#school_type').find('option').remove();
+            $('#school_type').append('<option value="">请选择</option>');
+
+            $('#school').find('option').remove();
+            $('#school').append('<option value="">请选择</option>');
+
+            $('#address').find('option').remove();
+            $('#address').append('<option value="">请选择</option>');
+
+            $('#address_child').find('option').remove();
+            $('#address_child').append('<option value="">请选择</option>');
+
+            if($(this).val() != ''){
+                $('#school_type').append($('<option value="0">学校</option>'));
+                $('#school_type').append($('<option value="1">写字楼</option>'));
+                if(state == 0){
+                    $('#school_type').val("{$filters.school_type}").change();
+                }
+            }
+        });
+
+        $('#school_type').change(function(){
+            $('#school').find('option').remove();
+            $('#school').append('<option value="">请选择</option>');
+
+            $('#address').find('option').remove();
+            $('#address').append('<option value="">请选择</option>');
+
+            $('#address_child').find('option').remove();
+            $('#address_child').append('<option value="">请选择</option>');
+
+            if($(this).val() != ''){
+                $.get("{:U('Goods/changeSchool')}", {school_id: $(this).val() },function(data){
+                    for(var i=0;i<data.length;i++){
+                        $('#school').append($('<option value="'+data[i].id+'">'+data[i].name+'</option>'));
+                    }
+
+                    if(state == 0){
+                        $('#school').val("{$filters.school}").change();
+                    }
+                })
+            }
+        })
+
+        $('#school').change(function(){
+            $('#address').find('option').remove();
+            $('#address').append('<option value="">请选择</option>');
+            if($(this).val() != '' && $('#re_type').val() == '0'){
+                $.get("{:U('Goods/changeAddress')}", {school_id: $(this).val() },function(data){
+                    for(var i=0;i<data.length;i++){
+                        $('#address').append($('<option value="'+data[i].id+'">'+data[i].address+'</option>'));
+                    }
+
+                    if(state == 0){
+                        $('#address').val("{$filters.address}");
+                    }
+
+                    state++;
+                })
+            }else if($(this).val() != '' && $('#re_type').val() == '1'){
+                $.get("{:U('Goods/changeDeliveryRoot')}", {school_id: $(this).val() },function(data){
+                    for(var i=0;i<data.length;i++){
+                        $('#address').append($('<option value="'+data[i].id+'">'+data[i].address+'</option>'));
+                    }
+
+                    if(state == 0){
+                        $('#address').val("{$filters.address}").change();
+                    }
+                })
+            }
+        })
+
+        $('#address').change(function(){
+            $('#address_child').find('option').remove();
+            $('#address_child').append('<option value="">请选择</option>');
+            if($(this).val() != '' && $('#re_type').val() == '0'){
+
+            }else if($(this).val() != '' && $('#re_type').val() == '1'){
+                $.get("{:U('Goods/changeDelivery')}", {school_id: $(this).val() },function(data){
+                    for(var i=0;i<data.length;i++){
+                        $('#address_child').append($('<option value="'+data[i].id+'">'+data[i].address+'</option>'));
+                    }
+
+                    if(state == 0){
+                        $('#address_child').val("{$filters.address_child}");
+                    }
+
+                    state++;
+                })
+            }
+        });
+
+        $('#re_type').val("{$filters.re_type}").change();
+
+        </if>
+
+        <if condition="$_SESSION['current_user']['role_id'] neq '1'">
+        $('#re_type').change(function(){
+
+            $('#address').find('option').remove();
+            $('#address').append('<option value="">请选择</option>');
+
+            $('#address_child').find('option').remove();
+            $('#address_child').append('<option value="">请选择</option>');
+
+            if($(this).val() != ''){
+                $('#school').change();
+            }
+        });
+
+
+        $('#school').change(function(){
+            $('#address').find('option').remove();
+            $('#address').append('<option value="">请选择</option>');
+            if($(this).val() != '' && $('#re_type').val() == '0'){
+                $.get("{:U('Goods/changeAddress')}", {school_id: $(this).val() },function(data){
+                    for(var i=0;i<data.length;i++){
+                        $('#address').append($('<option value="'+data[i].id+'">'+data[i].address+'</option>'));
+                    }
+
+                    if(state == 0){
+                        $('#address').val("{$filters.address}");
+                    }
+
+                    state++;
+                })
+            }else if($(this).val() != '' && $('#re_type').val() == '1'){
+                $.get("{:U('Goods/changeDeliveryRoot')}", {school_id: $(this).val() },function(data){
+                    for(var i=0;i<data.length;i++){
+                        $('#address').append($('<option value="'+data[i].id+'">'+data[i].address+'</option>'));
+                    }
+
+                    if(state == 0){
+                        $('#address').val("{$filters.address}").change();
+                    }
+                })
+            }
+        })
+
+        $('#address').change(function(){
+            $('#address_child').find('option').remove();
+            $('#address_child').append('<option value="">请选择</option>');
+            if($(this).val() != '' && $('#re_type').val() == '0'){
+
+            }else if($(this).val() != '' && $('#re_type').val() == '1'){
+                $.get("{:U('Goods/changeDelivery')}", {school_id: $(this).val() },function(data){
+                    for(var i=0;i<data.length;i++){
+                        $('#address_child').append($('<option value="'+data[i].id+'">'+data[i].address+'</option>'));
+                    }
+
+                    if(state == 0){
+                        $('#address_child').val("{$filters.address_child}");
+                    }
+
+                    state++;
+                })
+            }
+        });
+
+        $('#re_type').val("{$filters.re_type}").change();
+        </if>
+    });
+</script>
+</block>

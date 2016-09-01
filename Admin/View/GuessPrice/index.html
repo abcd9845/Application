@@ -1,0 +1,110 @@
+<extend name="Public:BaseIndex" />
+<block name="body">  
+  <form class="form-inline definewidth m20" action="__CONTROLLER__/index" method="post">
+    <div class="form-group">
+      <input class="form-control input-sm" type="text" placeholder="期号、商品" name="filters[query]" value="{$filters['query']}">
+    </div>
+    <div class="form-group">
+      <div class="input-group input-group-sm">
+        <a class="input-group-addon" title="开始时间" href="javascript:;"><i class="glyphicon glyphicon-calendar"></i></a>
+        <input class="form-control" type="text" name="filters[start_time]" value="{$filters['start_time']}" placeholder="开始时间">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="input-group input-group-sm">
+        <a class="input-group-addon" title="结束时间" href="javascript:;"><i class="glyphicon glyphicon-calendar"></i></a>
+        <input class="form-control" type="text" name="filters[end_time]" value="{$filters['end_time']}" placeholder="结束时间">
+      </div>
+    </div>
+    <div class="form-group">
+      <select name="filters[status]" class="form-control input-sm">
+        <option value="">默认</option>
+        <option value="draft" <eq name="filters['status']" value="draft">selected</eq>>草稿</option>
+        <option value="available" <eq name="filters['status']" value="available">selected</eq>>已发布</option>
+        <option value="deleted" <eq name="filters['status']" value="deleted">selected</eq>>已删除</option>
+      </select>
+    </div>
+    <button type='submit' id="search" class="btn btn-sm btn-primary">查询</button>
+    <a href="{:U('toEdit')}" class="btn btn-sm btn-success pull-right" id="addnew">发起竞猜活动</a>  
+  </form>
+  <table class="table table-bordered table-hover definewidth m10">
+    <thead>
+      <tr>
+        <th></th>
+        <th>期数</th>
+        <th>标题</th>
+        <th>市场价格</th>
+        <th>奖品数量</th>
+        <th>开始时间</th>
+        <th>结束时间</th>
+        <th>价格</th>
+        <th>状态</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <volist name="list" id="vo">
+      <tr>
+        <td><input type="checkbox" id="ck" name="ck" value="{$vo.id}"></td>
+        <td>{$vo.no}</td>
+        <td>{$vo.title}</td>
+        <td>{$vo.market_price}</td>
+        <td>{$vo.item_count}</td>
+        <td>{$vo.start_time}</td>
+        <td>{$vo.end_time}</td>
+        <td>{$vo.price}</td>
+        <td>
+          <eq name="vo['status']" value="draft">
+          <a href="__CONTROLLER__/publish/id/{$vo.id}" onclick="return confirm('竞猜发布后所有竞猜信息将不能再修改，是否发布该竞猜？')">发布</a>
+          </eq>
+      <if condition="$vo['status'] eq 'available' and $vo['start_time'] gt date('Y-m-d H:i:s')">
+        竞猜已发布
+      </if>
+      <if condition="$vo['status'] eq 'available' and $vo['start_time'] lt date('Y-m-d H:i:s') and $vo['end_time'] gt date('Y-m-d H:i:s')">
+        竞猜进行中
+      </if>
+      <if condition="$vo['status'] eq 'available' and $vo['end_time'] lt date('Y-m-d H:i:s')">
+        竞猜已结束
+      </if>
+      <if condition="$vo['status'] eq 'deleted'">
+        已删除
+      </if>
+      </td>
+      <td>
+        <eq name="vo['status']" value="available">
+        <a href="__CONTROLLER__/toView/id/{$vo.id}">查看竞猜</a>              
+        </eq>
+        <eq name="vo['status']" value="draft">
+        <a href="__CONTROLLER__/toEdit/id/{$vo.id}">编辑</a>
+        <a href="__CONTROLLER__/del/id/{$vo.id}">删除</a>
+        </eq>
+      </td>
+      </tr>
+    </volist>
+  </table>
+  <div class="result page">{$page}</div>
+</form>
+</block>
+<block name="myscript">
+  <script>
+    $(function () {
+      $('#addnew').click(function () {
+        window.location.href = "__CONTROLLER__/toAdd";
+      });
+      $('#del').click(function () {
+        var str_val = '';
+        $('input[type=checkbox][name=ck]:checked').each(function (index) {
+          if (index > 0) {
+            str_val += ',';
+          }
+          str_val += $(this).val();
+        })
+
+        $('#id').val(str_val);
+        $('form')[0].submit();
+      })
+
+      $('#goods_type').val('{$filter.filter_goods_type}');
+
+    });
+  </script>
+</block>

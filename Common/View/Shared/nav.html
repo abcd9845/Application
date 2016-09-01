@@ -1,0 +1,104 @@
+<if condition="$_SESSION['current_user'] neq null">
+
+  <if condition="$_SESSION['current_user']['role_id'] eq '1'">
+    <script>window.location.href = '__ROOT__/index.php/Admin'</script>
+  </if>
+  <if condition="$_SESSION['current_user']['role_id'] eq '5'">
+    <script>window.location.href = '__ROOT__/index.php/Admin'</script>
+  </if>
+</if>
+
+
+<nav role="navigation" style="margin-bottom:0" class="navbar navbar-default navbar-fixed-top" id="nav">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a style="margin-left:20px;margin-top:-16px;" href="#" class="navbar-brand">
+        <img src="__PUBLIC__/images/logo.png">
+      </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <eq name="_SESSION['current_user']['role_id']" value='4'>
+          <li><a href="{:U('Delivery/index')}">首页</a></li>
+          <else/>
+          <li><a href="{:U('Index/index')}">首页</a></li>
+          <li><a name="a1" href="{:U('Product/index')}">我的产品</a></li>
+          <li><a name="a2" href="#">农场地图</a></li>
+          <li><a href="{:U('Index/about')}" target="_blank" rel="nofollow">关于我们</a></li>
+        </eq>
+      </ul>
+
+
+      <if condition="$_SESSION['current_user'] neq null">
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">欢迎您， <strong>{$_SESSION['current_user']['username']}</strong> <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <eq name="_SESSION['current_user']['role_id']" value='4'>
+                <li><a href="{:U('Delivery/index')}">订单列表</a></li>
+                <li class="divider"></li>
+                <li><a  href="{:U('index/logoff')}">注销，<strong>{$_SESSION['current_user']['username']}</strong></a></li>
+                <else/>
+                <li><a href="{:U('User/info')}">个人资料</a></li>
+                <li><a href="{:U('Address/lists')}">收货地址</a></li>
+                <li class="divider"></li>
+                <li><a href="{:U('Order/lists')}">我的订单</a></li>
+                <li><a href="{:U('Favourite/index')}">我的收藏夹</a></li>
+                <li><a href="{:U('Car/index')}">我的购物车</a></li>
+                <li class="divider"></li>
+                <li><a  href="{:U('index/logoff')}">注销，<strong>{$_SESSION['current_user']['username']}</strong></a></li>
+              </eq>
+            </ul>
+          </li>
+        </ul>
+        <else />
+        <ul class="nav navbar-nav navbar-right">
+          <li><a style="cursor:pointer;" id="loginpopup">登陆</a></li>
+          <if condition="$_SESSION['signup'] eq 1">
+            <li><a style="cursor:pointer;color:red;font-weight: bold;" id="signup" href="{:U('Index/signup')}">注册</a></li>
+          </if>
+        </ul>
+        <!-- Modal Log in -->
+        <div class="modal fade" id="login" tabindex="-1" role="dialog">
+          <div class="modal-dialog" style="margin-top: 150px;width:340px">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 align="center"><strong>欢迎光临</strong></h3>
+              </div>
+              <div class="modal-body" id="login_details">
+                <form method="post" action="{:U('index/dologin')}">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">用户名:</label>
+                    <input type="string" style="width:300px;" placeholder="用户名" id="exampleInputEmail1" class="form-control" name='login[username]'>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">密码:</label>
+                    <input type="password" style="width:300px;" placeholder="密 码" id="exampleInputPassword1" class="form-control" name='login[password]'>
+                    <p style="text-align: right;margin:5px;"><a href="javascript:window.location.href='{:U('index/findpwd')}'">找回密码</a></p>
+                  </div>
+                  <div class="form-group" align="center">
+                    <button type='submit' style="padding:10px 80px;" class="btn btn-danger">登 陆</button>
+                  </div>
+                </form>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <!--Modal Login Ends -->
+      </if>
+
+
+
+
+    </div><!--/.nav-collapse -->
+  </div>
+</nav>
+
+

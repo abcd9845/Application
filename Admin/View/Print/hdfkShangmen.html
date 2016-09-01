@@ -1,0 +1,309 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+    <form class="form-inline definewidth m20" action="__CONTROLLER__/hdfkShangmen" method="get">
+        <style>
+            #sp{
+                color: #595959;
+            }
+
+            #sp td{
+                text-align:right;
+            }
+        </style>
+        <div style="margin-top:5px;">
+            <div class="form-group">
+                <div class="input-group input-group-sm">
+                    订单创建时间
+                    <input id="create_time_start" name="filters[create_time_start]" value="{$filters['create_time_start']}" class="Wdate" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd 00:00:00',maxDate:'#F{ $dp.$D( \\\'create_time_end\\\')|| \\\'2020-10-01\\\'}'})"/>
+                    <input id="create_time_end" name="filters[create_time_end]" value="{$filters['create_time_end']}" class="Wdate" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd 23:59:59',minDate:'#F{ $dp.$D( \\\'create_time_start\\\')}',maxDate:'2020-10-01'})"/>
+                </div>
+                <br/>
+                <div class="input-group input-group-sm">
+                    取货时间
+                    <input id="pick_time_start" name="filters[pick_time_start]" value="{$filters['pick_time_start']}" class="Wdate" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd 00:00:00',maxDate:'#F{ $dp.$D( \\\'pick_time_end\\\')|| \\\'2020-10-01\\\'}'})"/>
+                    <input id="pick_time_end" name="filters[pick_time_end]" value="{$filters['pick_time_end']}" class="Wdate" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd 23:59:59',minDate:'#F{ $dp.$D( \\\'pick_time_start\\\')}',maxDate:'2020-10-01'})"/>
+                </div>
+                库房：
+                <if condition="$_SESSION['current_user']['role_id'] eq '1'">
+                    <select id="school_type" name="filters[school_type]">
+                        <option value="">请选择</option>
+                        <option value="0">{:C('LS')}</option>
+                        <option value="1">{:C('JT')}</option>
+                    </select>
+                    <select id="school" name="filters[school]">
+                        <option value="">请选择</option>
+                    </select>
+                    <select id="address" name="filters[address]">
+                        <option value="">请选择</option>
+                        <volist name="school_address" id="t">
+                            <option value="{$t.id}">{$t.address}</option>
+                        </volist>
+                    </select>
+                    <select id="address_child" name="filters[address_child]">
+                        <option value="">请选择</option>
+                    </select>&nbsp;&nbsp;
+                </if>
+
+                <if condition="$_SESSION['current_user']['role_id'] neq '1'">
+                    <select id="school" name="filters[school]">
+                        <volist name="school" id="t">
+                            <option value="{$t.id}">{$t.name}</option>
+                        </volist>
+                    </select>
+                    <select id="address" name="filters[address]">
+                        <option value="">请选择</option>
+                        <volist name="school_address" id="t">
+                            <option value="{$t.id}">{$t.address}</option>
+                        </volist>
+                    </select>
+                    <select id="address_child" name="filters[address_child]">
+                        <option value="">请选择</option>
+                    </select>&nbsp;&nbsp;
+                </if>
+            </div>
+            <div style="margin-top:5px;">
+                <div class="form-group">
+                    <input class="form-control input-sm" type="text" name="filters[order_no]" placeholder="订单编号" value="{$filters['order_no']}">
+                </div>
+                <div class="form-group">
+                    <input class="form-control input-sm" type="text" name="filters[mobile]" id="phone" placeholder="联系电话" value="{$filters['mobile']}">
+                </div>
+                <div class="form-group">
+                    <input class="form-control input-sm" type="text" name="filters[pick_no]" placeholder="提货编号" value="{$filters['pick_no']}">
+                </div>
+                <div class="form-group">
+                    订单状态：
+                    <select class="form-control" name="filters[state_id]" style="margin-left: -1px;">
+                        <option value="">全部</option>
+                        <option value="5" <eq name="filters['state_id']" value="5">selected</eq>>未送达</option>
+                        <option value="4" <eq name="filters['state_id']" value="4">selected</eq>>已送达</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><input type="radio" name="filters[print_state]" value="1" <eq name="filters['print_state']" value="1">checked</eq>> 已打印</label>
+                    <label><input type="radio" name="filters[print_state]"  value="0" <eq name="filters['print_state']" value="0">checked</eq>> 未打印</label>
+                </div>
+                <button type="submit" id="search" class="btn btn-sm btn-primary">查询</button>
+            </div>
+        </div>
+    </form>
+    <volist name="result" id="vo">
+        <form action="{:U('export')}" method="post">
+            <input type="hidden" name="title" value="(到付)打印送货上门{$vo['create_time']}" />
+            <table class="table table-bordered table-hover definewidth m10" style="margin-bottom:50px;">
+                <thead>
+                    <tr>
+                        <td colspan="8">
+                            <div class="pull-right">
+                                <a href="javascript:;" class="btn btn-info printBtn">标记为已打印</a>
+                                <button type="submit" class="btn btn-success">下载</button>
+                            </div>
+                            <p>订单日期：<lable style="color:red">{$vo['create_time']}</lable> &nbsp;&nbsp;&nbsp;&nbsp;
+                                <!--<input type="hidden" name="create_time" value="{$vo['create_time']}" />-->
+                                送货时间：<lable style="color:red">{$vo['pick_time']}</lable>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <!--<input type="hidden" name="pick_time" value="{$vo['pick_time']}" />-->
+                                订单总数：{:count($vo['data'])}</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>订单号</th>
+                        <th>提货单号</th>
+                        <th>收货人</th>
+                        <th>收货人电话</th>
+                        <th>收货地址</th>
+                        <th>订单状态</th>
+                        <th>下单时间</th>
+                        <th>送货时间</th>
+                    </tr>
+                </thead>
+                <volist name="vo['data']" id="order">
+                    <tr>
+                        <td class="orderNo">{$order.order_no}<input type="hidden" name="order_no[]" value="{$order['order_no']}" /></td>
+                        <td>{$order.pick_no}<input type="hidden" name="pick_no[]" value="{$order['pick_no']}" /></td>
+                        <td>{$order.real_name|urldecode}<input type="hidden" name="real_name[]" value="{$order['real_name']|urldecode}" /></td>
+                        <td>{$order.mobile}<input type="hidden" name="mobile[]" value="{$order['mobile']}" /></td>
+                        <td>{$order.delivery_address}<input type="hidden" name="delivery_address[]" value="{$order['delivery_address']}" /><input type="hidden" name="address" value="{$order['address']}" /></td>
+                        <td><input type="hidden" name="pick_no[]" value="{$order['pick_no']}" />
+                            <eq name="order.state_id" value="5">未送达</eq>
+                            <eq name="order.state_id" value="4">已送达</eq>
+                            <input type="hidden" name="state_id[]" value="<eq name="order.state_id" value="5">未送达</eq>
+                            <eq name="order.state_id" value="4">已送达</eq>" />
+                        </td>
+                        <td>{$order.create_time}<input type="hidden" name="create_time[]" value="{$order['create_time']}" /></td>
+                        <td>{$order.delivery_time_txt}<input type="hidden" name="delivery_time_txt[]" value="{$order['delivery_time_txt']}" /></td>
+                    </tr>
+                    <tr>
+                        <td>商品清单</td>
+                        <td colspan="8">
+                            <table width="500" align="right" id="sp" border="0" cellpadding="0" cellspacing="0">
+                                <volist name="order['spList']" id="sp">
+                                    <tr>
+                                        <td width="200">{$sp.name}</td>
+                                        <td width="150">￥{$sp.price}元／{$sp.unit} x {$sp.count}</td>
+                                        <td width="150">￥{$sp.total}元</td>
+                                    </tr>
+                                </volist>
+                                <tr>
+                                    <td  colspan="3" style="border-top:1px solid #595959;font-weight: bold;">
+                                        合计：￥{$order.total}元
+                                    </td>
+                                </tr>
+                            </table>
+                            <input type="hidden" name="print_str[]" value="{$order['print_str']}" />
+                            <input type="hidden" name="total[]" value="{$order['total']}" />
+                            <input type="hidden" name="goods[]" value="{$order['good_items_print']}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" style="min-height:1px;height:5px;background:rgba(192, 192, 192, 0.69);padding:0;margin:0;"></td>
+                    </tr>
+                </volist>
+            </table>
+        </form>
+    </volist>
+</block>
+<input type="hidden" name="postadd" value="door" />
+<block name="myscript">
+    <script type="text/javascript" src="__ROOT__/Public/js/select2.min.js"></script>
+    <script>
+        $(function () {
+            var state = 0;
+
+            $('#addrSelect').select2({
+                placeholder: "请选择一个所属仓库",
+                allowClear: true
+            });
+            $('.printBtn').click(function () {
+                var f = $(this).closest('form');
+                var printContents = $(f.html());
+                printContents.find('.btn').remove();
+//                var printWindow = window.open('', 'gsfarm.printwin', 'height=768,width=1024,toolbar=yes,scrollbars=yes, resizable=yes');
+//                printWindow.document.write('<html><head><title>送货单打印</title>');
+//                printWindow.document.write('<link href="__PUBLIC__/css/bootstrap.css" type="text/css" rel="stylesheet">');
+//                printWindow.document.write('</head><style>#sp{color:#595959;}#sp td{text-align:right;font-size:12px;height:25px;}</style><body><table class="table table-bordered" style="font-size:12px">');
+//                printWindow.document.write(printContents.html());
+//                printWindow.document.write('</table></body></html>');
+//                printWindow.document.close();
+//                printWindow.print();
+                var nos = [];
+                $('.orderNo', printContents).each(function () {
+                    nos.push($(this).text());
+                })
+                $.post('{:U("changePrintState")}', {nos: nos.join(',')}, function (result) {
+                    if (result.status == 1) {
+                        $(f).remove();
+                    }
+                }, 'json');
+            })
+            <if condition="$_SESSION['current_user']['role_id'] eq '1'">
+            $('#school_type').change(function(){
+                $('#school').find('option').remove();
+                $('#school').append('<option value="">请选择</option>');
+
+                $('#address').find('option').remove();
+                $('#address').append('<option value="">请选择</option>');
+
+                $('#address_child').find('option').remove();
+                $('#address_child').append('<option value="">请选择</option>');
+
+                if($(this).val() != ''){
+                    $.get("{:U('Goods/changeSchool')}", {school_id: $(this).val() },function(data){
+                        for(var i=0;i<data.length;i++){
+                            $('#school').append($('<option value="'+data[i].id+'">'+data[i].name+'</option>'));
+                        }
+
+                        if(state == 0){
+                            $('#school').val("{$filters.school}").change();
+                        }
+                    })
+                }
+            })
+
+            $('#school').change(function(){
+                $('#address').find('option').remove();
+                $('#address').append('<option value="">请选择</option>');
+                if($(this).val() != ''){
+                    $.get("{:U('Goods/changeDeliveryRoot')}", {school_id: $(this).val() },function(data){
+                        for(var i=0;i<data.length;i++){
+                            $('#address').append($('<option value="'+data[i].id+'">'+data[i].address+'</option>'));
+                        }
+
+                        if(state == 0){
+                            $('#address').val("{$filters.address}").change();
+                        }
+                    })
+                }
+            })
+
+            $('#address').change(function(){
+                $('#address_child').find('option').remove();
+                $('#address_child').append('<option value="">请选择</option>');
+                if($(this).val() != ''){
+                    $.get("{:U('Goods/changeDelivery')}", {school_id: $(this).val() },function(data){
+                        for(var i=0;i<data.length;i++){
+                            $('#address_child').append($('<option value="'+data[i].id+'">'+data[i].address+'</option>'));
+                        }
+
+                        if(state == 0){
+                            $('#address_child').val("{$filters.address_child}");
+                        }
+
+                        state++;
+                    })
+                }
+            });
+
+            $('#school_type').val("{$filters['school_type']}").change();
+            </if>
+
+            <if condition="$_SESSION['current_user']['role_id'] neq '1'">
+
+                $('#school').change(function(){
+                    $('#address').find('option').remove();
+                    $('#address').append('<option value="">请选择</option>');
+                    if($(this).val() != ''){
+                        $.get("{:U('Goods/changeDeliveryRoot')}", {school_id: $(this).val() },function(data){
+                            for(var i=0;i<data.length;i++){
+                                $('#address').append($('<option value="'+data[i].id+'">'+data[i].address+'</option>'));
+                            }
+
+                            if(state == 0){
+                                $('#address').val("{$filters.address}").change();
+                            }
+                        })
+                    }
+                })
+
+            $('#address').change(function(){
+                $('#address_child').find('option').remove();
+                $('#address_child').append('<option value="">请选择</option>');
+                if($(this).val() != ''){
+                    $.get("{:U('Goods/changeDelivery')}", {school_id: $(this).val() },function(data){
+                        for(var i=0;i<data.length;i++){
+                            $('#address_child').append($('<option value="'+data[i].id+'">'+data[i].address+'</option>'));
+                        }
+
+                        if(state == 0){
+                            $('#address_child').val("{$filters.address_child}");
+                        }
+
+                        state++;
+                    })
+                }
+            });
+
+            $('#school').change();
+
+            </if>
+        });
+    </script>
+</block>
+
+<block name="mycss">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/Public/css/select2.css" />
+    <style type="text/css">
+        .form-inline .form-group {
+            margin-right:0.5em;
+        }
+    </style>
+</block>

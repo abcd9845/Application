@@ -1,0 +1,126 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+    <form class="form-inline definewidth m20" action="__CONTROLLER__" method="post">
+        <div class="definewidth m10">
+            <div class="input-group input-group-sm">
+                订单创建时间
+                <input id="create_time_start" name="create_time_start" value="{$filters['create_time_start']}" class="Wdate" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd 00:00:00',maxDate:'#F{ $dp.$D( \\\'create_time_end\\\')|| \\\'2020-10-01\\\'}'})"/>
+                <input id="create_time_end" name="create_time_end" value="{$filters['create_time_end']}" class="Wdate" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd 23:59:59',minDate:'#F{ $dp.$D( \\\'create_time_start\\\')}',maxDate:'2020-10-01'})"/>
+            </div>&nbsp;&nbsp;&nbsp;&nbsp;
+            <div class="form-group">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-addon" style="border:0;width:0px;padding:0px"></span>
+                    <select class="form-control" name="school" id="school" style="margin-left: -1px;">
+                        <if condition="$_SESSION['current_user']['role_id'] eq '1'">
+                            <option value="">请选择</option>
+                        </if>
+                        <volist name="school" id="vo">
+                            <option value="{$vo.id}">{$vo.name}</option>
+                        </volist>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" id="search" class="btn btn-sm btn-primary">查询</button>
+        </div>
+        <table class="table table-bordered table-hover definewidth m10">
+            <thead>
+            <tr>
+                <th>商品名称</th>
+                <th>商品规格</th>
+                <th>剩余库存</th>
+                <th>购买数量</th>
+            </tr>
+            </thead>
+            <volist name="array" id="vo">
+                <tr>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.unit}</td>
+                    <td>{$vo.inventory}</td>
+                    <td>{$vo.count}</td>
+                </tr>
+            </volist>
+        </table>
+    </form>
+</block>
+<block name="myscript">
+<script>
+    $(function () {
+//        var state = 0
+//
+//        $('#addnew').click(function(){
+//            window.location.href="__CONTROLLER__/toAdd";
+//        });
+//
+//        $('#search').click(function(){
+//            $('form')[0].action = "__CONTROLLER__";
+//            $('form')[0].submit();
+//        });
+//
+//        $('#filter_school_type').change(function(){
+//            $('#filter_school').find('option').remove();
+//            $('#filter_school').append('<option value="">请选择</option>');
+//
+//            $('#filter_goods_type').find('option').remove();
+//            $('#filter_goods_type').append('<option value="">请选择</option>');
+//
+//            if($(this).val() != ''){
+//                $.get("__CONTROLLER__/changeSchool", {school_id: $(this).val() },function(data){
+//                    for(var i=0;i<data.length;i++){
+//                        $('#filter_school').append($('<option value="'+data[i].id+'">'+data[i].name+'</option>'));
+//                    }
+//
+//                    if(state == 0){
+//                        $('#filter_school').val("{$filter.filter_school}").change();
+//                    }
+//                })
+//            }
+//        })
+//
+//        $('#filter_school').change(function(){
+//            $('#filter_goods_type').find('option').remove();
+//            $('#filter_goods_type').append('<option value="">请选择</option>');
+//            if($(this).val() != ''){
+//                $.get("__CONTROLLER__/changeGoodsType", {school_id: $(this).val() },function(data){
+//                    for(var i=0;i<data.length;i++){
+//                        $('#filter_goods_type').append($('<option value="'+data[i].id+'">'+data[i].type_name+'</option>'));
+//                    }
+//
+//                    if(state == 0){
+//                        $('#filter_goods_type').val("{$filter.filter_goods_type}");
+//                    }
+//
+//                    state++;
+//                })
+//            }
+//        })
+//
+//
+//        $('#del').click(function(){
+//            var obj = $('input[type=checkbox][name=ck]:checked');
+//            if(obj.length > 0){
+//                var str_val = '';
+//                obj.each(function(index){
+//                    if(index>0){
+//                        str_val+=',';
+//                    }
+//                    str_val+=$(this).val();
+//                })
+//
+//                $('#id').val(str_val);
+//                $('form')[0].submit();
+//            }
+//        })
+//
+//
+        <if condition="$_SESSION['current_user']['role_id'] eq '1'">
+        $('#school').val("{$filters.school}");
+        </if>
+//
+//        $('#filter_school_type').val('{$filter.filter_school_type}').change();
+//        $('#filter_school').val('{$filter.filter_school}');
+//        $('#filter_goods_type').val('{$filter.filter_goods_type}').change();
+//        $('#filter_online').val('{$filter.filter_online}');
+//
+    });
+</script>
+</block>

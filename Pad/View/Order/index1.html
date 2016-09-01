@@ -1,0 +1,500 @@
+<block name="page-content">
+  <section id="show_content" class="container minHeight" style="margin-top:5px;padding:5px 25px;">
+    <div class="row">
+      <div class="col-md-12">
+        <form method="post" action="{:U('save')}" id='formSubmit'>
+          <input type="hidden" name="payType" id="payType" />
+          <input type="hidden" name="addressID" id="addressID" />
+          <div class="row" style="padding:15px 0;border-bottom:1px dashed #eee;">
+            <div class="col-xs-12" >
+              <p class="HeiTi_16 Blod">收货地址</p>
+              <div>
+                <div style="text-align: right;">
+                  <a id="addAddsBtn" href="#" style="font-size: 12px;">添加新地址</a>
+                </div>
+                <ul class="tableUL">
+                  <volist name='address' id='vo'>
+                    <li>
+                      <div addsid="{$vo['id']}" class="addressItem" alt="{$vo['spellAddress']['pname']['province']} {$vo['spellAddress']['cname']['city']} {$vo['spellAddress']['aname']['area']} {$vo['spellAddress']['detail']}" title="{$vo['spellAddress']['pname']['province']} {$vo['spellAddress']['cname']['city']} {$vo['spellAddress']['aname']['area']} {$vo['spellAddress']['detail']}">
+                        <b></b>
+                        <p>{$vo['recipient']} {$vo['phone']}</p>
+                        <p class="address"><span style="margin-right:10px;">{$vo['province']}</span><span style="margin-right:10px;">{$vo['city']}</span><span style="margin-right:10px;">{$vo['area']}</span><span>{$vo['address']}</span></p>
+                        <a class="modifyAddress left" addid="{$vo['id']}" href="#">修改</a>
+                        <a class="delAddress left" addid="{$vo['id']}" href="#">删除</a>
+                      </div>
+                    </li>
+                  </volist>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="row" style="padding:15px 0;border-bottom:1px dashed #eee;">
+            <div class="col-xs-12">
+              <p class="HeiTi_16 Blod">收货地址</p>
+              <div>
+                <ul style="margin:0;padding:0;list-style: none;" class="addressUL">
+                  <volist name='pay' id='vo'>
+                    <li style="float:left">
+                      <div myid="{$vo['id']}" class="payItem">
+                        <b></b>
+                        <p>{$vo['pay_typename']}</p>
+                      </div>
+                    </li>
+                  </volist>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="row" style="margin-top:30px;">
+            <div class="col-md-12">
+              <span class="HeiTi_16  Blod">商品选购信息</span>
+              <table class="table table-bordered">
+                <thead>
+                <tr class="info">
+                  <th style="text-align: center" class='col-xs-4'>商品信息</th>
+                  <th style="text-align: center" class='col-xs-2'>单价(元)</th>
+                  <th style="text-align: center" class='col-xs-2'>数量</th>
+                  <th style="text-align: center" class='col-xs-2'>优惠方式</th>
+                  <th style="text-align: center" class='col-xs-2'>小计(元)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <input type='hidden' value="{$carId}" name='carId' />
+                <volist name="goodsList" id="vo">
+                  <tr>
+                    <td style="vertical-align: middle">
+                      <div style="margin-right: 5px;float: left">
+                        <a href="{:U('Product/info?id='.$vo['id'])}"><img src="__ROOT__/{$vo['title_pic']}" style="width: 60px;height: 60px"></a>
+                      </div>
+                      <div style="margin-left: 70px">
+                        <a href="{:U('Product/info?id='.$vo['id'])}">{$vo['name']}</a>
+                        <input type='hidden' value="{$vo['id']}" name='goods[{$key}][id]' />
+                        <input type='hidden' value="{$vo['supplier_id']}" name='goods[{$key}][supplier_id]' />
+                        <input type="hidden" id="flags" data-delete="{$vo['delete_flag']}" data-online="{$vo['online']}"/>
+                        <input type='hidden' value="{$vo['price']}" name='goods[{$key}][price]' />
+                        <input type='hidden' value="{$vo['num']}" name='goods[{$key}][num]' />
+                      </div>
+                      <div style="margin-left: 70px;margin-top: 10px">
+                        <volist name="vo['specArr']" id="specVo" >
+                          <li style="list-style: none;font-size: 12px;color: #999999">{$specVo}</li>
+                        </volist>
+                      </div>
+                    </td>
+                    <td style="text-align: center;vertical-align: middle;color: #999999">
+                      ￥{$vo['price']}
+                    </td>
+                    <td style="text-align: center;vertical-align: middle">
+                      <li style="list-style: none">{$vo['num']}</li>
+                      <li class="isEnough" style="list-style: none">
+                        <if condition="$vo['inventory'] lt $vo['num']">无货
+                          <else /> 有货</if>
+                      </li>
+                    </td>
+                    <td style="text-align: center;vertical-align: middle">暂无</td>
+                    <td style="text-align: center;vertical-align: middle">
+                      {$vo['goodSums']}
+                    </td>
+                  </tr>
+                </volist>
+                </tbody>
+              </table>
+          </div>
+          <div style="text-align: right;padding:20px;vertical-align: middle">
+            <div style="float:left;padding:5px 20px;border-radius:5px;background: url(__PUBLIC__/images/aixin.png) no-repeat 0 0;padding:10px;padding-left:50px;width:400px;">
+              <h3 style="text-decoration:underline;text-align:left;margin-top:0px;color:#e10f23;font-size:18px;font-family: 黑体">让我们为乳腺癌防治献出一份力量</h3>
+              <p style="text-align:left;font-size:12px;margin:4px 0;color:#898989">每销售一单产品，我们将从自己的利润中为乳腺癌防治基金捐助出您此次购物金额(不包含快递费)的1%，如果您想献出自己的一份爱心，请点击“￥我要捐赠”，您捐赠的这部分金额需要在订单中进行支付，所有善款（满1000）将直接用于帮助贫困家庭的患者救治，您可以通过网站首页的滚动信息随时关注被救助人信息以及款项的用途，感谢您对该项工作的关注与支持。</p>
+              <p style="text-align:left;margin:0;padding-left:20px;"><label style="color:#e10f23;font-weight:bold;text-decoration:underline;">沽上农庄捐款10元</label></p>
+              <p style="color:#e10f23;font-weight:bold;text-decoration:underline"><span class="glyphicon glyphicon-usd" aria-hidden="true"></span><span style="cursor: pointer;" id="addPay">我要捐赠</span><span id="success" class="glyphicon glyphicon-ok" style="color:green;margin-left:10px;display:none;" aria-hidden="true">已捐助</span></p>
+              <p style="text-align:right;font-size:12px;margin:4px 0;color:#898989">捐款金额为订单金额的1%(不包含快递费)</p>
+            </div>
+            <ul style="list-style:none;">
+              <li><label>合计：￥<span id="total">{$total}元</span></label></li>
+              <li><a href='#' style="font-size: 12px;color:red;margin-right:5px;font-weight:bold;display:none;">收费标准</a><label>邮费：￥<span id="postage">{$postage}元</span></label></li>
+              <li><label>应付总额：￥<span id="all_total">{$all_total}元</span></label></li>
+            </ul>
+            <button type="button"  class="btn btn-danger" id='btnSubmit'>提交订单</button>
+          </div>
+        </form>
+        <div id="addressPanel" style="width:800px;font-size:12px;background: #FFF;padding:30px;border-radius: 5px;display:none;" class="border">
+          <p style="color:#fc6210;border-bottom:1px dashed #999;"><span class="glyphicon glyphicon-home" aria-hidden="true" style="margin-right:5px;"></span><span id="addressFlagText">新增</span>收货地址</p>
+          <form class="registerform" action="{:U('saveAddress')}">
+            <table width="800px;" style="border-collapse:separate;border-spacing: 10px;">
+              <tr>
+                <th width="80px;">收货人</th>
+                <td width="720px;">
+                  <div>
+                  <input id="recipient" name="recipient" datatype="s2-10" nullmsg="请填写收货人！" errormsg="收货人至少2个字符,最多10个字符！" type="text" >
+                  <input id="newaddid" name="newaddid" type="hidden" />
+                  <span class="Validform_checktip"></span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th>联系电话</th>
+                <td>
+                  <input id="phone" name="phone" type="text" datatype="m" nullmsg="请填写联系电话！" errormsg="联系电话格式错误！"/>
+                  <span class="Validform_checktip"></span>
+                </td>
+              </tr>
+              <tr>
+                <th>所在地区</th>
+                <td>
+                  <span style="margin-right:5px;">市</span><select id="provinceid" name="provinceid">
+                  <option value="">请选择</option>
+                </select><input type="hidden" name="province" id="province">
+                  <span style="margin-right:5px;">县</span><select id="cityid" name="cityid">
+                  <option value="">请选择</option>
+                </select><input type="hidden" name="city" id="city">
+                  <span style="margin-right:5px;">区</span><select id="areaid" name="areaid" datatype="*" nullmsg="请选择所在地区！" errormsg="请选择所在地区！">
+                  <option value="">请选择</option>
+                </select><input type="hidden" name="area" id="area">
+                <span class="Validform_checktip"></span>
+                </td>
+              </tr>
+              <tr>
+                <th>详细地址</th>
+                <td><input id="address" name="address" style="width:300px;" type="text" datatype="s1-50" nullmsg="请填写收获地址！" errormsg="详细地址至少1个字符,最多50个字符！"/><span class="Validform_checktip"></span></td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <button id='btnAddress' type="button" class="btn btn-primary" style="padding:5px 15px;font-weight: bold;">
+                    保存
+                  </button>
+                  <button id='restAddress' style="display: none;" type="reset" class="btn btn-primary" style="padding:5px 15px;font-weight: bold;">
+                    重置
+                  </button>
+                  <button id='btnCancel' type="button" class="btn btn-danger" style="padding:5px 15px;font-weight: bold;margin-left:20px;">
+                    取消
+                  </button>
+                </td>
+              </tr>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div id="gsmoden" style="display:none;position:fixed;left:0;right:0;top:0;bottom:0;opacity: 0.5;background: #999;z-index:999999999"></div>
+  <div id="gsmodencontent" style="display:none;position: fixed;top:40%;left:45%;padding:10px 20px;background:#FFF;z-index:9999999999" class="border">
+      <img src="__PUBLIC__/images/ajax-loader.gif" />Loading....
+  </div>
+
+
+</block>
+<block name="css-content">
+  <link rel="stylesheet" href="__PUBLIC__/css/product.css">
+  <link rel="stylesheet" href="__PUBLIC__/css/jqzoom.css">
+  <link rel="stylesheet" href="__PUBLIC__/js/Validform/Validform.css">
+  <link rel="stylesheet" type="text/css" href="__PUBLIC__/js/sweetalert-master/lib/sweet-alert.css">
+  <link rel="stylesheet" type="text/css" href="__PUBLIC__/js/ZENG.msgbox/msgbox.css">
+</block>
+<block name="js-content">
+  <script src="__PUBLIC__/js/jquery.jqzoom1.0.1.js"></script>
+  <script src="__PUBLIC__/js/Validform/Validform_v5.3.2_min.js"></script>
+  <script src="__PUBLIC__/js/moaModal/js/moaMOdal.minified.js"></script>
+  <script src="__PUBLIC__/js/moaModal/js/Sweefty.js"></script>
+  <script src="__PUBLIC__/js/address.js"></script>
+  <script src="__PUBLIC__/js/sweetalert-master/lib/sweet-alert.min.js"></script>
+  <script src="__PUBLIC__/js/ZENG.msgbox/msgbox.js"></script>
+  <script type="text/javascript">
+    var code = {$code};
+    var phone_reg =  /^0?1[3|4|5|8][0-9]\d{8}$/;
+
+
+    function addAddressItem(json){
+      var showAddress = json.province + ' '+ json.city + ' '+ json.area + ' ' + json.address;
+      var li = $('<li></li>');
+      var div = $('<div addsid="'+json.id+'" class="addressItem" alt="'+showAddress+'" title="'+showAddress+'"></div>');
+      var b = $('<b></b>')
+      var p = $('<p>'+json.recipient+' '+json.phone+'</p>')
+      var p_address = $('<p class="address"><span style="margin-right:10px;">'+json.province+'</span><span style="margin-right:10px;">'+json.city+'</span><span style="margin-right:10px;">'+json.area+'</span><span style="margin-right:10px;">'+json.address+'</span></p>')
+      var a_modify = $('<a class="modifyAddress left" addid="'+json.id+'" href="#">修改</a>')
+      var a_del = $('<a class="delAddress left" addid="'+json.id+'" href="#">删除</a>')
+
+
+      if(json.flag == 'update'){
+        var li = $('.addressItem.tableSel').parent();
+        li.html('');
+      }
+
+      div.append(b)
+      div.append(p)
+      div.append(p_address)
+      div.append(a_modify)
+      div.append(a_del)
+      li.append(div);
+
+      if(json.flag == 'add'){
+        $('.tableUL').prepend(li);
+      }
+
+      bindEvent(a_modify,div);
+    }
+
+
+    function bindEvent(modifyName,panelName){
+      var modify = modifyName || $('.modifyAddress')
+      var panel = panelName || $('.tableUL').find('.addressItem')
+      modify.modal({
+        target : '#addressPanel',
+        animation : 'top',
+        position : 'center'
+      });
+
+      modify.bind('click',function(){
+        $('#restAddress').click();
+        $('.Validform_checktip').html('')
+        $('#addressFlagText').html('修改')
+        var url = "{:U('getAddress')}"
+        $.ajax({
+          url:url,
+          type:'post',
+          data:{
+            id:$(this).attr('addid')
+          },
+          success:function(data){
+            setDefAddress(data)
+          }
+        })
+      });
+
+      panel.bind('click',function(e){
+        if($(e.target).is('.delAddress')){
+          var obj = $(e.target);
+          var id = obj.attr("addid")
+          swal({
+            title: "你确定删除么",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "删除",
+            cancelButtonText: "取消",
+            closeOnConfirm: false }, function(){
+            //swal("Deleted!", "Your imaginary file has been deleted.", "success");
+            var url = "{:U('deleteAddress')}"
+            $.ajax({
+              url:url,
+              type:'post',
+              data:{
+                id:id
+              },
+              success:function(data){
+                if(data == 'success'){
+                  obj.closest('li').remove();
+                  swal("删除", "删除成功", "success");
+                }else
+                  swal("删除", "删除失败", "error");
+              }
+            })
+          });
+        }else{
+          var target = $(e.target);
+          console.log(e.target);
+          if(!target.is('.addressItem')){
+            target = $(e.target).closest("div");
+          }
+          if($(e.target)||$(e.target).closest("div").is('.addressItem')){
+            $('#gsmoden').show()
+            $('#gsmodencontent').show();
+            var url = "{:U('postage')}"
+            var id = $(this).attr('addsid')
+            $.ajax({
+              url:url,
+              type:'post',
+              data:{
+                id:id
+              },
+              success:function(data){
+                if(data.status){
+                  $('#total').html(data.obj['total']+"元")
+                  $('#postage').html(data.obj['postage']+"元")
+                  $('#all_total').html(data.obj['all_total']+"元")
+                  $('#gsmoden').hide();
+                  $('#gsmodencontent').hide();
+                  $('.tableUL').find('.addressItem').removeClass('tableSel');
+                  target.addClass('tableSel')
+                  $('#addressID').val(target.attr('addsid'));
+                }else{
+                  $('#gsmoden').hide();
+                  $('#gsmodencontent').hide();
+                  swal("地址不存在");
+                }
+              }
+            })
+          }
+        }
+      })
+    }
+
+    $(function(){
+      $('#payType').val('');
+      $('#addressID').val('');
+
+      $('#addPay').click(function(){
+        if($(this).attr('flag') == 'success'){
+          $('#success').hide();
+          $(this).removeAttr('flag')
+        }else{
+          $('#success').show();
+          $(this).attr('flag','success')
+        }
+      })
+
+
+      var defAddress = "{$def_address['id']}" || '';
+      if(defAddress != '')
+        $('.tableUL .addressItem[addsid='+defAddress+']').addClass('tableSel')
+
+      $('.payItem:eq(0)').addClass('tableSel');
+      $('#payType').val($('.payItem:eq(0)').attr('myid'))
+
+      bindEvent();
+
+      $('.addressUL').find('.payItem').click(function(){
+        $('.addressUL').find('.payItem').removeClass('tableSel');
+        $(this).addClass('tableSel')
+        $('#payType').val($(this).attr('myid'));
+      })
+
+      $('#addAddsBtn').modal({
+        target : '#addressPanel',
+        animation : 'top',
+        position : 'center'
+      });
+
+      $('#addAddsBtn').bind('click',function(){
+        $('#restAddress').click();
+        $('.Validform_checktip').html('')
+        $('#addressFlagText').html('新增')
+        initAddress();
+      })
+
+      for(var i in gsfarm_address){
+        $('#provinceid').append('<option value="'+i+'">'+gsfarm_address[i]['name']+'</option>');
+      }
+
+      $('#provinceid').change(function(){
+        $('#cityid option[value!=""]').remove();
+        $('#area option[value!=""]').remove();
+        for(var i in gsfarm_address[this.value]['citys']){
+          $('#cityid').append('<option value="'+i+'">'+gsfarm_address[this.value]['citys'][i]['name']+'</option>');
+        }
+      })
+
+      $('#cityid').change(function(){
+        $('#areaid option[value!=""]').remove();
+        for(var i in gsfarm_address[$('#provinceid').val()]['citys'][this.value]['areas']){
+          $('#areaid').append('<option value="'+i+'">'+gsfarm_address[$('#provinceid').val()]['citys'][this.value]['areas'][i]+'</option>');
+        }
+      })
+
+      var demo=$(".registerform").Validform({
+        tiptype:2,
+        ajaxPost:true,
+        tiptype:function(msg,o,cssctl){
+          //msg：提示信息;
+          if(!o.obj.is("form")){
+            var objtip=o.obj.siblings(".Validform_checktip");
+            cssctl(objtip,o.type);
+            objtip.text(msg);
+          }
+        },
+        callback:function(data){
+          addAddressItem({
+            flag:data.flag,
+            id:($('#newaddid').val()=='')?data.id:$('#newaddid').val(),
+            recipient:$('#recipient').val(),
+            phone:$('#phone').val(),
+            province:$("#provinceid").find("option:selected").text(),
+            city:$("#cityid").find("option:selected").text(),
+            area:$("#areaid").find("option:selected").text(),
+            address:$('#address').val()
+          });
+          swal("添加成功");
+          $('#btnCancel').trigger('close.modal');
+        }
+
+      });
+
+      $("#btnAddress").click(function(){
+        $("#province").val($("#provinceid").find("option:selected").text());
+        $("#city").val($("#cityid").find("option:selected").text());
+        $("#area").val($("#areaid").find("option:selected").text());
+        demo.ajaxPost();
+        return false;
+      });
+
+      $('#btnCancel').click(function(){
+        $(this).trigger('close.modal');
+      });
+
+
+      var address_id = "{$def_address['id']}"
+      if(defAddress != '')
+        $(".addressItem[addsid="+address_id+"]").trigger('click')
+
+    });
+
+    function initAddress(){
+      $("#addressPanel").find("input[type=text],input[type=hidden],select").each(function(){
+        $(this).val("");
+      });
+    }
+
+    function setDefAddress(data){
+        for(var i in data){
+          var json = data[i];
+          for(var j in json){
+            $('#'+j).val(json[j]);
+            if(j == 'id'){
+              $('#newaddid').val(json[j]);
+            }
+            if(j == 'provinceid' || j == 'cityid'){
+              $('#'+j).change();
+            }
+          }
+        }
+    }
+
+//    $('.payItem:eq(0)').trigger('click');
+    //alert($('.payItem:eq(0)').html())
+
+
+      $('#btnSubmit').click(function () {
+        var isenough = true;
+        $('.isEnough').each(function () {
+          if ($(this).html().indexOf('无货') > 0)
+          {
+            alert('订单中包含库存不足的产品');
+            isenough = false;
+          }
+        });
+        if ($('.isEnough').lengh == 0) {
+          alert('无法提交空订单');
+          isenough = false;
+        }
+//        if ($('input[type=radio]:checked').val() == 0) {
+//          alert('未选中有效的收货地址');
+//          isenough = false;
+//        }
+
+        if($('.tableUL').find('.tableSel').length != 1){
+          alert('未选中有效的收货地址');
+          isenough = false;
+        }
+
+
+
+        if ($('#flags').data('delete') == 1 || $('#flags').data('online') == 1) {
+          alert('产品清单中包含已删除或已下架的产品');
+          isenough = false;
+        }
+
+        if (isenough) {
+          //$.post("{:U('save')}", $('#formSubmit').serialize(), function () {}, 'json');
+          $('#formSubmit').submit();
+        }
+      });
+  </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

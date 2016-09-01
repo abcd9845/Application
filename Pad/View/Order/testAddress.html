@@ -1,0 +1,19 @@
+<block name="page-content">
+  <div id="city"> 
+    <select class="prov"></select>  
+    <select class="city" disabled="disabled"></select> 
+    <select class="dist" disabled="disabled"></select> 
+  </div>
+</block>
+<block name="css-content"></block>
+<block name="js-content">
+  <script src="__PUBLIC__/js/jquery.cityselect.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $.post("{:U('testGetjson')}", {}, function (result) {
+        console.log(result);
+      }, 'json');
+    });
+  </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

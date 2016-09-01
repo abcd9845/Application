@@ -1,0 +1,80 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+    <form class="form-inline definewidth m20" action="__CONTROLLER__/del" method="post" onsubmit="return false;">
+        <div>
+            商品名称：<input type="hidden" name="offline" id="offline" value="false" />
+            <input type="text" id="name"class="abc input-default" placeholder="" name="basic_name" value="{$filters[basic_name]}">&nbsp;&nbsp;
+            分类:
+            <select name="basic_type" id="goods_basic_type">
+                <option value="">请选择</option>
+                <volist name="basic_type" id="t">
+                    <option value="{$t.id}">{$t.basic_type}</option>
+                </volist>
+            </select>
+            <button type="button" id="search" class="btn btn-primary">查询</button>&nbsp;&nbsp;
+                <button type="button" class="btn btn-success" id="addnew">新增商品</button>&nbsp;&nbsp;
+                <button type="button" class="btn btn-danger" id="del">删除</button>&nbsp;&nbsp;
+        </div>
+        <input type="hidden" id="id" name="id"  >
+        <table class="table table-bordered table-hover definewidth m10">
+            <thead>
+            <tr>
+                <th></th>
+                <th>类型</th>
+                <th>商品名称</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <volist name="array" id="vo">
+                <tr>
+                    <td><input type="checkbox" id="ck" name="ck" value="{$vo.id}"></td>
+                    <td>{$vo.basic_type}</td>
+                    <td>{$vo.name}</td>
+                    <td>
+                        <a href="__CONTROLLER__/toEdit/id/{$vo.id}">编辑</a>
+                        <a href="__CONTROLLER__/toView/id/{$vo.id}">查看</a>
+                    </td>
+                </tr>
+            </volist>
+        </table>
+        <div class="result page">{$show}</div>
+    </form>
+</block>
+<block name="myscript">
+<script>
+    $(function () {
+        $('#addnew').click(function(){
+            window.location.href="__CONTROLLER__/toAdd";
+        });
+
+        $('#search').click(function(){
+            $('form')[0].action = "__CONTROLLER__";
+            $('form')[0].submit();
+        });
+
+        $('#goods_basic_type').val('{$filters[basic_type]}')
+
+
+        $('#del').click(function(){
+            if(confirm('是否将该商品全部下架')){
+                $('#offline').val('true');
+            }
+            var obj = $('input[type=checkbox][name=ck]:checked');
+            if(obj.length > 0){
+                var str_val = '';
+                obj.each(function(index){
+                    if(index>0){
+                        str_val+=',';
+                    }
+                    str_val+=$(this).val();
+                })
+
+                $('#id').val(str_val);
+                $('form')[0].submit();
+            }
+        })
+
+
+    });
+</script>
+</block>

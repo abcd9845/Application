@@ -1,0 +1,134 @@
+<block name="title-content">
+    验证手机号
+</block>
+<block name="page-content">
+    <style>
+        input:focus{
+            border:1px solid #EEE;
+            outline:none
+        }
+
+        body{
+            background: #EEE;
+        }
+    </style>
+    <div style="margin-top:10px;">
+        <p style="background: #EEE;text-align: center;padding:10px;margin:0;">请输入手机号以便查看您的订单</p>
+        <div style="width:100%;padding:5px 25px;">
+            <div style="border-bottom:1px solid #999;">
+                <ul style="margin:0;padding:0;list-style:none;">
+                    <li style="float:left;">
+                        <input id="mobile" type="tel" placeholder="请输入您的手机号" style="border:none;min-width:100px;width:100%;padding:15px 0;"/>
+                    </li>
+                    <li style="float:right;">
+                        <button id="smssend" type="button" class="btn btn-danger" style="min-width:80px;padding:5px 6px;" >获取验证码</button>
+                    </li>
+                </ul>
+                <div style="clear: both;"></div>
+            </div>
+            <div>
+                <ul style="margin:0;padding:0;list-style:none;">
+                    <li style="float:left;">
+                        <input id="validateNum" type="tel" placeholder="请输入验证码" style="border:none;min-width:100px;width:100%;padding:15px 0;"/>
+                    </li>
+                </ul>
+                <div style="clear: both;"></div>
+            </div>
+        </div>
+    </div>
+    <div style="padding:10px 5px;background: #EEE;text-align: center">
+        <button id="sub" type="button" class="btn btn-danger" type="button" style="width:80%;">确定</button>
+    </div>
+
+
+</block>
+<block name="css-content">
+</block>
+<block name="js-content">
+<script>
+    function intervalSend(){
+        if(!/^13[0-9]{9}$|14[0-9]{9}|15[0-9]{9}$|18[0-9]{9}$/.test($('#mobile').val()) || $('#mobile').val() == ''){
+            swal('',"请输入正确的手机号","error");
+            return false;
+        }
+        var time = 60;
+        $('#smssend').addClass('disabled').html(time+'秒后重发');
+        $.ajax({
+            url:"{:U('Index/sendSMS')} "
+            ,data:{
+                mobile:$('#mobile').val()
+            }
+            ,type:'post'
+            ,success:function(flag){
+                var f = eval('('+flag+')');;
+                if(f.status == true){
+                    var interval = window.setInterval(function(){
+                        if(time-- == 0){
+                            $.ajax({
+                                url:"{:U('Index/delSMS')} "
+                                ,type:'post'
+                                ,success:function(){
+                                    window.clearInterval(interval);
+                                    $('#smssend').removeClass('disabled').html('获取验证码').click(intervalSend);
+                                }
+                            })
+
+                        }else{
+                            $('#smssend').addClass('disabled').html(time+'秒后重发');
+                        }
+                    },1000);
+                    $('#smssend').unbind('click');
+                }else{
+                    swal('', f.msg ,"error");
+//                    window.setTimeout(function(){
+//                        window.location.href='{:U('Index/index')}';
+//                    },2000);
+                }
+            }
+        });
+    }
+
+    $(function(){
+        GSTools.ModelLoading.init();
+
+        $('#smssend').click(intervalSend);
+
+        $('#sub').click(function(){
+            GSTools.ModelLoading.show();
+            if($.trim($('#validateNum').val()) == ''){
+                swal("提交失败", "请输入验证码");
+                GSTools.ModelLoading.hidden();
+                return false;
+            }else{
+                $.ajax({
+                    url:"{:U('Index/validateSMS')}"
+                    ,data:{
+                        sms:$('#validateNum').val()
+                    }
+                    ,type:'post'
+                    ,success:function(data){
+
+                        if(data == true){
+                            var url  = "{:U('Index/addUser')}?phone="+$('#mobile').val();
+                            <eq name="guess" value="true">
+                                url += "&guess={$guess}";
+                            </eq>
+                            window.location.href=url;
+                        }else{
+                            swal("提交失败", "请输入正确的验证码");
+                            GSTools.ModelLoading.hidden();
+                            return false;
+                        }
+                    },error:function(data){
+                        swal("提交失败", "系统错误");
+                        GSTools.ModelLoading.hidden();
+                        return false;
+                    }
+                });
+            }
+        })
+
+    })
+</script>
+</block>
+<extend name="Common@Shared/Idea/layoutBase" />

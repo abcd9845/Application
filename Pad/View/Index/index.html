@@ -1,0 +1,66 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>{:C('GSTITLE')}</title>
+
+    <!-- Set render engine for 360 browser -->
+    <meta name="renderer" content="webkit">
+
+    <!-- No Baidu Siteapp-->
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+
+    <link rel="stylesheet" href="http://cdn.amazeui.org//amazeui/2.5.0/css/amazeui.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/index.css">
+    <script type="text/javascript" src="__PUBLIC__/idea/html/plugins/jquery.min.js"></script>
+
+</head>
+<script>
+    function isWeiXin() {
+        var ua = window.navigator.userAgent.toLowerCase();
+        if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    //  if(!isWeiXin()){
+    //    window.location.href='http://weixin.gsfarm.com.cn/index.php/Pad/Index/wechatPage'
+    ////    window.location.href='http://www.farm.com/gsfarm-wechat/index.php/Pad/Index/wechatPage'
+    //  }
+</script>
+<body class="body-bg">
+<div class="am-g">
+    <div class="logo logo-h"></div>
+    <div class="am-u-sm-12">
+        <div class="am-g">
+            <div class="am-u-sm-6 div-l">
+                <button class="icon-l sel" _id="10">劝宝鲜到家</button>
+            </div>
+            <div class="am-u-sm-6 div-r">
+                <button class="icon-r sel1" _id="11">食堂采购</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $(function(){
+        $('.sel').click(function(){
+            var url = '';
+            var code = '{$ccc}';
+            var url = "{:U('Product/index')}?id="+$(this).attr('_id')+"&vipcode="+code;
+            window.location.href=url;
+        })
+
+        $('.sel1').click(function(){
+           alert('即将上线，敬请期待');
+        })
+    })
+</script>

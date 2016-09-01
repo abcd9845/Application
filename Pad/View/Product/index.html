@@ -1,0 +1,811 @@
+<block name="title-content">
+    {:C('GSTITLE')}
+</block>
+<block name="css-content">
+    <link href="__PUBLIC__/css/product.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/js/pop/css/component.css?v=1.0" />
+    <script src="__PUBLIC__/js/pop/js/modernizr.custom.js"></script>
+    <style>
+        #header {
+            position: absolute;
+            z-index: 2;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+            background: #EEE;
+            padding: 0;
+            color: #ea4b36;
+            font-size: 16px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        #left{
+            position:absolute;
+            width:100px;
+            padding: 0;
+            top:30px;
+            bottom:40px;
+            overflow: hidden;
+        }
+
+
+        #footer {
+            position: absolute;
+            z-index:9999991;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: #FFF;
+            padding: 0;
+        }
+
+        #right {
+            position: absolute;
+            z-index: 1;
+            top: 30px;
+            bottom: 40px;
+            left: 100px;
+            right:0;
+            overflow: hidden;
+        }
+
+        #right_show {
+            position: absolute;
+            z-index: 1;
+            top: 41px;
+            bottom: 0;
+            left: 0;
+            right:0;
+            overflow: hidden;
+        }
+
+        .scroller {
+            position: absolute;
+            z-index: 1;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            width: 100%;
+            -webkit-transform: translateZ(0);
+            -moz-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            -o-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-text-size-adjust: none;
+            -moz-text-size-adjust: none;
+            -ms-text-size-adjust: none;
+            -o-text-size-adjust: none;
+            text-size-adjust: none;
+            background: #fff;
+        }
+
+        #lotteryContainer {
+            position:relative;
+            width: 300px;
+            height:100px;
+        }
+        #drawPercent {
+            color:#F60;
+        }
+
+    </style>
+</block>
+<block name="page-content">
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js?v=0.1"></script>
+    <div id="header">
+        <span id="dh"><i class="fa fa-map-marker" style="margin-right:5px;"></i>{$_SESSION['school']['name']}[切换]</span>
+        <!--<span><i class="fa fa-map-marker" style="margin-right:5px;"></i>{$_SESSION['school']['name']}</span>-->
+    </div>
+    <div id="center">
+        <div id="left">
+            <div class="scroller">
+                <div class="filter-p">
+                    <ul>
+                        <if condition="$_SESSION['school']['happy'] eq 1">
+                            <li type='title' n="menu{$k}" prikey="{$Think.const.HAPPYMENU}" happy="true">
+                                <a mykey="{$vo.id}">幸运时光</a>
+                            </li>
+                        </if>
+                        <!--<if condition="$_SESSION['school']['isnow'] eq 1">-->
+                        <!--<li type='title' n="menu{$k}" prikey="{$Think.const.NOWMENU}" isnow="true">-->
+                        <!--<a mykey="{$vo.id}">现买现提</a>-->
+                        <!--</li>-->
+                        <!--</if>-->
+                        <volist name='product_menu' id='vo' key="k">
+                            <li type='title' n="menu{$k}" prikey="{$vo.id}" <eq name="k" value="1"> class="menuclick"</eq>>
+                            <a mykey="{$vo.id}">{$vo['type_name']}</a>
+                            </li>
+                        </volist>
+                        <if condition="$_SESSION['current_user']['front_admin'] eq 1">
+                            <li type='title' admin="true" c_type="confirm">
+                                <a mykey="{$vo.id}">提货验证</a>
+                            </li>
+                        </if>
+                        <if condition="$_SESSION['current_user']['front_admin'] eq 1">
+                            <li type='title' admin="true" c_type="cancelOrder">
+                                <a mykey="{$vo.id}">取消订单</a>
+                            </li>
+                        </if>
+                        <!--<if condition="$_SESSION['current_user']['front_admin'] eq 1">-->
+                            <!--<li type='title' admin="true" c_type="praise">-->
+                                <!--<a mykey="{$vo.id}">集赞验证</a>-->
+                            <!--</li>-->
+                        <!--</if>-->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="right">
+            <img src="__ROOT__/Public/images/ad1.jpg"  style="width:100%;height:41px;"/>
+            <div id="right_show">
+                <div class="scroller">
+                    <div id="productShow" style="margin-bottom:140px;min-height:400px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footer">
+        <div id="carPanel" class="row" style="display:none;height:300px;margin:0;background:#FFF;left:0;right:0;top:0px;position: absolute;text-align: center;z-index:3;padding:0;">
+            <div id="carPanel_pic" style="display:block;position: relative;text-align: center;margin:-20px 0 0 40px;width:40px">
+                <label id="carPanel-count" style="display: block;position:absolute;width:25px;color:#FFF;height:25px;left:30px;top:0;text-align:center;line-height:25px;background:#ea4b36;border:1px solid #FFF;border-radius: 25px;font-size:14px;"></label>
+                <div id="panel_car" style="background:url(__ROOT__/Public/images/close.png) no-repeat 4px -13px #E84C3D;width: 40px;height:40px;border-radius: 80px;border:1px solid #FFF;display: none;"></div>
+            </div>
+            <section id="product_list" class="col-xs-12" style="background: #FFF;font-size: 12px;min-height:40px;line-height:40px;height:300px;overflow: hidden;padding:0;">
+                <div id="product_list_scroller" class="scroller"></div>
+            </section>
+        </div>
+        <div class="row" style="padding:0;margin:0;position: relative;z-index:4;">
+            <div id='carShow' class="col-xs-9" style="min-height:40px;position:relative;background:#e84c3d;color:#FFF;text-align: left;padding:0;margin:0;font-size:18px;line-height: 40px;padding-left:20px;letter-spacing:1px; ">
+                <div id="carShow_pic" style="margin-top:-12px;position: relative;float:left;">
+                    <label id="carShow-count" style="display: block;position:absolute;width:25px;height:25px;left:30px;top:0;text-align:center;line-height:25px;background:#ea4b36;border:1px solid #FFF;border-radius: 25px;font-size:14px;"></label>
+                    <div id="car" style="background:url(__ROOT__/Public/images/close.png) no-repeat -24px -2px;width: 40px;height:40px;border-radius: 60px;border:1px solid #FFF;"></div>
+                </div>
+                <div id="carShow-title" style="padding-left:50px;"></div>
+            </div>
+            <div id="payBtn" class="col-xs-3" style="background:#c7e8f9;color:#1c4e67;text-align: center;padding:0;margin:0;font-size:16px;line-height: 40px;font-weight:bold;">
+                <a id="choose" style="color:#1c4e67;">选好了</a>
+            </div>
+        </div>
+    </div>
+    <div class="md-modal md-effect-1" id="modal-1">
+        <div class="md-content">
+            <div style="font-size:12px;">
+                <p style="padding:5px;font-size:16px;">幸运时光活动细则</p>
+                <ul>
+                    <li>1、幸运时光，类似于抽彩票再刮奖的形式；</li>
+                    <li>2、我们会每天抽取若干种鲜果，放到幸运时光中；</li>
+                    <li>3、当您抽中幸运果后，通过刮开图层，您会看到您今天抽中的这些幸运果的幸运价；</li>
+                </ul>
+                <p style="padding:5px 0">注意：</p>
+                <ul>
+                    <li>1、您每天有一次机会在幸运时光中获取幸运果；</li>
+                    <li>2、您每天有一次机会获取幸运果的幸运价；</li>
+                    <li>3、每人每天每种幸运果只能购买一份。</li>
+                </ul>
+                <div style="width: 170px;margin:0 auto;">
+                    <button class="md-close btn btn-warning" style="margin-top:10px;">我明白了</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="abcd" style="display: none;" class="md-trigger" data-modal="modal-1">Fade in &amp; Scale</button>
+    <!-- classie.js by @desandro: https://github.com/desandro/classie -->
+    <script src="__PUBLIC__/js/pop/js/classie.js"></script>
+    <script src="__PUBLIC__/js/pop/js/modalEffects.js"></script>
+</block>
+<block name="js-content">
+    <script>
+
+        //        var browser = (function(){
+        //            var s = navigator.userAgent.toLowerCase();
+        //            var match = /(webkit[ \/]([\w.].)+)/.exec(s)||
+        //            /(opera)(?:.*version)?[ \/]([\w.]+)/.exec(s)||
+        //            /(msie)([\w.]+)/.exec(s)||
+        //            !/compatible/.text(s) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec(s) || [];
+        //            return {name:match[1]||"",version:match[2]||"0"}
+        //        })
+        //
+        //        alert(JSON.stringify(browser()));
+        //        alert(navigator.userAgent.toLowerCase())
+
+
+        //        var client = function(){
+        //            var engine = {
+        //                ie:0,
+        //                gecko:0,
+        //                webkit:0,
+        //                khtml:9,
+        //                opera:9,
+        //                ver:null
+        //            };
+        //
+        //            var browser = {
+        //                ie:0,
+        //                firefox:0,
+        //                safari:0,
+        //                konq:0,
+        //                opera:0,
+        //                chrome:0,
+        //                ver:null
+        //            };
+        //
+        //            var system = {
+        //                win:false,
+        //                mac:false,
+        //                xll:false,
+        //
+        //                iphone:false,
+        //                ipod:false,
+        //                ipad:false,
+        //                ios:false,
+        //                android:false,
+        //                nokiaN:false,
+        //                winMobile:false,
+        //
+        //                wii:false,
+        //                ps:false
+        //            };
+        //
+        //            var ua = navigator.userAgent;
+        //            if(window.opera){
+        //                engine.ver = browser.ver = window.opera.version();
+        //                engine.opera = browser.opera = parseFloat(engine.ver);
+        //            }else if(/AppleWebKit\/(\S+)/.test(ua)){
+        //                engine.ver = RegExp["$1"];
+        //                engine.webkit = parseFloat(engine.ver);
+        //
+        //                if(/Chrome\/(\S+)/.test(ua)){
+        //                    browser.ver = RegExp["$1"];
+        //                    browser.chrome = parseFloat(browser.ver);
+        //                }else if(/Version\/(\S+)/.test(ua)){
+        //                    browser.ver = RegExp["$1"];
+        //                    browser.Safari = parseFloat(browser.ver);
+        //                }else{
+        //                    var safariVersion = 1;
+        //                    if(engine.webkit < 100){
+        //                        safariVersion = 1;
+        //                    }else if(engine.webkit < 312){
+        //                        safariVersion = 1.2;
+        //                    }else if(engine.webkit < 412){
+        //                        safariVersion = 1.3;
+        //                    }else{
+        //                        safariVersion = 2;
+        //                    }
+        //
+        //                    browser.safari = browser.ver = safariVersion;
+        //                }
+        //            }else if(/KHTML\/(\S+)/.test(ua) || /Kongqueror\/([^;]+)/.test(ua)){
+        //                engine.ver = browser.ver = RegExp["$1"];
+        //                engine.khtml = browser.konq = parseFloat(engine.ver);
+        //            }else if(/rv:([^\)]+)\) Gecko\/\d{8}/.test(ua)){
+        //                engine.ver = RegExp["$1"];
+        //                engine.gecko = parseFloat(engine.ver);
+        //
+        //                if(/Firefox\/(\S+)/.test(ua)){
+        //                    browser.ver = RegExp["$1"];
+        //                    browser.firefox = parseFloat(browser.ver);
+        //                }
+        //            }else if(/MSIE ([^;]+)/.test(ua)){
+        //                engine.ver = browser.ver = RegExp["$1"];
+        //                engine.ie = browser.id = parseFloat(engine.ver);
+        //            }
+        //
+        //            browser.id = engine.ie;
+        //            browser.opera = engine.opera;
+        //
+        //            var p = navigator.platflorm || '';
+        //            system.win = p.indexOf('Win') == 0;
+        //            system.mac = p.indexOf('Mac') == 0;
+        //            system.xll = (p == "X11") || (p.indexOf("Linux") == 0);
+        //
+        //
+        //            system.iphone = ua.indexOf('iPhone') > -1;
+        //            system.ipod = ua.indexOf('iPod') >-1;
+        //            system.ipad = ua.indexOf('iPad') > -1;
+        //            system.nokiaN = ua.indexOf('NokiaN') > -1;
+        //
+        //            if(system.win == "CE"){
+        //                system.winMobile = system.win;
+        //            }else if(system.win == "Ph"){
+        //                if(/Windows Phone OS (\d+.\d+)/.test(ua)){
+        //                    system.win = "Phone";
+        //                    system.winMobile = parseFloat(RegExp["$1"]);
+        //                }
+        //            }
+        //
+        //            if(system.mac && ua.indexOf('Mobile') > -1){
+        //                if(/CPU (?:iPhone )?OS (\d+_\d+)/.test(ua)){
+        //                    system.ios = parseFloat(RegExp.$1.replace('_','.'));
+        //                }else{
+        //                    system.ios = 2;
+        //                }
+        //            }
+        //
+        //
+        //            if(/Android (\d+\.\d+)/.test(ua)){
+        //                system.android = parseFloat(RegExp.$1);
+        //            }
+        //
+        //            return {
+        //                engine:JSON.stringify(engine),
+        //                browser: JSON.stringify(browser),
+        //                system: JSON.stringify(system)
+        //            };
+        //
+        //
+        //        }();
+        //
+        //        console.log(client)
+        GSTools.Car.initCar();
+
+        var myScroll_right;
+        var myScroll_left;
+        var myScroll_bottom;
+
+        var schoolSelRole = GSTools.roleMap["{$_SESSION['school']['tactics']}"];
+
+        $('#dh').click(function(){
+            window.location.href = "{:U('Index/index')}"+"/reset/true/st/{$_SESSION['st']}";
+        })
+
+        function loaded() {
+            myScroll_left = new IScroll('#left', { scrollX: true, freeScroll: true ,preventDefault:false, preventDefaultException:{ tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT|CANVAS|LI|A)$/ }});
+            myScroll_right = new IScroll('#right_show', { scrollX: true, freeScroll: true ,preventDefault:false, preventDefaultException:{ tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT|CANVAS|A|i)$/ }});
+            myScroll_bottom = new IScroll('#product_list', { scrollX: true, freeScroll: true ,preventDefault:false, preventDefaultException:{ tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT|CANVAS|A)$/ }});
+        }
+
+        document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+
+        GSTools.ModelLoading.init();
+        function bindEvnet(){
+            $('.happybtn').each(function(){
+                $(this).click(function(){
+                    obj = $(this).closest('div').prev().find('.addCar');
+                    var panel = obj.find('#operPanel');
+                    var src = panel.attr('_src');
+
+                    var name = obj.attr('_name');
+                    var id = obj.attr('_id');
+                    var price = $(this).attr('_price');
+                    var basic_type_id = obj.attr('basic_type_id');
+
+                    if($(this).hasClass('btn-warning')){
+                        GSTools.Car.delCar(id);
+                        GSTools.Car.getTotalMsg('carShow-count','carPanel-count','carShow-title')
+                        $(this).html('购买').addClass('btn-primary').removeClass('btn-warning')
+                        eachAddItem();
+                    }else{
+                        var item = {};
+                        item['price'] = price;
+                        item['name'] = name;
+                        item['id'] = id;
+                        item['count'] = 1;
+                        item['buynum'] = 1;
+                        item['src'] = src;
+                        item['ishappy'] = true;
+                        item['isnow'] = 0
+                        item['basic_type_id'] = basic_type_id
+
+                        console.log(item)
+
+                        var r = true
+                        if(!(GSTools.Car.checkNow(0))){
+                            r = confirm('您的订单包含自提和预定两种商品,您确定清空购物重新添加么')
+                            if(r){
+                                GSTools.Car.initCar();
+                                GSTools.Car.setCar(item);
+                                GSTools.Car.getTotalMsg('carShow-count','carPanel-count','carShow-title')
+                                $(this).html('已购买').addClass('btn-warning').removeClass('btn-primary')
+                                eachAddItem();
+                            }else{
+                                return;
+                            }
+                        }else{
+                            GSTools.Car.setCar(item);
+                            GSTools.Car.getTotalMsg('carShow-count','carPanel-count','carShow-title')
+                            $(this).html('已购买').addClass('btn-warning').removeClass('btn-primary')
+                            eachAddItem();
+                        }
+                    }
+
+                })
+            })
+
+            $('.addCar').each(function(){
+                var panel = $(this).find('#operPanel');
+                var del = $(this).find('.delB');
+                var add = $(this).find('.addB');
+                var s = $(this).find('#show');
+                var b = s.attr('buynum');
+                var src = panel.attr('_src');
+                var isnow = panel.attr('isnow');
+                var basic_type_id = $(this).attr('basic_type_id');
+
+                var name = $(this).attr('_name');
+                var id = $(this).attr('_id');
+                var price = $(this).attr('_price');
+
+                if(s.html()!=0)
+                    panel.css('display','inline-block')
+
+                del.click(function(){
+                    var num = parseInt(s.text());
+                    if(num>0){
+                        if(num > 0)
+                            s.text(--num);
+                        if(num == 0)
+                            panel.hide();
+                    }else{
+                        panel.hide();
+                    }
+
+                    GSTools.Car.delCar(id);
+                    GSTools.Car.getTotalMsg('carShow-count','carPanel-count','carShow-title')
+
+                    eachAddItem();
+
+                })
+
+
+                add.click(function(){
+                    var num = parseInt(s.text());
+                    if(num<b){
+                        var item = {};
+                        item['price'] = price;
+                        item['name'] = name;
+                        item['id'] = id;
+                        item['count'] = 1;
+                        item['buynum'] = b;
+                        item['src'] = src;
+                        item['ishappy'] = false;
+                        item['isnow'] = isnow;
+                        item['basic_type_id'] = basic_type_id
+
+                        var r = true
+                        if(!(GSTools.Car.checkNow(isnow))){
+                            r = confirm('您的订单包含自提和预定两种商品,您确定清空购物重新添加么')
+                            if(r){
+                                GSTools.Car.initCar();
+                                GSTools.Car.setCar(item);
+                                GSTools.Car.getTotalMsg('carShow-count','carPanel-count','carShow-title')
+                                eachAddItem();
+                            }else{
+                                return;
+                            }
+                        }else{
+                            GSTools.Car.setCar(item);
+                            GSTools.Car.getTotalMsg('carShow-count','carPanel-count','carShow-title')
+
+                            eachAddItem();
+                        }
+
+                        s.text(++num);
+                        panel.show();
+                    }else{
+                        swal('亲，这个东西您先来这'+b+'个吧');
+                    }
+                    return false;
+                })
+            })
+        }
+
+
+
+        function eachAddItem(){
+            $('#product_list_scroller').html('')
+            var carList = GSTools.Car.getCar();
+            for(item in carList){
+                addItem(carList[item])
+            }
+
+            $('.addCar_little').each(function() {
+                var del = $(this).find('.delB');
+                var add = $(this).find('.addB');
+                var s = $(this).find('#show');
+                var id = $(this).attr('_id');
+                var b = s.attr('buynum');
+                var price = s.attr('price');
+                var happy = s.attr('happy');
+                var isnow = s.attr('isnow');
+
+                del.click(function () {
+                    var num = GSTools.Car.subItemCount(id);
+                    if (num == 0) {
+                        if(happy === 'true'){
+                            $('.happybtn[_id='+id+']').html('购买').addClass('btn-primary').removeClass('btn-warning')
+                        }else{
+                            $('.addCar[_id='+id+']').find('#show').html(0);
+                            $('.addCar[_id='+id+']').find('#operPanel').hide();
+                        }
+                        $(this).parent().parent().remove();
+                    } else {
+                        s.text(num)
+                        $('.addCar[_id='+id+']').find('#show').html($(this).next().html());
+                    }
+                    GSTools.Car.getTotalMsg('carShow-count','carPanel-count','carShow-title')
+
+                })
+
+
+                add.click(function () {
+                    var num = parseInt(s.text());
+                    if (num < b) {
+                        s.text(++num);
+                        //panel.show();
+
+                        var item = {};
+                        item['price'] = price;
+                        item['name'] = name;
+                        item['id'] = id;
+                        item['count'] = 1;
+                        item['isnow'] = isnow;
+
+                        GSTools.Car.setCar(item);
+                        GSTools.Car.getTotalMsg('carShow-count','carPanel-count','carShow-title')
+                        $('.addCar[_id='+id+']').find('#show').html($(this).prev().html());
+                    } else {
+                        swal('亲，这个东西您先来这' + b + '个吧');
+                    }
+                })
+            });
+            myScroll_bottom.refresh();
+        }
+
+        function addItem(item){
+            var html = '';
+            html+='<div class="addCar_little row" style="margin:0;" _id="'+item['id']+'" >'
+            html+='<div class="col-xs-2 " style="padding:10px 7px;font-size: 16px;" ><img src="'+item['src']+'" style="width:36px;height:24px;" ></div>'
+            html+='<div class="col-xs-4 multiEllipsis1" style="padding:5px 7px;font-size: 16px;text-align: left;" >'+item['name']+(item.ishappy?' <span style="color:red">[幸运价]</span>':'')+((item.isnow==1) ?' <span style="color:red">[现提]</span>':'')+'</div>'
+            html+='<div class="col-xs-3" style="padding:2px 0;font-size: 16px;"><i class="fa fa-cny" style="margin-right:5px;"></i>'+item['price']+'</div>'
+            if(item.ishappy) {
+                html += '<div class="col-xs-3" style="padding:2px 0;font-size: 16px;"><i class="delB fa fa-minus-square" style="margin-right:5px;font-size:18px;"></i><span id="show" price="' + item['price'] + '" happy="true" buynum="' + item['buynum'] + '">' + item['count'] + '</span></div>'
+            }else if(item.isnow) {
+                html+='<div class="col-xs-3" style="padding:2px 0;font-size: 16px;"><i class="delB fa fa-minus-square" style="margin-right:5px;font-size:18px;"></i><span id="show" price="'+item['price']+'" isnow="true" buynum="'+item['buynum']+'">'+item['count']+'</span><i class="addB fa fa-plus-square" style="margin-left:5px;font-size:18px;"></i></div>'
+            }else{
+                html+='<div class="col-xs-3" style="padding:2px 0;font-size: 16px;"><i class="delB fa fa-minus-square" style="margin-right:5px;font-size:18px;"></i><span id="show" price="'+item['price']+'" buynum="'+item['buynum']+'">'+item['count']+'</span><i class="addB fa fa-plus-square" style="margin-left:5px;font-size:18px;"></i></div>'
+            }
+
+            html+='</div>'
+            $('#product_list_scroller').append(html)
+        }
+
+
+        function showAndHide(){
+            GSTools.ModelLoading.showWithoutLoad();
+            if($('#carPanel').attr('show') == 'show'){
+                t = '0';
+                $('#carPanel_pic').animate({margin:'-20px 0 0 40px'},200,function(){
+                    $('#carPanel_pic').css('margin','-20px 0 0 40px').hide();
+                    $('#panel_car').hide();
+                    $('#carPanel').hide();
+                });
+            }else{
+                t = '-320px';
+                $('#carPanel').show();
+                $('#carShow_pic').hide();
+                $('#carPanel_pic').animate({margin:'-20px 0 0 200px'},200,function(){
+                    $('#carPanel_pic').css('margin','-20px auto 0 auto').show();
+                });
+            }
+
+            $('#carPanel').animate({top:t},200,function(){
+                if($(this).attr('show') == 'show'){
+                    $(this).removeAttr('show')
+                    GSTools.ModelLoading.hidden();
+                    $('#carShow_pic').show();
+
+                }else{
+                    $(this).attr('show','show');
+                    $('#panel_car').show();
+                }
+            });
+
+
+        }
+
+        $(function(){
+            loaded()
+
+            $('#car').click(showAndHide)
+            $('#panel_car').click(showAndHide)
+            $('#carPanel_pic').hide();
+
+            eachAddItem();
+
+            GSTools.Car.getTotalMsg('carShow-count','carPanel-count','carShow-title')
+            bindEvnet();
+
+            $('#payBtn').click(function(){
+                if(GSTools.Car.getCount() == 0){
+                    swal("请选择商品");
+                }else{
+                    window.location.href="{:U('Order/checkuser')}"
+                }
+            });
+
+            $('.filter-p li').click(function(){
+                $('.filter-p li').removeClass('menuclick')
+                $(this).addClass('menuclick');
+                var type = $(this).attr('prikey');
+                $('#productShow').html(GSTools.loading);
+                myScroll_right.scrollTo(0,0,1)
+//                myScroll_right.reorderInfinite();
+//                myScroll_right.resetPosition();
+                if($(this).attr('happy')=='true'){
+                    if(store.get('popup') == null){
+                        document.getElementById('abcd').click();
+                        store.set('popup',true);
+                    }
+                }
+
+
+                if($(this).attr('admin')=='true'){
+                    if($(this).attr('c_type')=='confirm')
+                        window.location.href="{:U('Product/pick')}";
+                    if($(this).attr('c_type')=='praise')
+                        window.location.href="{:U('Product/praise')}";
+                    if($(this).attr('c_type')=='cancelOrder')
+                        window.location.href="{:U('Product/cancelOrder')}";
+                    return;
+                }
+
+                $.ajax({
+                    url:"{:U('Product/searchProduct')}"
+                    ,data:{
+                        type:type||'',
+                        happy:($(this).attr('happy')=='true')?1:0,
+                        isnow:($(this).attr('isnow')=='true')?1:0
+                    }
+                    ,type:'post'
+                    ,async:true
+                    ,success:function(data){
+                        var returnData =eval('('+data+')');
+                        if(returnData.status == 'success'){
+                            $('#productShow').html('');
+                            var list = returnData.data;
+                            for(var i in list){
+
+                                var item = GSTools.Car.getItem(list[i].id);
+
+                                var count = 0;
+                                if(item){
+                                    count = item.count;
+                                }
+
+                                var html = '';
+                                html += '<div class="listing-item-body clearfix" style="padding:8px 0 0 10px;';
+                                if(returnData.happy == 0){
+                                    html += 'border-bottom:1px solid #CCC;'
+                                }
+                                html += '">';
+                                html += '<div class="pro-title" style="position:relative;">'
+                                html += '<img src="__ROOT__/'+list[i].title_pic+'" style="width:120px;height:80px;float:left; padding:0 0 2px 0;margin-right:5px;" data-echo="img/album-1.jpg">'
+                                if(list[i].show_icon == 1){
+                                    html += '<img src="__ROOT__/Public/images/new1.png" style="display:block;position:absolute;left:0;top:0;"/>';
+                                }
+                                if(schoolSelRole == 'mj'){
+                                    //if(list[i]['basic_type_id'] == 2 || list[i]['basic_type_id'] == 3){
+                                    if(list[i]['basic_type_id'] == 8){
+                                        html += '<img src="__ROOT__/Public/images/manjian.png" style="display:block;position:absolute;left:80px;top:35px;opacity:0.6;-moz-opacity:0.6"/>';
+                                    }
+                                }
+                                html += '<div style="vertical-align: top;">'
+                                html += '<h5 style="margin:0;padding:0;">'
+                                html += '<span id="titleName" class="multiEllipsis2">'+list[i].name+'</span>'
+                                html += '</h5>'
+                                html += '<p style="color:#aaa;font-size:12px;margin-top: 3px;" class="multiEllipsis2">'+(list[i].de || '')+'</p>';
+                                html += '</div>'
+                                html += '<div style="clear: both;"></div>'
+                                html += '</div>'
+                                html += '<div class="pro-body">'
+                                html +=  '<div class="elements-list pull-left">'
+                                html += '<span id="priceNum" p="'+list[i].vip_price+'" class="price" style="font-size: 14px;color:#e84c3d;padding-right:2px;"><i class="fa fa-cny"></i>'+list[i].vip_price+'/'+(list[i].unit || '')+'</span>'
+                                html += '<span class="price" style="font-size: 12px;text-decoration:line-through;color:#c9c9c9;">原价<i class="fa fa-cny" style="margin-right:5px;"></i>'+list[i].price+'/'+(list[i].unit || '')+'</span>'
+                                html += '</div>'
+
+                                if(list[i].inventory >0){
+
+                                    html += '<div class="addCar elements-list pull-right" style="';
+
+                                    if(returnData.happy == 1)
+                                        html += 'display:none;';
+
+                                    html += 'margin-right:5px;font-size:20px;" _name="'+list[i].name+'" _id="'+list[i].id+'" basic_type_id="'+list[i].basic_type_id+'" _price="'+list[i].vip_price+'">'
+                                    html += '<div id="operPanel" isnow="'+list[i].isnow+'" _src="__ROOT__/'+list[i].title_pic+'" style="padding-right:5px;display: none;margin:0;"><i class="delB f24 fa fa-minus-square pr-5"></i><span id="show" buynum="'+list[i].buynum+'">'+count+'</span></div><i class="addB f24 fa fa-plus-square pr-5"></i>'
+                                    html += '</div>'
+                                }else{
+                                    html += '<div class="pull-right" style="margin-right:10px;">'
+                                    html += '<img src="__ROOT__/Public/images/soldout1.png" style="display:inline-block;margin-top:-30px;"/>'
+                                    html += '<div style="clear:both;"></div>'
+                                    html += '</div>'
+                                }
+                                html += '</div>'
+                                html += '</div>'
+
+                                if(list[i].inventory >0 && returnData.happy == 1){
+                                    html += '<div class="pro-bottom" style="border-bottom:1px solid #ccc;padding:8px 0 0 10px;height:60px;">';
+
+                                    if(list[i]['is_buy'] == 0){
+                                        html += '<label stlye="float:left;">幸运价:</label>';
+
+                                        html += '<div id="lotteryContainer'+i+'" style="float:left;margin-left:60px;position:relative;z-index:999999;margin-bottom:-5px;"></div>';
+                                        if(item && item.ishappy)
+                                            html += '<button type="button" _id="'+list[i].id+'" id="search" class="happybtn btn btn-warning '+((item?'':'disabled'))+'" _price="'+list[i].happy_price+'" style="margin-left:100px;padding:5px;min-width:0;">已购买</button></div>';
+                                        else
+                                            html += '<button type="button" _id="'+list[i].id+'" id="search" class="happybtn btn btn-primary '+((item?'':'disabled'))+'" _price="'+list[i].happy_price+'" style="margin-left:100px;padding:5px;min-width:0;">购买</button></div>';
+                                    }else{
+                                        html += '<label stlye="float:left;">明天再来试手气吧</label>';
+                                    }
+                                }else if(list[i].inventory <=0 && returnData.happy == 1){
+                                    html += '<div class="pro-bottom" style="border-bottom:1px solid #ccc;padding:8px 0 0 10px;height:20px;">';
+                                }
+
+
+                                $('#productShow').append($(html));
+                                if(list[i].inventory >0 && list[i]['is_buy'] == 0){
+
+                                    function ii(s){
+                                        var happy = false;
+                                        if(item){
+                                            happy = (item.ishappy==true)?true:false;
+                                        }
+
+                                        var lottery = new Lottery('lotteryContainer'+s, '#CCC', 'color', 80, 30, happy,$('#right_show'), drawPercent);
+                                        console.log(lottery)
+                                        lottery.init('￥'+list[i].happy_price, 'text');
+
+                                        function drawPercent(percent) {
+                                            if(percent > 30){
+                                                $('#lotteryContainer'+s).next().removeClass('disabled');
+                                            }
+                                        }
+                                    }
+
+                                    ii(i);
+                                }
+                            }
+                            myScroll_right.refresh();
+                            bindEvnet();
+
+//                            var drawPercentNode = document.getElementById('drawPercent');
+
+
+                        }else if(returnData.status == 'error'){
+                            $('#productShow').html('<p style="font-size:14px;color:#E84C3D;text-align:center;padding:5px;margin-top:100px;">此类型商品不存在</p>');
+                        }else if(returnData.status == 'happy_none'){
+                            $('#productShow').html('<p style="font-size:14px;color:#E84C3D;text-align:center;padding:5px;margin-top:100px;">今天的幸运果已被抢空<br>明天早点来哦</p>');
+                        }
+                    }
+                    ,error:function(){
+                        $('#productShow').html('<p style="font-size:14px;color:#E84C3D;text-align:center;padding:5px;margin-top:100px;">内部错误,可能是由于网络原因造成的<br>请您重新选择商品</p>');
+                    }
+                });
+            })
+
+            $('.filter-p li:eq(0)').click();
+
+
+        });
+
+
+
+        function getRandomStr(len) {
+            var text = "";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            for( var i=0; i < len; i++ )
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+            return text;
+        }
+
+    </script>
+    <script type="text/javascript" src="__PUBLIC__/js/Lottery1.js?v=2.0"></script>
+</block>
+<extend name="Common@Shared/Idea/layoutMobileBase" />

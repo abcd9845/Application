@@ -1,0 +1,170 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+    <form class="form-inline definewidth m20" action="__CONTROLLER__/del" method="post" onsubmit="return false;">
+        <div>
+            商品名称：
+            <input type="text" name="filter_name" id="name" class="abc input-default" value="{$filter.filter_name}">&nbsp;&nbsp;
+            <if condition="$_SESSION['current_user']['gloab_role'] eq true">
+                商品类型：
+                <select id="filter_school_type" name="filter_school_type">
+                    <option value="">请选择</option>
+                    <option value="0">学校</option>
+                    <option value="1">写字楼</option>
+                </select>
+                <select id="filter_school" name="filter_school">
+                    <option value="">请选择</option>
+                </select>
+                <select id="filter_goods_type" name="filter_goods_type">
+                    <option value="">请选择</option>
+                </select>&nbsp;&nbsp;
+            </if>
+            <if condition="$_SESSION['current_user']['gloab_role'] eq false">
+                <select id="filter_goods_type" name="filter_goods_type" datatype="*" nullmsg="请选择商品类型！" errormsg="请选择商品类型！">
+                    <option value="">请选择</option>
+                    <volist name="goods_type" id="t">
+                        <option value="{$t.id}">{$t.type_name}</option>
+                    </volist>
+                </select>&nbsp;&nbsp;
+            </if>
+
+            商品状态：
+            <select id="filter_online" name="filter_online">
+                <option value="">请选择</option>
+                <option value="0">上架</option>
+                <option value="1">下架</option>
+            </select>&nbsp;&nbsp;
+            <button type="button" id="search" class="btn btn-primary">查询</button>&nbsp;&nbsp;
+            <button type="button" class="btn btn-success" id="addnew">商品出库</button>&nbsp;&nbsp;
+            <button type="button" class="btn btn-danger" id="del">删除</button>&nbsp;&nbsp;
+        </div>
+        <input type="hidden" id="id" name="id"  >
+        <table class="table table-bordered table-hover definewidth m10">
+            <thead>
+            <tr>
+                <th></th>
+                <th>仓库类型</th>
+                <th>仓库</th>
+                <th>商品类型</th>
+                <th>商品名称</th>
+                <th>商品状态</th>
+                <th>零售价格</th>
+                <th>大客户价格</th>
+                <th>库存</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <volist name="array" id="vo">
+                <tr>
+                    <td><input type="checkbox" id="ck" name="ck" value="{$vo.id}"></td>
+                    <td>
+                        <eq name="vo.school_type" value="0">学校</eq>
+                        <eq name="vo.school_type" value="1">写字楼</eq>
+                    </td>
+                    <td>{$vo.school_name}</td>
+                    <td>{$vo.type_name}</td>
+                    <td>{$vo.name}</td>
+                    <td>
+                        <eq name="vo.online" value="0">上架</eq>
+                        <eq name="vo.online" value="1">下架</eq>
+                    </td>
+                    <td>{$vo.price}</td>
+                    <td>{$vo.vip_price}</td>
+                    <td>{$vo.inventory}</td>
+                    <td>
+                        <a href="__CONTROLLER__/toEdit/id/{$vo.id}">编辑</a>
+                    </td>
+                </tr>
+            </volist>
+        </table>
+        <div class="result page">{$show}</div>
+    </form>
+</block>
+<block name="myscript">
+<script>
+    $(function () {
+        var state = 0
+
+        $('#addnew').click(function(){
+            window.location.href="__CONTROLLER__/toAdd";
+        });
+
+        $('#search').click(function(){
+            $('form')[0].action = "__CONTROLLER__";
+            $('form')[0].submit();
+        });
+
+        <if condition="$_SESSION['current_user']['gloab_role'] eq true">
+        $('#filter_school_type').change(function(){
+            $('#filter_school').find('option').remove();
+            $('#filter_school').append('<option value="">请选择</option>');
+
+            $('#filter_goods_type').find('option').remove();
+            $('#filter_goods_type').append('<option value="">请选择</option>');
+
+            if($(this).val() != ''){
+                $.get("__CONTROLLER__/changeSchool", {school_id: $(this).val() },function(data){
+                    for(var i=0;i<data.length;i++){
+                        $('#filter_school').append($('<option value="'+data[i].id+'">'+data[i].name+'</option>'));
+                    }
+
+                    if(state == 0){
+                        $('#filter_school').val("{$filter.filter_school}").change();
+                    }
+                })
+            }
+        })
+
+        $('#filter_school').change(function(){
+            $('#filter_goods_type').find('option').remove();
+            $('#filter_goods_type').append('<option value="">请选择</option>');
+            if($(this).val() != ''){
+                $.get("__CONTROLLER__/changeGoodsType", {school_id: $(this).val() },function(data){
+                    for(var i=0;i<data.length;i++){
+                        $('#filter_goods_type').append($('<option value="'+data[i].id+'">'+data[i].type_name+'</option>'));
+                    }
+
+                    if(state == 0){
+                        $('#filter_goods_type').val("{$filter.filter_goods_type}");
+                    }
+
+                    state++;
+                })
+            }
+        })
+        </if>
+
+        <if condition="$_SESSION['current_user']['gloab_role'] eq false">
+
+        $('#filter_goods_type').val("{$filter.filter_goods_type}");
+
+        </if>
+
+        $('#del').click(function(){
+            var obj = $('input[type=checkbox][name=ck]:checked');
+            if(obj.length > 0){
+                var str_val = '';
+                obj.each(function(index){
+                    if(index>0){
+                        str_val+=',';
+                    }
+                    str_val+=$(this).val();
+                })
+
+                $('#id').val(str_val);
+                $('form')[0].submit();
+            }
+        })
+
+
+        $('#goods_name').val("{$filter.goods_name}");
+        <if condition="$_SESSION['current_user']['gloab_role'] eq true">
+        $('#filter_school_type').val('{$filter.filter_school_type}').change();
+        </if>
+        <if condition="$_SESSION['current_user']['gloab_role'] eq false">
+        $('#filter_goods_type').val('{$filter.filter_goods_type}');
+        </if>
+        $('#filter_online').val('{$filter.filter_online}');
+
+    });
+</script>
+</block>

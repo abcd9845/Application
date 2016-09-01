@@ -1,0 +1,41 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+    <form action="add" method="post" class="definewidth m20" enctype="multipart/form-data">
+        <table class="table table-bordered table-hover definewidth m10">
+            <tr>
+                <td width="10%" class="tableleft">商品名称</td>
+                <td>{$t.name}</td>
+            </tr>
+            <tr>
+                <td width="10%" class="tableleft">商品类型</td>
+                <td>{$t.basic_type}</td>
+            </tr>
+            <tr>
+                <td class="tableleft">标题图片</td>
+                <td>
+                    <img src="__ROOT__/{$t.title_pic}">
+                </td>
+            </tr>
+            <tr>
+                <td class="tableleft">备注</td>
+                <td>{$t.description}</td>
+            </tr>
+            <tr>
+                <td class="tableleft"></td>
+                <td>
+                    <button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</block>
+<block name="myscript">
+    <script>
+        $(function () {
+            $('#backid').click(function(){
+                $('form')[0].action="__CONTROLLER__";
+                $('form')[0].submit();
+            });
+        });
+    </script>
+</block>

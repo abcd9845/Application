@@ -1,0 +1,46 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+<form id="form" action="add" method="post" class="definewidth m20">
+    <table class="table table-bordered table-hover definewidth m10">
+        <tr>
+            <td width="10%" class="tableleft">基础商品类型</td>
+            <td>
+                <select id="up_type_id" name="up_type_id"  datatype="*" nullmsg="请选基础商品类型！" errormsg="请选基础商品类型！">
+                    <option value="">请选择</option>
+                    <volist name="goods_type" id="s">
+                        <option value="{$s.id}">{$s.type_name}</option>
+                    </volist>
+                </select>
+                <label class="red">*</label>
+            </td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">子商品类型</td>
+            <td><input type="text" name="type_name" datatype="*2-32" errormsg="子商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td class="tableleft"></td>
+            <td colspan="2">
+                <button type="submit" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</block>
+<block name="myscript">
+<script>
+    $(function () {
+        $('#backid').click(function(){
+            $('form')[0].action="__CONTROLLER__";
+            $('form')[0].submit();
+        });
+
+        $("#form").Validform({
+            tiptype: 2,
+            showAllError: true
+        });
+    });
+</script>
+</block>

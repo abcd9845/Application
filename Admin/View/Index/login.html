@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>后台管理系统</title>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon"href="__ROOT__/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/bootstrap.css" />
+    <script type="text/javascript" src="__PUBLIC__/admin/js/jquery-1.11.1.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/admin/js/bootstrap.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4 col-sm-offset-4">
+          <form method="post" action="{:U('Index/logon')}">
+            <h2>登录系统</h2>
+            <div class="form-group">
+              <input type="text" name="username" class="form-control" placeholder="账号">
+            </div>
+            <div class="form-group">
+              <input type="password" name="password" class="form-control" placeholder="密码">
+            </div>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-sm-8">
+                  <input type="text" name="verify" class="form-control" placeholder="验证码">
+                </div>
+                <div class="col-sm-4">
+                  <a href="javascript:;" id="refreshVC"><img src="{:U('Index/verifyCode')}"></a>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <button class="btn btn-large btn-primary" type="submit">登录</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#refreshVC').click(function () {
+          $('img', this).attr('src', "{:U('Index/verifyCode')}?" + Math.random());
+        })
+      })
+    </script>
+  </body>
+</html>

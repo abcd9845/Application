@@ -1,0 +1,141 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+    <form class="form-inline definewidth m20" action="__CONTROLLER__/del" autocomplete="off" method="post" onsubmit="return false;">
+        <div style="width:800px;margin:0 auto;font-size:40px;text-align: center;">
+            <table class="definewidth m10">
+                <tr style="height:100px;">
+                    <td>下单电话</td>
+                    <td><input type="text" name="phone" id="phone" class="abc input-default" placeholder="" ></td>
+                </tr>
+                <tr style="height:100px;">
+                    <td>订单号</td>
+                    <td><input type="text" name="name" id="name" class="abc input-default" placeholder="" ></td>
+                </tr>
+                <tr style="height:100px;">
+                    <td colspan="2">
+                        <button type="button" id="search" class="btn btn-primary" style="padding:20px 50px;margin-top:-10px;">查询</button>&nbsp;&nbsp;
+                        <button type="button" id="apply" class="btn btn-success" style="padding:20px 50px;margin-top:-10px;">确认</button>&nbsp;&nbsp;
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <empty name="result">
+            <div style="width:800px;margin:0 auto;font-size:40px;color:red;padding:50px 0;text-align: center;">
+                {$msg}
+            </div>
+        </empty>
+        <notempty name="result">
+            <div id="result">
+                <table class="table table-bordered table-hover definewidth m10">
+                    <tr>
+                        <th style="width:25%;">订单号</th>
+                        <td>{$result.order_no}</td>
+                    </tr>
+                    <tr>
+                        <th>下单时间</th>
+                        <td>{$result.create_time}</td>
+                    </tr>
+                    <tr>
+                        <th>联系电话</th>
+                        <td>{$result.mobile}</td>
+                    </tr>
+                    <tr>
+                        <th>收货人</th>
+                        <td>{$result.real_name|urldecode}</td>
+                    </tr>
+                    <tr>
+                        <th>收货地址</th>
+                        <td>
+                            <eq name="result.re_type" value="0">自提</eq>
+                            <eq name="result.re_type" value="1">送货上门</eq>
+                        </td>
+                    </tr>
+                    <eq name="result.re_type" value="0">
+                        <tr>
+                            <th>收货地址</th>
+                            <td>{$result.address}</td>
+                        </tr>
+                        <tr>
+                            <th>取货时间</th>
+                            <td>{$result.pick_time}</td>
+                        </tr>
+                        <tr>
+                            <th>取货单号</th>
+                            <td>{$result.pick_no}</td>
+                        </tr>
+                    </eq>
+                    <eq name="result.re_type" value="1">
+                        <tr>
+                            <th>收货地址</th>
+                            <td>{$result.delivery_address}</td>
+                        </tr>
+                    </eq>
+                    <tr>
+                        <th >商品信息</th>
+                        <td colspan="2">
+                            <table id="goodsBody" class="table table-bordered table-hover m10">
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </notempty>
+    </form>
+</block>
+<block name="myscript">
+    <script>
+        $(function () {
+            $('#phone').focus();
+//            $('#name').keydown(function(event){
+//                if (event.keyCode == "13"){
+//                    if($.trim($('#name').val())!=''){
+//                        $('form')[0].action = "__CONTROLLER__/confirm";
+//                        $('form')[0].submit();
+//                    }
+//                }
+//            })
+
+            $('#search').click(function() {
+                if (!($.trim($('#name').val()) == '' || $.trim($('#phone').val()) == '')) {
+                    $('form')[0].action = "__CONTROLLER__/confirm";
+                    $('form')[0].submit();
+                }
+            });
+
+            <notempty name="result">
+            var obj = JSON.parse('{$result.goods_items}');
+            var table = $('#goodsBody');
+            table.append($('<tr><th>商品名称</th><th>单价</th><th>数量</th></tr>'));
+            for(var i=0;i<obj.length;i++){
+                var item = obj[i];
+                var tr = $('<tr></tr>');
+                tr.append($('<td>'+item['name']+( item['ishappy']?' <span style="color:red">[幸运价]</span>':'')+'</td><td>'+item['price']+'</td><td>'+item['count']+'</td>'));
+                table.append(tr);
+            }
+            var total = getTotal({$result.total},{$result.discount},{$result.expense});
+        table.append($('<tr><td colspan="3" style="text-align:right;">'+total+'</td></tr>'));
+        $('#search').focus();
+        $("form").append("<input type='hidden' id='hide_name' name='hide_name' value='{$result.order_no}' >");
+        $("form").append("<input type='hidden' id='hide_phone' name='hide_phone' value='{$result.mobile}' >");
+
+        $('#apply').click(function(){
+            $('form')[0].action = "__CONTROLLER__/save";
+            $('form')[0].submit();
+        })
+
+//            $('#search').keydown(function(event){
+//                if (event.keyCode == "13"){
+//                    $('form')[0].action = "__CONTROLLER__/save";
+//                    $('form')[0].submit();
+//                }
+//            });
+//            $('#search').click(function(){
+//                    $('form')[0].action = "__CONTROLLER__/save";
+//                    $('form')[0].submit();
+//            });
+        </notempty>
+
+
+        })
+    </script>
+</block>

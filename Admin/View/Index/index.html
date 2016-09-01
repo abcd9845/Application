@@ -1,0 +1,167 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>后台管理系统</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="shortcut icon"href="__ROOT__/favicon.ico">
+    <link href="__ROOT__/Public/js/assets/css/dpl-min.css" rel="stylesheet" type="text/css" />
+    <link href="__ROOT__/Public/js/assets/css/bui-min.css" rel="stylesheet" type="text/css" />
+    <link href="__ROOT__/Public/js/assets/css/main-min.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<div class="header" style="height:60px;background: #190760">
+
+    <div class="dl-title" style="">
+        <img src="__PUBLIC__/images/admin-title.png
+
+        "><label>网站后台管理系统</label>
+    </div>
+    <div class="dl-log" style="line-height:60px;"><if condition="$_SESSION['current_user']['gloab_role'] eq true">超级管理员</if><if condition="$_SESSION['current_user']['gloab_role'] eq false">所在地区：［{$_SESSION['current_user']['name']}］</if>&nbsp;&nbsp;欢迎您， <strong>{$_SESSION['current_user']['real_name']|urldecode}</strong> <b class="caret"></b><a href="javascript:window.location.href='__CONTROLLER__/logoff'" title="退出系统" class="dl-log-quit">[退出]</a>
+    </div>
+</div>
+<div class="content">
+    <div class="dl-main-nav">
+        <div class="dl-inform"><div class="dl-inform-title"><s class="dl-inform-icon dl-up"></s></div></div>
+        <ul id="J_Nav"  class="nav-list ks-clear">
+            <if condition="$_SESSION['current_user']['username'] eq 'admin'">
+                <li class="nav-item dl-selected">
+                    <div class="nav-item-inner nav-order">业务管理</div>
+                </li>
+                <!--<li class="nav-item dl-selected">-->
+                <!--<div class="nav-item-inner nav-order">活动管理</div>-->
+                <!--</li>-->
+                <li class="nav-item dl-selected">
+                    <div class="nav-item-inner nav-home">系统管理</div>
+                </li>
+            </if>
+            <if condition="$_SESSION['current_user']['username'] neq 'admin'">
+                <if condition="$_SESSION['current_user']['role_id'] eq '1'">
+                    <li class="nav-item dl-selected">
+                        <div class="nav-item-inner nav-order">业务管理</div>
+                    </li>
+                </if>
+                <if condition="$_SESSION['current_user']['role_id'] eq '3'">
+                    <li class="nav-item dl-selected">
+                        <div class="nav-item-inner nav-order">业务管理</div>
+                    </li>
+                </if>
+            </if>
+        </ul>
+    </div>
+    <ul id="J_NavContent" class="dl-tab-conten">
+
+    </ul>
+</div>
+<script type="text/javascript" src="__ROOT__/Public/js/assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/assets/js/bui-min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/assets/js/common/main-min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/assets/js/config-min.js"></script>
+<script>
+    BUI.use('common/main',function(){
+        //var config = [{id:'1',menu:[{text:'系统管理',items:[{id:'12',text:'机构管理',href:'Node/index.html'},{id:'3',text:'角色管理',href:'Role/index.html'},{id:'4',text:'用户管理',href:'User/index.html'},{id:'6',text:'菜单管理',href:'Menu/index.html'}]}]},{id:'7',homePage : '9',menu:[{text:'业务管理',items:[{id:'9',text:'查询业务',href:'Node/index.html'}]}]}];
+        <if condition="$_SESSION['current_user']['username'] eq 'admin'">
+            var config = [
+                        {id:'1',homePage:'11',menu:[
+                            {text:'业务管理',items:[
+                                {id:'11',text:'商品基础信息',href:'__MODULE__/BasicGoods'}
+                                ,{id:'23',text:'商品入库管理',href:'__MODULE__/Storage'}
+                                ,{id:'24',text:'商品调拨',href:'__MODULE__/Transfers'}
+                                ,{id:'25',text:'商品上架',href:'__MODULE__/Online'}
+//                                ,{id:'27',text:'现提专区',href:'__MODULE__/OnlineNow'}
+//                                ,{id:'26',text:'幸运时光',href:'__MODULE__/HappyTime'}
+//                                ,{id:'13',text:'未出库订单',href:'__MODULE__/VendorOrderUnGo'}
+//                                ,{id:'14',text:'已出库订单',href:'__MODULE__/VendorOrder'}
+                                ,{id:'15',text:'(已付)打印自提',href:'__MODULE__/Print'}
+//                                ,{id:'16',text:'打印现提订单',href:'__MODULE__/Print/xianti'}
+                                ,{id:'16',text:'(已付)打印送货上门',href:'__MODULE__/Print/door'}
+                                ,{id:'17',text:'(到付)打印自提',href:'__MODULE__/Print/hdfkZiti'}
+                                ,{id:'18',text:'(到付)打印送货上门',href:'__MODULE__/Print/hdfkShangmen'}
+                                ,{id:'19',text:'要配送货物订单',href:'__MODULE__/PrintedGoods'}
+                                ,{id:'20',text:'(已付)订单汇总',href:'__MODULE__/OrderSum'}
+                                ,{id:'20',text:'(到付)订单汇总',href:'__MODULE__/OrderSumHD'}
+                                ,{id:'21',text:'确认收货',href:'__MODULE__/ConfirmGoods'}
+                                ,{id:'22',text:'(到付)取消订单',href:'__MODULE__/CancelOrder'}
+                                ,{id:'23',text:'团购管理',href:'__MODULE__/Group'}
+                                ,{id:'24',text:'顾客信息',href:'__MODULE__/Customer'}
+//                                ,{id:'22',text:'集赞验证',href:'__MODULE__/Praise'}
+                            ]
+                            }
+                        ]
+                        }
+//                        ,{id:'2',homePage : '18',menu:[
+//                            {text:'活动管理',items:[
+//                                 {id:'18',text:'幸运时光',href:'__MODULE__/HappyTime'}
+//                                ,{id:'16',text:'猜价格管理',href:'__MODULE__/GuessPrice'}
+//                            ]
+//                            }
+//                        ]
+//                        }
+                        ,{id:'7',homePage : '4',menu:[
+                            {text:'系统管理',items:[
+                                {id:'4',text:'用户管理',href:'__MODULE__/User'}
+//                                ,{id:'3',text:'供应商管理',href:'__MODULE__/Supplier'}
+                                ,{id:'5',text:'基础商品类型',href:'__MODULE__/GoodsType'}
+//                                ,{id:'6',text:'到货地址',href:'__MODULE__/Delivery'}
+                                ,{id:'8',text:'地址&费用',href:'__MODULE__/School'}
+                                ,{id:'19',text:'确认收货人员管理',href:'__MODULE__/FrontAdmin'}
+//                                ,{id:'28',text:'导出商品信息',href:'__MODULE__/ExportBasic'}
+//                                ,{id:'7',text:'子商品类型',href:'__MODULE__/GoodsTypeSec'}
+//                                ,{id:'6',text:'快递管理',href:'__MODULE__/Express'}
+//                                ,{id:'15',text:'大客户管理',href:'__MODULE__/Vip'}
+                            ]
+                            }
+                        ]
+                        }
+                    ]
+        </if>
+        <if condition="$_SESSION['current_user']['username'] neq 'admin'">
+            <if condition="$_SESSION['current_user']['role_id'] eq '1'">
+            var config = [
+                        {id:'1',homePage:'24',menu:[
+                            {text:'业务管理',items:[
+                                {id:'24',text:'商品调拨',href:'__MODULE__/Transfers'}
+                                ,{id:'25',text:'商品上架',href:'__MODULE__/Online'}
+//                                ,{id:'27',text:'现提专区',href:'__MODULE__/OnlineNow'}
+//                                ,{id:'26',text:'幸运时光',href:'__MODULE__/HappyTime'}
+//                                ,{id:'13',text:'未出库订单',href:'__MODULE__/VendorOrderUnGo'}
+//                                ,{id:'14',text:'已出库订单',href:'__MODULE__/VendorOrder'}
+                                ,{id:'15',text:'打印自提订单',href:'__MODULE__/Print'}
+//                                ,{id:'16',text:'打印现提订单',href:'__MODULE__/Print/xianti'}
+                                ,{id:'17',text:'打印送货上门订单',href:'__MODULE__/Print/door'}
+                                ,{id:'18',text:'要配送货物订单',href:'__MODULE__/PrintedGoods'}
+                                ,{id:'20',text:'订单汇总',href:'__MODULE__/OrderSum'}
+                                ,{id:'21',text:'确认收货',href:'__MODULE__/ConfirmGoods'}
+//                                ,{id:'22',text:'集赞验证',href:'__MODULE__/Praise'}
+                            ]
+                            }
+                        ]
+                        }
+                    ]
+                    </if>
+
+        <if condition="$_SESSION['current_user']['role_id'] eq '3'">
+            var config = [
+                        {id:'1',homePage:'17',menu:[
+                            {text:'业务管理',items:[
+                                 {id:'15',text:'打印自提订单',href:'__MODULE__/Print'}
+                                ,{id:'17',text:'打印送货上门订单',href:'__MODULE__/Print/door'}
+                                ,{id:'21',text:'确认收货',href:'__MODULE__/ConfirmGoods'}
+                            ]
+                            }
+                        ]
+                        }
+                    ];
+        </if>
+        </if>
+
+
+
+
+        new PageUtil.MainPage({
+            modulesConfig : config
+        });
+    });
+</script>
+</body>
+</html>

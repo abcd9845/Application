@@ -1,0 +1,99 @@
+<block name="page-content">
+    <section id="show_content" class="container minHeight" style="margin-top:5px;padding:5px 25px;">
+        <div class="row">
+            <div class="col-xs-4">
+                <img src="__PUBLIC__/images/success.png" style="margin-top:180px;"/>
+            </div>
+            <div class="col-xs-8">
+                <div style="margin-top:180px;margin-left:50px;">
+                    <h1 style="line-height: 150px;font-family: 黑体">已经放入购物车</h1>
+                    <h1 style="font-family: 黑体"><a href="{:U('Car/index')}" style="text-decoration:underline">去结算</a> 或选择 <a href="{:U('Product/index')}" style="text-decoration:underline">继续购物</a></h1>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</block>
+<block name="css-content">
+    <link rel="stylesheet" href="__PUBLIC__/css/product.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/jqzoom.css">
+</block>
+<block name="js-content">
+    <script src="__PUBLIC__/js/jquery.jqzoom1.0.1.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            var max = 6;
+            var show = 4;
+            var index = 1;
+            $('.left').css('background-position', '-67px -137px');
+            $('.left').mouseover(function() {
+                if (index > 1)
+                    $('.left').css('background-position', '-34px -137px');
+            }).mouseout(function() {
+                if (index > 1)
+                    $('.left').css('background-position', '0 -137px');
+            }).click(function() {
+                if (index > 1) {
+                    $('.right').css('background-position', '-16px -137px');
+                    $('.barcontent ul').animate({"margin-left": "+=70px"}, 100);
+                    index--;
+                }
+                if (index == 1) {
+                    $('.left').css('background-position', '-67px -137px');
+                }
+                //            if(index<=(max-show)){
+                //                if(index == 1){
+                ////                    $('.left').css('background','url(../images/newicon20140417.png) no-repeat -69px -137px;');
+                //                    $('.left').css('background-position','-67px -137px');
+                //                }
+                //                index++;
+                //                $('.barcontent ul').animate({ "margin-left": "-=70px" }, "quick"  );
+                //
+                //            }
+
+            })
+
+            $('.right').mouseover(function() {
+                if ((index + show) < max)
+                    $('.right').css('background-position', '-50px -137px');
+            }).mouseout(function() {
+                if ((index + show) < max)
+                    $('.right').css('background-position', '-16px -137px');
+            }).click(function() {
+                if ((index + show) <= max) {
+                    $('.left').css('background-position', '0 -137px');
+                    $('.barcontent ul').animate({"margin-left": "-=70px"}, 100);
+                    if ((index + show) == max)
+                        $('.right').css('background-position', '-84px -137px');
+                    index++;
+                }
+            })
+
+            $('.barcontent ul img').each(function(index) {
+                var i = index + 1;
+                $(this).mouseover(function() {
+                    $('.barcontent ul img').css('border', '1px solid #CCC');
+                    $('#nimg').attr('src', '../images/product/b_' + i + '.jpg');
+                    $('#showPicGig').attr('src', '../images/product/bb_' + i + '.jpg');
+                    $('.jqzoom').attr('href', '../images/product/bb_' + i + '.jpg');
+                    $(this).css('border', '2px solid red');
+                });
+            });
+
+            var options2 = {
+                zoomWidth: 450,
+                zoomHeight: 450,
+                zoomType: 'reverse'
+            }
+
+            $(".jqzoom").jqzoom(options2);
+
+            $('#myTab a').click(function(e) {
+                e.preventDefault()
+                $(this).tab('show')
+            })
+
+        })
+    </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

@@ -1,0 +1,100 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+    <form id="form" action="__CONTROLLER__/change" method="post" class="definewidth m20">
+        <input type="hidden" id="id" name="id" value="{$id}" >
+        <table class="table table-bordered table-hover definewidth m10">
+            <tr>
+                <td width="10%" class="tableleft">订单号</td>
+                <td colspan="2">{$t.order_no}<input type="hidden" id="no" name="no" value="{$t.order_no}" /> </td>
+            </tr>
+            <tr>
+                <td width="10%" class="tableleft">商品信息</td>
+                <td colspan="2">
+                    <table id="goodsBody" class="table table-bordered table-hover m10">
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="10%" class="tableleft">物流信息</td>
+                <td >
+                    <div class="panel panel-default" style="margin: 15px 0 20px 0;">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">收货人信息</h4>
+                        </div>
+                        <div class="panel-body">
+                            <ul style="list-style: none;">
+                                <li>联系电话：{$t.mobile}</li>
+                                <li>收货地址：
+                                    <empty name="vo.address">
+                                        {$t.delivery_address}
+                                    </empty>
+                                    <empty name="vo.delivery_address">
+                                        {$t.address}
+                                    </empty>
+                                </li>
+                                <li>取货时间：{$t.pick_time}</li>
+                                <!--<eq name="t['re_type']" value="0">-->
+                                    <!--<li>取货时间：{$t.pick_time}</li>-->
+                                <!--</eq>-->
+                                <!--<eq name="t['re_type']" value="1">-->
+                                    <!--<li>送货时间：{$t.delivery_time_txt}</li>-->
+                                <!--</eq>-->
+                                <li>订单状态：{$t.state}</li>
+                                <li>取货方式：
+                                    <eq name="t.re_type" value="0">自提</eq>
+                                    <eq name="t.re_type" value="1">送货上门</eq>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="tableleft" ></td>
+                <td colspan="2">
+                    <button type="submit" class="btn btn-danger" name="go" id="go">出库</button>
+                    <button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</block>
+<block name="myscript">
+    <script>
+        $(function () {
+            var obj = JSON.parse('{$t.goods_items}');
+            var table = $('#goodsBody');
+            table.append($('<tr><th>商品名称</th><th>单价</th><th>数量</th></tr>'));
+            for(var i=0;i<obj.length;i++){
+                var item = obj[i];
+                var tr = $('<tr></tr>');
+                tr.append($('<td>'+item['name']+( item['ishappy']?' <span style="color:red">[幸运价]</span>':'')+'</td><td>'+item['price']+'</td><td>'+item['count']+'</td>'));
+                table.append(tr);
+            }
+
+            <eq name="t.re_type" value="0">
+                var total = getTotal({$t.total},{$t.discount});
+            table.append($('<tr><td colspan="3" style="text-align:right;">'+total+'</td></tr>'))
+            </eq>
+
+            <eq name="t.re_type" value="1">
+            var total = getTotal({$t.total},{$t.discount},{$t.expense});
+            table.append($('<tr><td colspan="3" style="text-align:right;">'+total+'</td></tr>'))
+            </eq>
+
+
+            $('#backid').click(function(){
+                window.location.href = "__CONTROLLER__";
+            });
+
+
+            $("#form").Validform({
+                tiptype: 2,
+                showAllError: true
+            });
+
+        });
+    </script>
+</block>
+
+

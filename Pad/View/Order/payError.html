@@ -1,0 +1,58 @@
+<block name="title-content">
+    {:C('GSTITLE')}
+</block>
+<block name="page-content">
+  <div style="width:100%;text-align: center;padding-top:30px;">
+   <img src="__ROOT__/Public/images/alert.png" style="margin: 10px auto;width:90px;height:90px;" />
+    <h4>支付失败了，再试试吧～</h4>
+  </div>
+  <div style="text-align: center;margin: 10px auto;">
+      <div style="text-align: center;padding:10px auto;padding:0 20px;">
+        <button id="sub" type="button" class="btn btn-danger" type="button" style="width:100%;">去支付</button>
+        <!--<div style="text-align: right;font-size:12px;"><a onclick="javascript:wx.closeWindow();">不逛了</a></div>-->
+      </div>
+  </div>
+</block>
+<block name="css-content">
+</block>
+<block name="js-content">
+  <script type="text/javascript" src="__PUBLIC__/js/ap.js"></script>
+  <script>
+    $(function() {
+      GSTools.ModelLoading.init();
+      $('#sub').click(function () {
+        GSTools.ModelLoading.show();
+        $.ajax({
+          url: "{:U('Order/ali_succ')}"
+          , type: 'post'
+          , async: false
+          , success: function (data) {
+            $('body').append($(data));
+            $('#alipay').attr('href', data);
+            $('#alipay').click(function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              e.stopImmediatePropagation();
+              //ele.href 是GET到支付宝收银台的URL
+              _AP.pay(e.target.href);
+              return false;
+            })
+
+
+            $('#alipay').click();
+//            var json = JSON.parse(data);
+//            if (json.state == 'error') {
+//              swal("提交失败", json.msg);
+//            } else {
+//              window.location.href = "{:U('Order/succ')}?id=" + json.id;
+//            }
+          }, error: function (data) {
+            swal("系统错误");
+            flag = false;
+          }
+        })
+      })
+    })
+  </script>
+</block>
+<extend name="Common@Shared/Idea/layoutBase" />

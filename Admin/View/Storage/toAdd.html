@@ -1,0 +1,75 @@
+<extend name="Public:BaseUEIndex" />
+<block name="body">
+    <style>
+        #cropContainerModal1{
+            border:1px solid #CCC;
+        }
+    </style>
+    <form id="form" action="add" method="post" class="definewidth m20" enctype="multipart/form-data">
+        <table class="table table-bordered table-hover definewidth m10">
+            <tr>
+                <td width="10%" class="tableleft">商品</td>
+                <td width="20%">
+                    <select id="basic_type" name="basic_type">
+                        <option value="">请选择</option>
+                        <volist name="basic_type" id="t">
+                            <option value="{$t.id}">{$t.basic_type}</option>
+                        </volist>
+                    </select>
+                    <select id="goods_name" name="goods_name" datatype="*" nullmsg="请选择商品！" errormsg="请选择商品！">
+                        <option value="">请选择</option>
+                    </select>
+                    <label class="red">*</label>
+                </td>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td class="tableleft">库存数量</td>
+                <td><input type="text" name="inventory" id="inventory" datatype="n1-9999999" errormsg="库存数量最少1个,最多9999999个！"/><label class="red">*</label></td>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td class="tableleft"></td>
+                <td>
+                    <button id="save" type="button" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</block>
+<block name="mycss">
+</block>
+<block name="myscript">
+    <script>
+        $(function () {
+            $('#backid').click(function(){
+                $('form')[0].action="__CONTROLLER__";
+                $('form')[0].submit();
+            });
+
+            $('#basic_type').change(function(){
+                $('#goods_name').find('option').remove();
+                $('#goods_name').append('<option value="">请选择</option>');
+
+                $.get("{:U('Goods/getBasicGoods')}", {type_id: $(this).val() },function(data){
+                    for(var i=0;i<data.length;i++){
+                        $('#goods_name').append($('<option value="'+data[i].id+'">'+data[i].name+'</option>'));
+                    }
+                })
+            })
+
+            $("#form").Validform({
+                btnSubmit:'#save',
+                tiptype: 2,
+                showAllError: true,
+                datatype:{
+                    "float":function(gets,obj,curform,regxp){
+                        if(obj.val() == '')
+                            return false;
+                        return (/^[0-9]+(\.\d+)?$|^(\.\d+)?$|^[1-9]+[0-9]*(\.\d+)?$/.test(obj.val()));
+                    }
+                }
+            });
+        });
+    </script>
+</block>

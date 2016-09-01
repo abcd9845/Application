@@ -1,0 +1,57 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+    <form class="form-inline definewidth m20" action="__CONTROLLER__/del" method="post">
+    <button type="button" class="btn btn-success" id="addnew">新增用户</button>
+    <button type="button" class="btn btn-danger" id="del">删除</button>
+    <input type="hidden" id="id" name="id"  >
+<table class="table table-bordered table-hover definewidth m10">
+    <thead>
+    <tr>
+        <th></th>
+        <th>用户名称</th>
+        <th>用户类型</th>
+        <th>仓库</th>
+        <th>真实姓名</th>
+        <th>最后登陆时间</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <volist name="array" id="vo">
+        <tr>
+            <td><input type="checkbox" id="ck" name="ck" value="{$vo.id}"></td>
+            <td>{$vo.username}</td>
+            <td>{$vo.type}</td>
+            <td>{$vo.name}</td>
+            <td>{$vo.real_name|urldecode}</td>
+            <td>{$vo.oper_time}</td>
+            <td>
+                <a href="__CONTROLLER__/toEdit/id/{$vo.id}">编辑</a>
+            </td>
+        </tr>
+    </volist>
+</table>
+<div class="result page">{$show}</div>
+</form>
+</block>
+<block name="myscript">
+<script>
+    $(function () {
+        $('#addnew').click(function(){
+            window.location.href="__CONTROLLER__/toAdd";
+        });
+
+        $('#del').click(function(){
+            var str_val = '';
+            $('input[type=checkbox][name=ck]:checked').each(function(index){
+                if(index>0){
+                    str_val+=',';
+                }
+                str_val+=$(this).val();
+            })
+
+            $('#id').val(str_val);
+            $('form')[0].submit();
+        })
+    });
+</script>
+</block>

@@ -1,0 +1,178 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+    <form class="form-inline definewidth m20" action="__CONTROLLER__/del" method="post" onsubmit="return false;">
+        <div>
+            仓库：
+            <select id="storage" name="storage">
+                <if condition="$_SESSION['current_user']['role_id'] eq '1'">
+                <option value="">请选择</option>
+                </if>
+                <volist name="storage" id="t">
+                    <option value="{$t.id}">{$t.name}</option>
+                </volist>
+            </select>&nbsp;&nbsp;
+            分类：
+            <select id="type" name="type">
+                <option value="">请选择</option>
+                <volist name="type" id="t">
+                    <option value="{$t.id}">{$t.type_name}</option>
+                </volist>
+            </select>&nbsp;&nbsp;
+            商品名称：
+            <input type="text" id="name" class="abc input-default" placeholder="" name="name" value="{$filters[name]}">&nbsp;&nbsp;
+            状态：
+            <select id="online" name="online">
+                <option value="">请选择</option>
+                <option value="{$Think.const.UP}">上架</option>
+                <option value="{$Think.const.DOWN}">下架</option>
+            </select>&nbsp;&nbsp;
+            <button type="button" id="search" class="btn btn-primary">查询</button>&nbsp;&nbsp;
+        </div>
+        <input type="hidden" id="id" name="id"  >
+        <table class="table table-bordered table-hover definewidth m10">
+            <thead>
+            <tr>
+                <th></th>
+                <th>仓库</th>
+                <th>售卖分类</th>
+                <th>商品</th>
+                <th>数量</th>
+                <th>售价</th>
+                <th>折扣价</th>
+                <th>状态</th>
+                <th>规格</th>
+                <th>限购数</th>
+                <th>New</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <volist name="array" id="vo">
+                <tr>
+                    <td><input type="checkbox" id="ck" name="ck" value="{$vo.id}"></td>
+                    <td>
+                        {$vo.school_name}
+                    </td>
+                    <td>
+                        {$vo.show_type}
+                    </td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.count}</td>
+                    <td>{$vo.price}</td>
+                    <td>{$vo.vip}</td>
+                    <td>
+                        <neq name="vo.school_name" value="总仓">
+                            <eq name="vo.online" value="$UP">
+                                上架
+                            </eq>
+                            <eq name="vo.online" value="$DOWN">
+                                下架
+                            </eq>
+                            <eq name="vo.online" value="">
+                                未上架
+                            </eq>
+                        </neq>
+                    </td>
+                    <td>{$vo.unit}</td>
+                    <td>{$vo.buynum}</td>
+                    <td>
+                        <eq name="vo.isnew" value="$ISNEW">
+                            显示
+                        </eq>
+                        <eq name="vo.isnew" value="$UNNEW">
+                            不显示
+                        </eq>
+                    </td>
+                    <td>
+                        <neq name="vo.school_name" value="总仓">
+                            <button onclick="jump('__CONTROLLER__/toEdit/id/{$vo.id}',this)">编辑</button>
+                        </neq>
+                    </td>
+                </tr>
+            </volist>
+        </table>
+        <div class="result page">{$show}</div>
+    </form>
+</block>
+<block name="mycss">
+    <link href="__PUBLIC__/js/artDialog4/skins/default.css" rel="stylesheet" type="text/css" />
+</block>
+<block name="myscript">
+<script src="__PUBLIC__/js/artDialog4/artDialog.source.js"></script>
+<script src="__PUBLIC__/js/Validform/Validform_v5.3.2_min.js"></script>
+<script>
+    var myDialog;
+    var gloab_obj;
+    function jump(url,obj){
+            gloab_obj = $(obj).closest('tr');
+            myDialog = art.dialog({width: 800,padding:'10px',title:'编辑'});// 初始化一个带有loading图标的空对话框
+            jQuery.ajax({
+                url: url,
+                success: function (data) {
+                    myDialog.content(data);// 填充对话框内容
+                }
+            });
+    }
+
+    $(function () {
+        var state = 0
+
+        $('#addnew').click(function(){
+            window.location.href="__CONTROLLER__/toAdd";
+        });
+
+        $('#search').click(function(){
+            $('form')[0].action = "__CONTROLLER__";
+            $('form')[0].submit();
+        });
+
+
+        $('#storage').change(function(){
+            $('#type').find('option').remove();
+            $('#type').append('<option value="">请选择</option>');
+            if($(this).val() != ''){
+                $.get("{:U('Goods/changeType')}", {school_id: $(this).val() },function(data){
+                    for(var i=0;i<data.length;i++){
+                        $('#type').append($('<option value="'+data[i].id+'">'+data[i].type_name+'</option>'));
+                    }
+
+                    if(state == 0){
+                        $('#type').val("{$filters.type}");
+                    }
+
+                    state++;
+                })
+            }
+        })
+
+
+        $('#online').val("{$filters.online}");
+
+
+        $('#del').click(function(){
+            var obj = $('input[type=checkbox][name=ck]:checked');
+            if(obj.length > 0){
+                var str_val = '';
+                obj.each(function(index){
+                    if(index>0){
+                        str_val+=',';
+                    }
+                    str_val+=$(this).val();
+                })
+
+                $('#id').val(str_val);
+                $('form')[0].submit();
+            }
+        })
+
+
+        <if condition="$_SESSION['current_user']['role_id'] eq '1'">
+            $('#storage').val("{$filters.storage}").change();
+        </if>
+        <if condition="$_SESSION['current_user']['role_id'] neq '1'">
+            $('#storage').change();
+        </if>
+
+
+    });
+</script>
+</block>

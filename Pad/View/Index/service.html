@@ -1,0 +1,59 @@
+<block name="css-content">
+    <link rel="stylesheet" href="__PUBLIC__/css/login_pad.css">
+</block>
+<block name="page-content">
+  <section id="show_content" class="container"  style="padding:0;padding-top:30px;">
+      <div class="row">
+        <div class="col-md-2">
+          <div id="about_content">
+            <include file="Common@Shared/left-nav" />
+          </div>
+        </div>
+        <div class="col-md-10" style="padding: 0;">
+          <div>
+            <h1 style="margin-top:0;border-bottom:1px solid #DDD;">服务承诺</h1>
+            <div>
+              <p>
+                <span style="font-family: 黑体, SimHei; font-size: 14px;"><strong><span style="font-family: 黑体, SimHei;">退货：</span></strong></span>
+              </p>
+              <p class="MsoListParagraph" style="margin-left: 28px">
+                <span style="font-size: 14px; font-family: 黑体, SimHei;">生鲜食品（蔬菜、水果、生肉）若您对货物<strong><span style="font-family: 黑体, SimHei; color: red;">不满意</span></strong>，<strong><span style="font-family: 黑体, SimHei; color: red;">请勿签收</span></strong>，直接退回，不收取任何费用；</span>
+              </p>
+              <p class="MsoListParagraph" style="margin-left: 28px">
+                <span style="font-family: 黑体, SimHei; font-size: 14px;">生鲜食品（蔬菜、水果、生肉）若您对货物<strong><span style="font-family: 黑体, SimHei; font-size: 14px; color: red;">不满意</span></strong>，且已签收，我方将无法追究供货商的责任，鉴于对您权益的保障，您只需通过邮件将有问题货物拍摄照片发送到客服邮箱（gsfarm@126.com）经确认后，无需退还货物，我公司将退还40%的货款给您作为补偿。</span>
+              </p>
+              <p>
+                <span style="font-size: 14px; font-family: 黑体, SimHei;">&nbsp;</span>
+              </p>
+              <p>
+                <span style="font-family: 黑体, SimHei; font-size: 14px;"><strong><span style="font-family: 黑体, SimHei;">配送：</span></strong></span>
+              </p>
+              <p class="MsoListParagraph" style="margin-left: 28px">
+                <span style="font-family: 黑体, SimHei; font-size: 14px;">所有生鲜食品，我公司将采用快递（顺丰）配送。</span>
+              </p>
+              <p class="MsoListParagraph" style="margin-left: 28px">
+                <span style="font-family: 黑体, SimHei; font-size: 14px;">17:00至（次日）9:00点下单，17:00前送达（仅限天津市内六区）</span>
+              </p>
+              <p class="MsoListParagraph" style="margin-left: 28px">
+                <span style="font-family: 黑体, SimHei; font-size: 14px;"><span style="font-family: &#39;Times New Roman&#39;; font-size: 9px; font-stretch: normal;">&nbsp;</span>9:00至17:00点下单，（次日）12:00前送达</span>
+              </p>
+              <p class="MsoListParagraph" style="margin-left: 28px">
+                <span style="font-family: 黑体, SimHei; font-size: 14px;">配送范围：天津、北京、河北（沧州、唐山、石家庄）</span>
+              </p>
+              <p>
+                <br/>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+</block>
+<block name="js-content">
+  <script>
+    $(document).ready(function () {
+      $('#service').addClass('active');
+    })
+  </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

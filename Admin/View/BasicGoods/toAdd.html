@@ -1,0 +1,96 @@
+<extend name="Public:BaseUEIndex" />
+<block name="body">
+    <style>
+        #cropContainerModal1{
+            border:1px solid #CCC;
+        }
+    </style>
+    <form id="form" action="add" method="post" class="definewidth m20" enctype="multipart/form-data">
+        <table class="table table-bordered table-hover definewidth m10">
+            <tr>
+                <td width="10%" class="tableleft">商品名称</td>
+                <td width="20%">
+                    <input type="text" id="name" name="name" datatype="*1-32" errormsg="商品名称至少1个字符,最多32个字符！"/><label class="red">*</label></td>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td width="10%" class="tableleft">商品类型</td>
+                <td width="20%">
+                    <select name="goods_basic_type">
+                        <option value="">请选择</option>
+                        <volist name="basic_type" id="t">
+                            <option value="{$t.id}">{$t.basic_type}</option>
+                        </volist>
+                    </select>
+
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td class="tableleft">标题图片</td>
+                <td id="title_pic_td">
+                    <input type="hidden" id="title_pic" name="title_pic" datatype="*" nullmsg="请选择标题图片！" errormsg="请选择标题图片！"/>
+                    <textarea id="content" name="content" style="width:1px;height:1px;display:none;"></textarea>
+                    <div id="cropContainerModal" style="width: 242px;height: 162px;position:relative;"></div>
+                </td>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td class="tableleft">备注</td>
+                <td>
+                    <textarea id="description" name="description" style="width:800px;height:250px;" datatype="*1-100" errormsg="备注至少1个字符,最多100个字符！"></textarea>
+                </td>
+                <td><div class="Validform_checktip"></div></td>
+            </tr>
+            <tr>
+                <td class="tableleft"></td>
+                <td>
+                    <button id="save" type="button" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</block>
+<block name="mycss">
+    <style type="text/css">
+        #cropContainerModal{
+			width: 400px;
+			height: 400px;
+			position:relative; /* or fixed or absolute */
+		}
+    </style>
+</block>
+<block name="myscript">
+    <script>
+        var croppicContainerModalOptions = {
+            uploadUrl:"__CONTROLLER__/ImgSaveToFile",
+            cropUrl:"__CONTROLLER__/ImgCropToFile",
+            modal:true,
+            imgEyecandyOpacity:0.4,
+            loaderHtml:'<div class="loader bubblingG"><span id="bubblingG_1"></span><span id="bubblingG_2"></span><span id="bubblingG_3"></span></div>'
+        }
+        var cropContainerModal = new Croppic('cropContainerModal', croppicContainerModalOptions);
+        $(function () {
+            $('#backid').click(function(){
+                $('form')[0].action="__CONTROLLER__";
+                $('form')[0].submit();
+            });
+
+
+            $("#form").Validform({
+                btnSubmit:'#save',
+                tiptype: 2,
+                showAllError: true,
+                beforeCheck:function(curform){
+                    $('#title_pic').val($('#title_pic_td').find('.croppedImg').attr('src'));
+                },
+                datatype:{
+                    "float":function(gets,obj,curform,regxp){
+                        if(curform.find("#price").val() == '')
+                            return false;
+                        return (/^[1-9]+(\.\d+)?$|^(\.\d+)?$|^[1-9]+[0-9]*(\.\d+)?$/.test(curform.find("#price").val()));
+                    }
+                }
+            });
+        });
+    </script>
+</block>

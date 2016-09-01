@@ -1,0 +1,184 @@
+<block name="page-content">
+  <section style="background:#FFF;box-shadow: inset 0 2px 5px rgba(115, 115, 115, .25);padding:20px 15px 0 15px;" id="show_content" class="container-fluid">
+    <div class="col-xs-1"></div>
+    <div class="col-xs-10">
+        <form id="form" action="findPwdNext" method="post" class="definewidth m20">
+          <h1 style="margin-top:0;">密码找回</h1>
+          <table class="table table-hover definewidth m10" style="margin-top:25px;">
+            <tr>
+              <td width="10%" class="tableleft">用户名</td>
+              <td width="90%" ><input type="text" id="username" name="username" datatype="s2-32" nullmsg="请填写用户名！"  /><label class="red">*</label><span class="Validform_checktip"></span></td>
+            </tr>
+            <tr>
+              <td width="10%" class="tableleft">注册手机号</td>
+              <td><input type="text" id="mobile" name="mobile" datatype="m" errormsg="请输入您的手机号码！"/><label class="red">*</label><span class="Validform_checktip"></span></td>
+            </tr>
+            <tr>
+              <td width="10%" class="tableleft">验证码</td>
+              <td>
+                <input type="text" id="validateNum" name="validateNum" datatype="n6-6" errormsg="请输入6位数字！" nullmsg="请输入验证码"/><label class="red">*</label><button id="smssend" class="btn btn-success" type="button"  style="margin-left: 10px;">获取验证码</button>
+                <div class="Validform_checktip"></div>
+              </td>
+            </tr>
+            <tr>
+              <td class="tableleft"></td>
+              <td>
+                <button type="submit" class="btn btn-warning" type="button">下一步</button>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    <div class="col-xs-1"></div>
+  </section>
+</block>
+<block name="css-content">    
+</block>
+<block name="js-content">
+  <link rel="stylesheet" href="__PUBLIC__/js/Validform/Validform.css">
+  <link rel="stylesheet" type="text/css" href="__PUBLIC__/js/sweetalert-master/lib/sweet-alert.css">
+  <style>
+    .red{
+      color:red;
+    }
+
+  </style>
+  <script src="__PUBLIC__/js/Validform/Validform_v5.3.2_min.js"></script>
+  <script src="__PUBLIC__/js/sweetalert-master/lib/sweet-alert.min.js"></script>
+  <script>
+    function intervalSend(){
+      if(!/^13[0-9]{9}$|14[0-9]{9}|15[0-9]{9}$|18[0-9]{9}$/.test($('#mobile').val()) || $('#mobile').val() == ''){
+        swal("Error", "请输入正确的手机号", "error");
+        return false;
+      }
+      $('#smssend').addClass('disabled')
+      var status = true;
+      $.ajax({
+        url:"{:U('getUserHas')}"
+        ,data:{
+          username:$('#username').val()
+          ,phone:$('#mobile').val()
+        }
+        ,type:'post'
+        ,success:function(data){
+          if(data == 0){
+            swal("操作失败", "用户或手机号不存在", "error");
+            $('#smssend').removeClass('disabled')
+            status = false;
+          }else{
+            var time = 10;
+            $('#smssend').html(time+'秒后重发');
+          }
+
+
+          if(status){
+            var time = 60;
+            $('#smssend').addClass('disabled').html(time+'秒后重发');
+            $.ajax({
+              url:"{:U('sendSMS')} "
+              ,data:{
+                num:$('#validateNum').val()
+              }
+              ,type:'post'
+              ,success:function(data){
+                var interval = window.setInterval(function(){
+                  if(time-- == 0){
+                    $.ajax({
+                      url:"{:U('delSMS')} "
+                      ,type:'post'
+                      ,async:false
+                      ,success:function(){
+                        window.clearInterval(interval);
+                        $('#smssend').removeClass('disabled').html('获取验证码').click(intervalSend);
+                      }
+                    })
+
+                  }else{
+                    $('#smssend').addClass('disabled').html(time+'秒后重发');
+                  }
+                },1000);
+                $('#smssend').unbind('click');
+              }
+            });
+          }
+
+        },error:function(data){
+          swal("操作失败", "系统错误", "error");
+          $('#smssend').removeClass('disabled')
+          status = false;
+        }
+      });
+
+
+    }
+
+    $(document).ready(function () {
+      $('#smssend').click(intervalSend);
+
+
+      var validate = $("#form").Validform({
+        tiptype:2,
+        showAllError:true,
+        tiptype:function(msg,o,cssctl){
+          //msg：提示信息;
+          if(!o.obj.is("form")){
+            var objtip=o.obj.siblings(".Validform_checktip");
+            cssctl(objtip,o.type);
+            objtip.text(msg);
+          }
+        },
+        beforeSubmit:function(curform){
+          if(curform.find('#validateNum').val() == ''){
+            swal("提交失败", "请输入验证码", "error");
+            return false;
+          }else{
+            $.ajax({
+              url:"{:U('validateSMS')}"
+              ,data:{
+                sms:$('#validateNum').val()
+              }
+              ,type:'post'
+              ,async:false
+              ,success:function(data){
+                if(data == true){
+                  flag = true;
+                }else{
+                  swal("提交失败", "请输入正确的验证码", "error");
+                  flag = false;
+                }
+              },error:function(data){
+                swal("提交失败", "系统错误", "error");
+                flag = false;
+              }
+            });
+            return flag;
+          }
+        },
+        datatype:{
+          "validateNum":function(gets,obj,curform,regxp){
+            var flag = false;
+            $.ajax({
+              url:"__ROOT__/index.php/Admin/User/getUserCount"
+              ,data:{
+                field:'mail'
+                ,val:curform.find('#mail').val()
+              }
+              ,type:'post'
+              ,async:false
+              ,success:function(data){
+                if(data == 0){
+                  flag = true;
+                }
+              }
+            });
+            return flag;
+          }
+        }
+      });
+
+      $.Tipmsg.w['userHas'] = "你输入的用户已存在";
+      $.Tipmsg.w['mailHas'] = "您输入的的邮箱已存在";
+    })
+  </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

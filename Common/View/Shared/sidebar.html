@@ -1,0 +1,27 @@
+<aside id="page-leftbar">
+  <ul class="acc-menu" id="sidebar">
+    <li id="search">
+      <a href="javascript:;"><i class="fa fa-search opacity-control"></i></a>
+      <form>
+        <input type="text" class="search-query" placeholder="搜索...">
+        <button type="submit"><i class="fa fa-search"></i></button>
+      </form>
+    </li>
+    <volist name="pageInfos['sidebar_menu']" id="mi">
+      <eq name="mi['title']" value="divider">
+      <li class="divider"></li>
+      <else />
+      <li <if condition="isset($mi['active']) and $mi['active'] == true">class="active"</if>>
+        <a href="<if condition="isset($mi['children'])">javascript:;<else/>{:U($mi['url'])}</if>"><i class="fa fa-{$mi['icon']}"></i> <span>{$mi['title']}</span></a>
+      <if condition="isset($mi['children'])">
+        <ul class="acc-menu" <if condition="isset($mi['active']) and $mi['active'] == true">style="display:block;"</if>>
+          <volist name="mi['children']" id="submi">
+            <li <if condition="isset($submi['active']) and $submi['active'] == true">class="active"</if>><a href="{:U($submi['url'])}"><span>{$submi['title']}</span></a></li>
+          </volist>
+        </ul>
+      </if>
+      </li>
+      </eq>
+    </volist>
+  </ul>
+</aside>

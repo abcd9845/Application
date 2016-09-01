@@ -1,0 +1,156 @@
+<extend name="Public:BaseUEIndex" />
+<block name="body">
+<form id="form" action="add" method="post" class="definewidth m20" enctype="multipart/form-data">
+
+    <table class="table table-bordered table-hover definewidth m10">
+        <tr>
+            <td width="10%" class="tableleft">名称</td>
+            <td width="20%" ><input type="text" name="name"  datatype="*2-32" errormsg="基础商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">首页图片</td>
+            <td id="title_pic_td">
+                <input type="hidden" id="title_pic" name="title_pic" datatype="*" nullmsg="请选择标题图片！" errormsg="请选择标题图片！"/>
+                <!--<textarea id="content" name="content" style="width:1px;height:1px;display:none;"></textarea>-->
+                <div id="cropContainerModal" style="width: 642px;height: 402px;position:relative;"></div>
+            </td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">开始时间</td>
+            <td width="20%" ><input type="text" name="start"  datatype="*2-32" errormsg="基础商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">结束时间</td>
+            <td width="20%" ><input type="text" name="end"  datatype="*2-32" errormsg="基础商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">实际价格</td>
+            <td width="20%" ><input type="text" name="price"  datatype="*2-32" errormsg="基础商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">原始价格</td>
+            <td width="20%" ><input type="text" name="old_price"  datatype="*2-32" errormsg="基础商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">团购人数</td>
+            <td width="20%" ><input type="text" name="person_number"  datatype="*2-32" errormsg="基础商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">份数</td>
+            <td width="20%" ><input type="text" name="num"  datatype="*2-32" errormsg="基础商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">上架</td>
+            <td width="20%" ><input type="text" name="online"  datatype="*2-32" errormsg="基础商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">详细信息</td>
+            <td colspan="2">
+                <textarea id="content" name="content" style="width:1px;height:1px;display:none;"></textarea>
+                <script id="contentEditor" type="text/plain" style="width:800px;height:100px;"></script>
+            </td>
+        </tr>
+
+        <!--<tr>-->
+            <!--<td class="tableleft">所属仓库</td>-->
+            <!--<td colspan="2">-->
+                <!--<select id="school_type" name="school_type" datatype="*" nullmsg="请选择商品类型！" errormsg="请选择商品类型！">-->
+                    <!--<option value="">请选择</option>-->
+                    <!--<option value="0">{:C('LS')}</option>-->
+                    <!--<option value="1">{:C('JT')}</option>-->
+                <!--</select>-->
+                <!--<select id="school" name="school" datatype="*" nullmsg="请选择商品类型！" errormsg="请选择商品类型！">-->
+                    <!--<option value="">请选择</option>-->
+                <!--</select>-->
+            <!--</td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+            <!--<td width="10%" class="tableleft">基础商品类型</td>-->
+            <!--<td width="20%"><input type="text" name="type_name" datatype="*2-32" errormsg="基础商品类型至少2个字符,最多32个字符！"/><label class="red">*</label></td>-->
+            <!--<td><div class="Validform_checktip"></div></td>-->
+        <!--</tr>-->
+        <tr>
+            <td class="tableleft"></td>
+            <td colspan="2">
+                <button type="submit" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</block>
+<block name="mycss">
+    <style type="text/css">
+        #cropContainerModal{
+            width: 640px;
+            height: 400px;
+            position:relative; /* or fixed or absolute */
+            zoomFactor:0;
+        }
+    </style>
+</block>
+<block name="myscript">
+<script>
+    var croppicContainerModalOptions = {
+        uploadUrl:"{:U('BasicGoods/ImgSaveToFile')}",
+        cropUrl:"{:U('BasicGoods/ImgCropToFile')}",
+        modal:true,
+        imgEyecandyOpacity:0.4,
+        loaderHtml:'<div class="loader bubblingG"><span id="bubblingG_1"></span><span id="bubblingG_2"></span><span id="bubblingG_3"></span></div>'
+    }
+    var cropContainerModal = new Croppic('cropContainerModal', croppicContainerModalOptions);
+
+    $(function () {
+        var ue = UE.getEditor('editor');
+        var showName = UE.getEditor('contentEditor');
+
+        $('#backid').click(function(){
+            $('form')[0].action="__CONTROLLER__";
+            $('form')[0].submit();
+        });
+
+        $("#form").Validform({
+            tiptype: 2,
+            showAllError: true,
+            beforeCheck:function(curform){
+                curform.find('#content').val(showName.getContent());
+                $('#title_pic').val($('#title_pic_td').find('.croppedImg').attr('src'));
+            }
+        });
+
+//        $('#school_type').change(function(){
+//            if($(this).val() != ''){
+//                $('#school').find('option').remove();
+//                $('#school').append('<option value="">请选择</option>');
+//                $.get("__CONTROLLER__/changeSchool", {school_id: $(this).val() },function(data){
+//                    for(var i=0;i<data.length;i++){
+//                        $('#school').append($('<option value="'+data[i].id+'">'+data[i].name+'</option>'));
+//                    }
+//                })
+//            }
+//        })
+
+
+    });
+
+
+
+
+
+    //            $('#save').click(function(){
+    //                $('#content').val(ue.getContent());
+    //                $('#showName').val(showName.getContent());
+    //                $('form')[0].submit();
+    //            })
+
+
+</script>
+</block>

@@ -1,0 +1,41 @@
+<block name="title-content">
+  {:C('GSTITLE')}
+</block>
+<block name="page-content">
+  <div style="width:100%;text-align: center;padding-top:30px;">
+   <img src="__ROOT__/Public/images/pay_success.png" style="margin: 10px auto;width:90px;height:90px;" />
+    <eq name="t['pay_type']" value="3">
+      <h4>购买成功</h4>
+    </eq>
+    <neq name="t['pay_type']" value="3">
+      <h4>支付成功</h4>
+    </neq>
+
+  </div>
+  <div style="text-align: center;margin: 10px auto;">
+    <div style="text-align: center;padding:10px auto;padding:0 40px;font-size:12px;">
+      <!--明天货物到达<label style="color:#e84c3d">{$t['address']}</label>后，我们将第一时间通知您去门店取货-->
+      <eq name="t['re_type']" value="0">
+        请您于<label style="color:#e84c3d">{$t['pick_time']}</label>到<label style="color:#e84c3d">{$t['address']}</label>自提点取货
+      </eq>
+      <eq name="t['re_type']" value="1">
+        我们将会把货物送到<label style="color:#e84c3d">{$t['delivery_address']}</label>
+      </eq>
+    </div>
+      <div style="text-align: center;padding:10px auto;padding:0 20px;">
+        <button id="sub" type="button" class="btn btn-danger" type="button" style="width:100%;">去商城逛逛</button>
+      </div>
+  </div>
+</block>
+<block name="css-content">
+</block>
+<block name="js-content">
+  <script>
+    $(function(){
+      $('#sub').click(function(){
+        window.location.href="{:U('Product/index')}"
+      })
+    })
+  </script>
+</block>
+<extend name="Common@Shared/Idea/layoutBaseWithOutWechat" />

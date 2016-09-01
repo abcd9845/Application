@@ -1,0 +1,26 @@
+<block name="title-content">
+  {:C('GSTITLE')}
+</block>
+<block name="page-content">
+  <div style="width:100%;text-align: center;padding-top:30px;">
+   <img src="__ROOT__/Public/images/pay_success.png" style="margin: 10px auto;width:90px;height:90px;" />
+    <h4>您已经成功取消订单</h4>
+  </div>
+  <div style="text-align: center;margin: 10px auto;">
+      <div style="text-align: center;padding:10px auto;padding:0 20px;">
+        <button id="sub" type="button" class="btn btn-danger" type="button" style="width:100%;">去商城逛逛</button>
+      </div>
+  </div>
+</block>
+<block name="css-content">
+</block>
+<block name="js-content">
+  <script>
+    $(function(){
+      $('#sub').click(function(){
+        window.location.href="{:U('Product/index')}"
+      })
+    })
+  </script>
+</block>
+<extend name="Common@Shared/Idea/layoutBaseWithOutWechat" />

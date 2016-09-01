@@ -1,0 +1,397 @@
+<block name='page-content'>
+    <section id="show_content" class="container minHeight" style="margin-top:5px;">
+        <div class="row">
+            <div class="col-md-12">
+                <form method="post" action="{:U('Order/index')}" id="carForm" onsubmit="javascript: return formChk()">
+                    <h2 style="font-family: '黑体'">我的购物车</h2>
+                    <if condition="count($goodsList[goods]) eq 0">
+                        <p><span>您尚未选购商品，<a href="{:U('Product/index')}">快去选购</a>吧</span></p>   
+                        <else/>
+                        <table class="table table-bordered col-md-12" style="border-bottom:1px solid #CCC;">
+                            <tr class="info">
+                                <th colspan="2">
+                                    <span style="float: left;margin-right: 10px"><input type="checkbox" id="checkall" checked="true"/>&nbsp;&nbsp;全选</span>
+                                    <span style="margin-left: 35px">商品信息</span>
+                                </th>
+                                <th style="text-align: center">单价(元)</th>
+                                <th style="text-align: center">数量</th>
+                                <th style="text-align: center">库存状态</th>
+                                <th style="text-align: center">操作</th>
+                            </tr>
+                            <volist name='goodsList[goods]' id='goodsVo'>
+                                <tr class='HeiTi_14'>
+                                    <td style="vertical-align: middle" class="col-xs-4">
+                                        <div style="float: left;margin-right: 10px">
+                                            <input type="checkbox" name="goods[{$key}][selected]" class="checkgoods" value="{$goodsVo['id']}"/>
+                                            <input type='hidden' name="goods[{$key}][id]" value="{$goodsVo['id']}" />
+                                            <input type='hidden' name="goods[{$key}][supplier_id]" value="{$goodsVo['supplier_id']}" />
+                                            <input type="hidden" name="goods[{$key}][price]" value="{$goodsVo['price']}" />
+                                            <input type="hidden" name="goods[{$key}][num]" value="{$goodsVo['num']}" id="goodsNum"/>
+                                        </div>
+                                        <div style="margin-right: 15px;float: left">
+                                            <a href="{:U('Product/info?id='.$goodsVo['id'])}"><img src="__ROOT__/{$goodsVo['title_pic']}" style="width: 60px;height: 60px"></a>
+                                        </div>
+                                        <div style="margin-left: 80px"><a href="{:U('Product/info?id='.$goodsVo['id'])}">{$goodsVo['name']}</a></div>
+                                    </td>
+                                    <td style="vertical-align: middle" class="col-xs-2">
+                                        <div>
+                                            <volist name="goodsVo['specArr']" id="specVo" >
+                                                <li style="list-style: none;color: #797979">{$specVo}</li>
+                                            </volist>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center;vertical-align: middle" class="col-xs-1">
+                                <if condition="$_SESSION['current_user'][isVIP]">
+                                    <li style="list-style: none;"><span class="origin-price">{$goodsVo['price']}</span>元</li>
+                                    <li style="list-style: none;"><span class="special-num goodPrice">{$goodsVo['vip_price']}</span>元</li>
+                                    <else />
+                                    <li style="list-style: none"><span class="special-num goodPrice">{$goodsVo['price']}</span>元</li>
+                                </if>
+                                </td>
+                                <td style="text-align: center;vertical-align: middle" class="col-xs-2">
+                                    <span>
+                                        <span class="glyphicon glyphicon-minus-sign minusGnum" style='margin-right: 5px;cursor: pointer'></span><input type="text" class="gnum" datatype="n" data-gid="{$goodsVo['id']}" data-id="{$goodsList['id']}" data-inv="{$goodsVo['inventory']}"  style="width:50px;text-align: center" value="{$goodsVo['num']}" /><span class="glyphicon glyphicon-plus-sign plusGnum" style="margin-left: 5px;cursor: pointer"></span>
+                                        <li style="list-style: none;margin-top: 5px;color: #9C9C9C">库存：{$goodsVo['inventory']}件</li>
+                                        <input type="hidden" value="{$goodsList['id']}"  name='cid' />
+                                    </span>
+                                </td>
+                                <td style="text-align: center;vertical-align: middle" class="col-xs-1">
+                                    <span>
+                                        <if condition="$goodsVo['inventory'] lt $goodsVo['num']">无货
+                                            <else /> 有货
+                                        </if>
+                                    </span>
+                                    <span class="Validform_checktip"></span>
+                                </td>
+                                <td style="text-align: center;vertical-align: middle" class="col-xs-2">
+                                <li style="list-style: none"><a href="javascript:;" class="addFav" data-id="{$goodsList['id']}" data-gid="{$goodsVo['id']}">移入收藏夹</a></li>
+                                <li style="list-style: none"><a href="javascript:;" class='deleteGoods' data-id="{$goodsList['id']}" data-gid="{$goodsVo['id']}">删除</a></li>
+                                </td>
+                                </tr>
+                            </volist>
+                    </if>
+
+                    <tfoot>
+                        <tr>
+                            <td colspan="7" style="text-align: right;vertical-align: middle">
+                                <label style="margin-right:50px;">总计（不含运费）： ¥<span class="totalprice"></span></label>
+                                <button type="button" id="btnSubmit" class="btn btn-danger <if condition="$goodsList['total_price'] elt 0">disabled</if>" id='checkOrder'>去结算</button>
+                                <a type="button" class="btn btn-primary" href="{:U('Product/index')}">继续购物</a>
+                            </td>
+                        </tr>
+                    </tfoot>
+                    </table>
+                </form>
+            </div>
+            <div class="hidden">
+                <h2 style="font-family: '黑体'">
+                    您可能感兴趣的商品
+                    <a class='btn btn-primary' href="{:U('Product/index')}">继续购物</a>
+                </h2>
+                <ul>
+                    <li style="float: left;display: block;padding:30px; 40px;border:1px solid #ccc;margin:20px 30px;">商品1</li>
+                    <li style="float: left;display: block;padding:30px; 40px;border:1px solid #ccc;margin:20px 30px;">商品1</li>
+                    <li style="float: left;display: block;padding:30px; 40px;border:1px solid #ccc;margin:20px 30px;">商品1</li>
+                    <li style="float: left;display: block;padding:30px; 40px;border:1px solid #ccc;margin:20px 30px;">商品1</li>
+                    <li style="float: left;display: block;padding:30px; 40px;border:1px solid #ccc;margin:20px 30px;">商品1</li>
+                    <li style="float: left;display: block;padding:30px; 40px;border:1px solid #ccc;margin:20px 30px;">商品1</li>
+                    <li style="float: left;display: block;padding:30px; 40px;border:1px solid #ccc;margin:20px 30px;">商品1</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <div class="modal fade" id="modalBaseWin" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 style="font-family: 黑体">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <h4><span id='message' style="color: green;font-family: 黑体"></span></h4>
+                </div>
+                <div class='modal-footer'>
+                    <button type='button' class='btn btn-default'  data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name='css-content'>
+    <link rel="stylesheet" href="__PUBLIC__/css/product.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/jqzoom.css">
+    <link rel="stylesheet" href="__PUBLIC__/js/Validform/Validform.css">
+</block>
+<block name='js-content'>
+    <script src="__PUBLIC__/js/jquery.jqzoom1.0.1.js"></script>
+    <script src="__PUBLIC__/js/Validform/Validform_v5.3.2_min.js"></script>
+    <script type='text/javascript'>
+    var rtnSubmit = false;
+    $(function () {
+        $.Tipmsg.r = " ";
+        $("#carForm").Validform({
+            tiptype: 2,
+            ajaxPost: false
+        });
+
+        var max = 6;
+        var show = 4;
+        var index = 1;
+        $('.left').css('background-position', '-67px -137px');
+        $('.left').mouseover(function () {
+            if (index > 1)
+                $('.left').css('background-position', '-34px -137px');
+        }).mouseout(function () {
+            if (index > 1)
+                $('.left').css('background-position', '0 -137px');
+        }).click(function () {
+            if (index > 1) {
+                $('.right').css('background-position', '-16px -137px');
+                $('.barcontent ul').animate({"margin-left": "+=70px"}, 100);
+                index--;
+            }
+            if (index == 1) {
+                $('.left').css('background-position', '-67px -137px');
+            }
+            //            if(index<=(max-show)){
+            //                if(index == 1){
+            ////                    $('.left').css('background','url(../images/newicon20140417.png) no-repeat -69px -137px;');
+            //                    $('.left').css('background-position','-67px -137px');
+            //                }
+            //                index++;
+            //                $('.barcontent ul').animate({ "margin-left": "-=70px" }, "quick"  );
+            //
+            //            }
+        });
+        $('.right').mouseover(function () {
+            if ((index + show) < max)
+                $('.right').css('background-position', '-50px -137px');
+        }).mouseout(function () {
+            if ((index + show) < max)
+                $('.right').css('background-position', '-16px -137px');
+        }).click(function () {
+            if ((index + show) <= max) {
+                $('.left').css('background-position', '0 -137px');
+                $('.barcontent ul').animate({"margin-left": "-=70px"}, 100);
+                if ((index + show) == max)
+                    $('.right').css('background-position', '-84px -137px');
+                index++;
+            }
+        });
+        $('.barcontent ul img').each(function (index) {
+            var i = index + 1;
+            $(this).mouseover(function () {
+                $('.barcontent ul img').css('border', '1px solid #CCC');
+                $('#nimg').attr('src', '../images/product/b_' + i + '.jpg');
+                $('#showPicGig').attr('src', '../images/product/bb_' + i + '.jpg');
+                $('.jqzoom').attr('href', '../images/product/bb_' + i + '.jpg');
+                $(this).css('border', '2px solid red');
+            });
+        });
+        var options2 = {
+            zoomWidth: 450,
+            zoomHeight: 450,
+            zoomType: 'reverse'
+        };
+        $(".jqzoom").jqzoom(options2);
+        $('#myTab a').click(function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+        });
+        $('.deleteGoods').click(function () {
+            var gid = $(this).data('gid');
+            var id = $(this).data('id');
+            $('#btnSubmit').attr("disabled", true);
+            $(this).parents('tr').fadeOut("normal",function(){
+                $.post("{:U('goodsDelete')}", {
+                    gid: gid,
+                    id: id
+                }, function (result) {
+                    if (result) {
+//                        location.reload();
+                        setTotal();
+                    } else {
+                        $('#message').html('删除购物车中物品失败');
+                        $('#modalBaseWin').modal();
+                    }
+                }, 'json');
+            });
+        });
+
+        $('.addFav').click(function () {
+            var gid = $(this).data('gid');
+            var id = $(this).data('id');
+            $('#btnSubmit').attr("disabled", true);
+            $(this).parents('tr').fadeOut("normal",function(){
+                $.post("{:U('Favourite/add')}", {
+                    gid: gid
+                }, function (result) {
+                    if (result == 'success' || result == 'exist') {
+                        $.post("{:U('goodsDelete')}", {
+                            gid: gid,
+                            id: id
+                        }, function (result) {
+                            if (result) {
+                                setTotal();
+//                                location.reload();
+                            } else {
+                                $('#message').html('删除购物车中物品失败');
+                                $('#modalBaseWin').modal();
+                            }
+                        }, 'json');
+                    } else {
+                        $('#message').html('无法关注此产品');
+                        $('#modalBaseWin').modal();
+                    }
+                }, 'json');
+            });
+        });
+
+        /**
+         * 商品数量加一
+         */
+        $('.plusGnum').click(function () {
+            var num = $(this).parents('tr').find('.gnum').val();
+            $(this).parents('tr').find('.gnum').val(parseInt(num) + 1);
+            setItemNum($(this).parents('tr').find('.gnum'));
+        });
+
+        /**
+         * 商品数量减一
+         */
+        $('.minusGnum').click(function () {
+            var num = $(this).parents('tr').find('.gnum').val();
+            $(this).parents('tr').find('.gnum').val(parseInt(num) - 1);
+            setItemNum($(this).parents('tr').find('.gnum'));
+        });
+
+        /**
+         * 编辑商品数量
+         */
+        $('.gnum').change(function () {
+            setItemNum($(this));
+        });
+
+        /**
+         * 选择商品,checkbox
+         */
+        $('.checkgoods').each(function () {
+            var inv = $(this).parents('tr').find('.gnum').data('inv');
+            if (inv > 0){
+                $(this).removeAttr("disabled");
+            }else{
+                $(this).attr('disabled',true);
+            }
+            $(this).prop('checked', $(this).attr('disabled')==='disabled' ? false :true);
+        });
+        $('.checkgoods').change(function () {
+            $('#checkall').attr('checked',$('.checkgoods').length===$('.checkgoods:checked').length ? true : false);
+            setTotal();
+        });
+        $('#checkall').click(function () {
+            var checkall = $(this).prop('checked');
+            $('.checkgoods').each(function() {
+                $(this).prop('checked', $(this).attr('disabled') === 'disabled' ? false : checkall);
+            });
+            setTotal();
+//            $('.checkgoods').prop('checked', $('.checkgoods').attr('disabled')==='disabled' ? false :$(this).prop('checked'));
+        });
+        /**
+         * 提交购物车
+         */
+        $('#btnSubmit').click(function () {
+            rtnSubmit = true;
+            $('#carForm').submit();
+        });
+        setTotal();
+    });
+    function trim(str) {
+        for (var i = 0; i < str.length && str.charAt(i) == "   "; i++)
+            ;
+        for (var j = str.length; j > 0 && str.charAt(j - 1) == "   "; j--)
+            ;
+        if (i > j)
+            return   "";
+        return   str.substring(i, j);
+    }
+    function testInt(str) {
+        var ex = /^[1-9]\d*$/;
+        if (ex.test(str)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function formChk() {
+        return rtnSubmit;
+    }
+    /**
+     * 更新购物车单个商品价格
+     * @method setTotal
+     * @param {object} obj 取某个$('.gnum')对象传入
+     */
+    function setItemNum(obj) {
+        var inv = obj.data('inv');
+        var preGnum = obj.parents('tr').find('#goodsNum').val();
+        var gnum = obj.val();
+        var divNum = inv - gnum;
+        var testStr = testInt(gnum);
+        if (testStr && divNum >= 0) {
+        } else if (testStr && divNum < 0) {
+            gnum = inv;
+        } else {
+            gnum = preGnum;
+        }
+        $('#btnSubmit').attr("disabled", true);
+        setGnum(obj, gnum);
+        saveGoodNum(obj);
+    }
+    /**
+     * @method setGnum
+     * @param {object} obj 取某个$('.gnum')对象传入
+     * @param {string} gnum 单个产品数量
+     */
+    function setGnum(obj, gnum) {
+        obj.parents('tr').find('#goodsNum').val(gnum);
+        obj.val(gnum);
+    }
+    /**
+     * 保存商品数量
+     * @method saveGoodNum
+     * @param {object} obj 取某个$('.gnum')对象传入
+     */
+    function saveGoodNum(obj) {
+        $.post("{:U('goodsChangeNum')}", {
+            gid: obj.data('gid'),
+            id: obj.data('id'),
+            num: obj.val()
+        }, function (result) {
+            if (result) {
+                setTotal();
+            } else {
+                $('#message').html('无法修改数量');
+                $('#modalBaseWin').modal();
+            }
+        }, 'json');
+    }
+    /**
+     * 更新购物车总价
+     * @method setTotal
+     */
+    function setTotal() {
+        var totalprice = 0;
+        $('.checkgoods:checked').each(function () {
+            var num = $(this).parents('tr').find('.gnum').val();
+            var price = $(this).parents('tr').find('.goodPrice').html();
+            totalprice += $(this).parents('tr').css('display') === 'none' ? 0 :num * price;
+            
+        });
+        $('.totalprice').html(totalprice);
+        if (totalprice > 0) {
+            $('#btnSubmit').removeAttr("disabled");
+        } else {
+            $('#btnSubmit').attr("disabled", true);
+        }
+    }
+    </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

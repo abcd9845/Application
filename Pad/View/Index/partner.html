@@ -1,0 +1,57 @@
+<block name="css-content">
+    <link rel="stylesheet" href="__PUBLIC__/css/login_pad.css">
+</block>
+<block name="page-content">
+  <section id="show_content" class="container"  style="padding:0;padding-top:30px;">
+      <div class="row">
+        <div class="col-md-2">
+          <div id="about_content">
+            <include file="Common@Shared/left-nav" />
+          </div>
+        </div>
+        <div class="col-md-10" style="padding: 0;">
+          <div>
+            <h1 style="margin-top:0;border-bottom:1px solid #DDD;">合作伙伴</h1>
+            <ul class=" list-paddingleft-2" style="list-style-type: disc;margin-top:20px;">
+							<li>
+                <p style="text-align:left">
+                  <span style="font-family: 黑体,SimHei; font-size: 14px;"><a href="http://m.kuaidi100.com" target="_blank">快递查询</a></span>
+                </p>
+              </li>
+              <li>
+                <p style="text-align:left">
+                  <span style="font-family: 黑体,SimHei; font-size: 14px;">与天津劝宝超市有限责任公司进行深度合作</span>
+                </p>
+              </li>
+              <li>
+                <p>
+                  <span style="font-family: 黑体,SimHei; font-size: 14px;">中国空军某师天津某场站协议供货商</span>
+                </p>
+              </li>
+              <li>
+                <p style="text-align:left">
+                  <span style="font-family: 黑体,SimHei; font-size: 14px;">中国空军某师河北唐山某场站协议供货商</span>
+                </p>
+              </li>
+              <li>
+                <p style="text-align:left">
+                  <span style="font-family: 黑体,SimHei; font-size: 14px;">中国空军某师河北遵化某场站协议供货商</span>
+                </p>
+              </li>
+            </ul>
+            <p>
+              <br/>
+            </p>
+          </div>
+        </div>
+      </div>
+  </section>
+</block>
+<block name="js-content">
+  <script>
+    $(document).ready(function () {
+      $('#partner').addClass('active');
+    })
+  </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

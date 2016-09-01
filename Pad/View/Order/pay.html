@@ -1,0 +1,109 @@
+<block name="page-content">
+  <section id="show_content" class="container minHeight" style="margin-top:5px;padding:5px 25px;">
+    <div class="row">
+      <div class="col-md-12">
+        <br />
+        <div style="border-bottom: 1px dashed #999;margin:10px 0">
+          <label class="HeiTi_18  Blod"> 您本次结算需要支付的订单列表</label>
+        </div>
+        <br />
+        <volist name="orderList" id="vo">
+          <form style="border-bottom: 1px dashed #999;margin:10px 0" action="{:U('Alipay/submit')}"  method="post" >
+            <div>
+              <label class="HeiTi_14  Blod"> 订单编号:</label>
+              <span style="font-family: simsun;color: #888;font-size:14px;font-weight:100;padding-bottom:5px;">{$vo['order_no']}</span>            
+            </div>
+            <div>
+              <label class="HeiTi_14  Blod"> 发货仓库:</label>
+              <span style="font-family: simsun;color: #888;font-size:14px;font-weight:100;padding-bottom:5px;">{$vo['supplier_name']}</span>
+            </div>
+            <div>
+              <table class="table table-bordered col-md-7">
+                <thead>
+                    <tr class="info">
+                    <th style="vertical-align: middle;text-align: center">产品名称</th>
+                    <th style="vertical-align: middle;text-align: center">数量</th>
+                    <th style="vertical-align: middle;text-align: center">单价</th>
+                    <th style="vertical-align: middle;text-align: center">总价</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <volist name="vo['item']['list']" id='vi'>
+                    <tr>
+                        <td style="vertical-align: middle" class="col-xs-4">
+                            <div style="margin-right: 5px;float: left">
+                                <a href="{:U('Product/info?id='.$vi['id'])}"><img src="__ROOT__/{$vi['title_pic']}" style="width: 60px;height: 60px"></a>
+                            </div>
+                            <div style="margin-left: 70px"><a href="{:U('Product/info?id='.$vi['id'])}">{$vi['name']}</a></div>
+                        </td>
+                        <td style="vertical-align: middle;text-align: center" class="col-xs-1">{$vi['num']}</td>
+                        <td style="vertical-align: middle;text-align: center" class="col-xs-1">{$vi['price']}</td>
+                        <td style="vertical-align: middle;text-align: center" class="col-xs-1">{$vi['num']*$vi['price']}</td>
+                    </tr>
+                </volist>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" style='vertical-align: middle'>
+                            <div style="float: right;;">
+                                <div style="float: left;margin-right: 5px;margin-top: 7px">合计：</div>
+                                <div style="float: left;margin-right: 5px;margin-top: 0px"><b><font style='color: #ff6633;font-size: x-large'>&nbsp;&yen;{$vo['total']}元(含运费{$vo['postage']}元)</font></b></div>
+                            </div>
+                            <!--合计:&nbsp;&yen{$vo['total']}-->
+                        </td>
+                        <td style='vertical-align: middle;text-align: center'>
+                            <li style="list-style: none;margin-top: 10px">
+                            <if condition="$vo['state_id'] eq 5">
+                                <span style="font-family: simsun;color: #888;font-size:14px;font-weight:100;padding-bottom:5px;">已完成付款</span>
+                                <else/>
+                                <button type="button" class="btn btn-sm btn-danger btnPay" style='margin-bottom: 10px'>支付宝付款</button><br>
+                                <a href="{:U('Order/lists')}"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true" style="margin-right: 10px"></span>返回&nbsp;"我的订单"</a>
+                            </if>
+                            </li>
+                        </td>
+                    </tr>                
+                </tfoot>
+              </table>
+            </div>
+            <input type="hidden" name="title" value="{$vo['supplier_name']}-{$vo['item']['list'][0]['name']}等">
+            <input type="hidden" name="money" value="{$vo['total']}">
+            <input type="hidden" name="order_no" value="{$vo['order_no']}">
+          </form>
+        </volist>
+      </div>
+    </div>
+  </section>  
+  <div class="modal fade" id="modalPayWin" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 style="font-family: 黑体">提示</h4>
+        </div>
+        <div class="modal-body">
+          <h4><span id='message' style="color: green;font-family: 黑体">请到支付宝页面进行支付</span></h4>
+        </div>
+        <div class='modal-footer'>
+          <button type='button' class='btn btn-primary' id="btnPayFinish"  data-dismiss="modal">完成付款</button>
+          <button type='button' class='btn btn-danger'  data-dismiss="modal">付款遇到问题</button>          
+        </div>
+      </div>
+    </div>
+  </div>
+</block>
+<block name="css-content"></block>
+<block name="js-content">  
+  <script type='text/javascript' src="__PUBLIC__/js/jquery.form.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $('.btnPay').click(function () {
+        $('#modalPayWin').modal({backdrop: false});
+        $('form').attr('target', '_blank');
+        $('form').submit();
+      });
+      $('#btnPayFinish').click(function () {
+        window.location.reload();
+      });
+    });
+  </script>
+</block>
+<extend name="Common@Shared/layoutBase" />

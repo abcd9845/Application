@@ -1,0 +1,59 @@
+<extend name="Public:BaseIndex" />
+<block name="body">
+<form id="form" action="add" method="post" class="definewidth m20">
+    <table class="table table-bordered table-hover definewidth m10">
+        <tr>
+            <td width="10%" class="tableleft">上门地址</td>
+            <td>
+                <select id="address" name="address"  datatype="*" nullmsg="请选所属地！" errormsg="请选所属地！">
+                    <option value="">请选择</option>
+                    <volist name="school" id="s">
+                        <option value="{$s.id}">{$s.name}</option>
+                    </volist>
+                </select>
+                <label class="red">*</label>
+            </td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">子商品类型</td>
+            <td><input type="text" name="name" datatype="*2-32" errormsg="上门地址至少2个字符,最多32个字符！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">费用</td>
+            <td><input type="text" id="expense" name="expense" datatype="float" errormsg="请填写正确的费用！"/><label class="red">*</label></td>
+            <td><div class="Validform_checktip"></div></td>
+        </tr>
+        <tr>
+            <td class="tableleft"></td>
+            <td colspan="2">
+                <button type="submit" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</block>
+<block name="myscript">
+<script>
+    $(function () {
+        $('#backid').click(function(){
+            $('form')[0].action="__CONTROLLER__";
+            $('form')[0].submit();
+        });
+
+        $("#form").Validform({
+            btnSubmit:'#save',
+            tiptype: 2,
+            showAllError: true,
+            datatype:{
+                "float":function(gets,obj,curform,regxp){
+                    if(curform.find("#expense").val() == '')
+                        return false;
+                    return (/^[1-9]+(\.\d+)?$|^(\.\d+)?$|^[1-9]+[0-9]*(\.\d+)?$/.test(curform.find("#expense").val()));
+                }
+            }
+        });
+    });
+</script>
+</block>

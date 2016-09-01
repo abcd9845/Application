@@ -1,0 +1,112 @@
+<extend name="Common@Shared/Idea/layoutBase" />
+<block name="title-content">
+  沽尚农庄 - 猜水果
+</block>
+<block name="page-content">
+  <div>
+    <div class="sidebar col-xs-2">
+      <ul class="nav nav-stacked">
+        <li><a href="{:U('index')}"><i class="fa fa-home"></i></a></li>
+        <li class="active"><a href="{:U('result', array('id'=>$item['id']))}"><i class="fa fa-list"></i></a></li>
+      </ul>
+    </div>
+    <div class="col-xs-10">
+      <eq name="item['status']" value="finish">
+      <h1>{$item['no']} 期最终价格：{$item['price']} {$item['unit']}</h1>
+      <else />
+      <h1 style="text-align:center;">{$err}</h1>
+      </eq>
+      <eq name="item['status']" value="finish">
+      <div class="row">
+        <div class="col-sm-12">
+          <table class="table">
+            <thead>
+              <tr>
+                <td>中奖人</td>
+                <td>学校</td>
+              </tr>
+            </thead>
+            <tbody>
+            <volist name="users" id="vo">
+              <tr>
+                <td>{$vo['real_name']}</td>
+                <td>{$vo['school']}</td>
+              </tr>
+            </volist>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      </eq>
+      
+      <div class="row">
+        <div class="col-sm-12">
+          <h4>竞猜所有人员</h4>
+          <table class="table">
+            <thead>
+              <tr>
+                <td>参与人</td>
+                <td>学校</td>
+                <td>时间</td>
+              </tr>
+            </thead>
+            <tbody>
+            <volist name="allusers" id="vo">
+              <tr>
+                <td>{$vo['real_name']}</td>
+                <td>{$vo['school']}</td>
+                <td>{$vo['create_time']}</td>
+              </tr>
+            </volist>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <notempty name="prevItem">
+      <a href="{:U('result', array('id'=>$prevItem['id']))}" class="btn btn-default pull-left">上一期</a>
+      </notempty>
+      <notempty name="nextItem">
+      <a href="{:U('result', array('id'=>$nextItem['id']))}" class="btn btn-default pull-left">下一期</a>
+      </notempty>
+    </div>
+  </div>
+
+</block>
+<block name="css-content">
+  <style type="text/css">
+    .nav li a {color:#fff}
+    .nav li.active a{background: #e45b2d}
+    .row {margin-left: -5px; margin-right: -5px;}
+    .modal-open .page-wrapper {filter:none;	-webkit-filter:none;
+                               -moz-filter:none;
+                               -o-filter:none;
+                               -ms-filter:none;}
+    .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {padding-left:5px; padding-right:5px;}
+    .sidebar{width:48px; background-color:#ee7b5c;padding:0px;}
+  </style>
+</block>
+<block name="js-content">
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('.sidebar').height($(document).height());
+      $('#submitBtn').click(function () {
+        if ($("#priceInput").val() == "") {
+          alert('请输入价格');
+          return;
+        }
+        if ($('#times').text() > 0) {
+          $.post("{:U('submitPrice')}", $('#theForm').serialize(), function (result) {
+            var modal = $('#infoModal');
+            $('.modal-title', modal).text(result.info);
+            modal.modal('show');
+            $('#times').text($('#times').text() - 1);
+          });
+        } else {
+          var modal = $('#infoModal');
+          $('.modal-title', modal).text('您已经没有猜水果的机会啦，您可以分享此页面增加您的机会~~');
+          modal.modal('show');
+        }
+      })
+    });
+  </script>
+</block>
